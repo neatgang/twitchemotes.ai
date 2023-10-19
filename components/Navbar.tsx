@@ -12,7 +12,7 @@ import Link from "next/link";
 // import { PrimaryLink } from "./PrimaryLink";
 import { Button } from "./ui/button";
 
-export function Header() {
+export function Navbar() {
 //   const session = useSession();
 //   const { buyCredits } = useBuyCredits();
 
@@ -30,22 +30,22 @@ export function Header() {
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
         <ul className="flex gap-4">
-          <li>
+          {/* <li>
             <Button variant="ghost">
               <Link href="/generate">Generate</Link>
             </Button>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
           <Button variant="ghost">
               <Link href="/community">Community</Link>
             </Button>
-          </li>
+          </li> */}
           {/* {isLoggedIn && ( */}
-            <li>
+            {/* <li>
             <Button variant="ghost">
               <Link href="/collection">Collection</Link>
             </Button>
-            </li>
+            </li> */}
           {/* )} */}
         </ul>
         <ul className="flex gap-4">
