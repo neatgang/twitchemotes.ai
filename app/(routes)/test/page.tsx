@@ -2,7 +2,7 @@
 
 // import { Button } from "@/components/Button";
 import { FormGroup } from "@/components/FormGroup";
-import { Header } from "@/components/Navbar";
+import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
