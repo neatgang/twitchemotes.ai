@@ -6,6 +6,10 @@ import { db } from "@/lib/db";
 // import { incrementApiLimit, checkApiLimit } from "@/lib/api-limit";
 // import { checkSubscription } from "@/lib/subscription";
 
+export const config = {
+  runtime: 'edge',
+}
+
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN!,
 });
@@ -34,7 +38,7 @@ export async function POST(req: Request) {
     // }
 
     const response = await replicate.run(
-      "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
+      "m1guelpf/emoji-diffusion:ba30355ce02ca4755d60f7f083e3c0e2593fd3ee687a0dc1fca236deb6046e4d",
       {
         input: {
           prompt: prompt,
