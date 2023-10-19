@@ -27,7 +27,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* <PrimaryLink href="/">Icon Generator</PrimaryLink> */}
         <Button variant="ghost">
-          <Link href="/">TwitchEmotes.ai</Link>
+          <Link href="/">EmoteMaker.ai</Link>
         </Button>
         <ul className="flex gap-4">
           <li>
