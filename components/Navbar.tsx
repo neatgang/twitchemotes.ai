@@ -30,11 +30,11 @@ export function Navbar() {
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
         <ul className="flex gap-4">
-          {/* <li>
+          <li>
             <Button variant="ghost">
               <Link href="/generate">Generate</Link>
             </Button>
-          </li> */}
+          </li>
           {/* <li>
           <Button variant="ghost">
               <Link href="/community">Community</Link>
