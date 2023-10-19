@@ -17,9 +17,9 @@ import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@
 import { Card, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import { Heading } from "@/components/Heading";
-// import { AiHeading } from "@/components/ai/ai-heading";
-// import AiEmpty from "@/components/ai/ai-empty";
-// import { AiLoader } from "@/components/ai/ai-loader";
+import { Loader } from "@/components/Loader";
+import Empty from "@/components/Empty";
+
 
 const ImagePage = () => {
     const router = useRouter();
@@ -32,11 +32,15 @@ const ImagePage = () => {
         { value: "4", label: "4" },
     ];
 
+    const colorOptions = ["blue", "red", "pink", "green", "orange", "yellow", "white", "black"].map(color => ({ value: color, label: color }));
+    const shapeOptions = ["square", "circle", "rounded"].map(shape => ({ value: shape, label: shape }));
+    const styleOptions = ["claymorphic", "3d rendered", "pixelated", "illustrated with color pencil"].map(style => ({ value: style, label: style }));
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             prompt: "",
-            negativePrompt: "",
+            // negativePrompt: "",
             amount: "1",
         },
     });
@@ -46,8 +50,9 @@ const ImagePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setImages([]);
-            const response = await axios.post("/api/ai/sd", {
-                ...values,
+            const finalPrompt = `a modern ${values.shape} icon in ${values.color} of ${values.prompt}, ${values.style}, minimialistic, high quality, trending on art station, unreal engine graphics quality`;
+            const response = await axios.post("/api/generate", {
+                prompt: finalPrompt,
                 amount: parseInt(values.amount),
             });
             setImages(response.data);
@@ -88,7 +93,7 @@ const ImagePage = () => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/* <FormField
                                 name="negativePrompt"
                                 render={({ field }) => (
                                     <FormItem className="col-span-12 lg:col-span-12">
@@ -103,7 +108,7 @@ const ImagePage = () => {
                                         </FormControl>
                                     </FormItem>
                                 )}
-                            />
+                            /> */}
                             <FormField
                                 control={form.control}
                                 name="amount"
@@ -132,6 +137,90 @@ const ImagePage = () => {
                                     </FormItem>
                                 )}
                             />
+                            <FormField
+  control={form.control}
+  name="color"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Choose a color</div>
+      <Select
+        disabled={isLoading}
+        onValueChange={field.onChange}
+        value={field.value}
+        defaultValue={field.value}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue defaultValue={field.value} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {colorOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FormItem>
+  )}
+/>
+<FormField
+  control={form.control}
+  name="shape"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Choose a shape</div>
+      <Select
+        disabled={isLoading}
+        onValueChange={field.onChange}
+        value={field.value}
+        defaultValue={field.value}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue defaultValue={field.value} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {shapeOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FormItem>
+  )}
+/>
+<FormField
+  control={form.control}
+  name="style"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <div className="text-l font-bold">Choose a style</div>
+      <Select
+        disabled={isLoading}
+        onValueChange={field.onChange}
+        value={field.value}
+        defaultValue={field.value}
+      >
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue defaultValue={field.value} />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {styleOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FormItem>
+  )}
+/>
                             <Button className="col-span-12 w-full" type="submit" disabled={isLoading} size="icon">
                                 Generate
                             </Button>
@@ -144,12 +233,12 @@ const ImagePage = () => {
                 <div className="space-y-4 mt-4">
                     {isLoading && (
                         <div className="p-20">
-                            {/* <AiLoader /> */}
+                            <Loader />
                         </div>
                     )}
-                    {/* {images.length === 0 && !isLoading && (
-                        <AiEmpty label="No images generated." />
-                    )} */}
+                    {images.length === 0 && !isLoading && (
+                        <Empty label="No images generated." />
+                    )}
                     <div className="grid grid-cols-1 mid:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
                         {images.map((src, index) => (
                             <div className="pb-4" key={index}>

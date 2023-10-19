@@ -6,8 +6,12 @@ export const formSchema = z.object({
     }),
     amount: z.string().min(1),
     // resolution: z.string().min(1),
-    negativePrompt: z.string().min(0).optional(),
+    // negativePrompt: z.string().min(0).optional(),
+    color: z.string(),
+    shape: z.string(),
+    style: z.string(),
 });
+
 
 // export const amountOptions = [
 //     {
