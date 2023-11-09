@@ -20,28 +20,35 @@ import { Heading } from "@/components/Heading";
 import { Loader } from "@/components/Loader";
 import Empty from "@/components/Empty";
 
+type Image = {
+  id: string;
+  output: string[];
+};
+
+// const images: Image[] 
+
 
 const ImagePage = () => {
     const router = useRouter();
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<Image[]>([]);
 
-    const amountOptions = [
-        { value: "1", label: "1" },
-        { value: "2", label: "2" },
-        { value: "3", label: "3" },
-        { value: "4", label: "4" },
-    ];
+    // const amountOptions = [
+    //     { value: "1", label: "1" },
+    //     { value: "2", label: "2" },
+    //     { value: "3", label: "3" },
+    //     { value: "4", label: "4" },
+    // ];
 
-    const colorOptions = ["blue", "red", "pink", "green", "orange", "yellow", "white", "black"].map(color => ({ value: color, label: color }));
-    const shapeOptions = ["square", "circle", "rounded"].map(shape => ({ value: shape, label: shape }));
-    const styleOptions = ["claymorphic", "3d rendered", "pixelated", "illustrated with color pencil"].map(style => ({ value: style, label: style }));
+    // const colorOptions = ["blue", "red", "pink", "green", "orange", "yellow", "white", "black"].map(color => ({ value: color, label: color }));
+    // const shapeOptions = ["square", "circle", "rounded"].map(shape => ({ value: shape, label: shape }));
+    // const styleOptions = ["claymorphic", "3d rendered", "pixelated", "illustrated with color pencil"].map(style => ({ value: style, label: style }));
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             prompt: "",
             // negativePrompt: "",
-            amount: "1",
+            // amount: "1",
         },
     });
 
@@ -50,10 +57,12 @@ const ImagePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setImages([]);
-            const finalPrompt = `a modern ${values.shape} icon in ${values.color} of ${values.prompt}, ${values.style}, minimialistic, high quality, trending on art station, unreal engine graphics quality`;
+            // const finalPrompt = `a modern ${values.shape} icon in ${values.color} of ${values.prompt}, ${values.style}, minimialistic, high quality, trending on art station, unreal engine graphics quality`;
+            const finalPrompt = `A TOK emoji of a ${values.prompt}`;
             const response = await axios.post("/api/generate", {
-                prompt: finalPrompt,
-                amount: parseInt(values.amount),
+                finalPrompt,
+                ...values,
+                // amount: parseInt(values.amount),
             });
             setImages(response.data);
             form.reset();
@@ -109,7 +118,7 @@ const ImagePage = () => {
                                     </FormItem>
                                 )}
                             /> */}
-                            <FormField
+                            {/* <FormField
                                 control={form.control}
                                 name="amount"
                                 render={({ field }) => (
@@ -136,8 +145,8 @@ const ImagePage = () => {
                                         </Select>
                                     </FormItem>
                                 )}
-                            />
-                            <FormField
+                            /> */}
+                            {/* <FormField
   control={form.control}
   name="color"
   render={({ field }) => (
@@ -220,7 +229,7 @@ const ImagePage = () => {
       </Select>
     </FormItem>
   )}
-/>
+/> */}
                             <Button className="col-span-12 w-full" type="submit" disabled={isLoading} size="icon">
                                 Generate
                             </Button>
@@ -236,34 +245,39 @@ const ImagePage = () => {
                             <Loader />
                         </div>
                     )}
-                    {images.length === 0 && !isLoading && (
+                    {/* {images.length === 0 && !isLoading && (
                         <Empty label="No images generated." />
-                    )}
+                    )} */}
                     <div className="grid grid-cols-1 mid:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-                        {images.map((src, index) => (
-                            <div className="pb-4" key={index}>
-                                <Card
-                                    key={src}
-                                    className="rounded-lg overflow-hidden"
-                                >
-                                    <div className="relative aspect-square">
-                                        <Image
-                                            alt="Image"
-                                            fill
-                                            src={src}
-                                        />
-                                    </div>
-                                    <CardFooter className="p-2">
-                                        <Button variant="secondary" className="w-full" onClick={() => window.open(src)}>
-                                            <Download className="h-4 w-4 mr-2">
-                                                Download
-                                            </Download>
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
-                            </div>
-                        ))}
-                    </div>
+                    {images.map((image: Image) => (
+    <div className="pb-4" key={image.id}>
+      <Card
+        key={image.id}
+        className="rounded-lg overflow-hidden"
+      >
+        <div className="relative aspect-square">
+          {image.output.map((src, index) => (
+            <Image
+              key={index}
+              alt="Image"
+              fill
+              src={src}
+            />
+          ))}
+        </div>
+        <CardFooter className="p-2">
+          {image.output.map((src, index) => (
+            <Button key={index} variant="secondary" className="w-full" onClick={() => window.open(src)}>
+              <Download className="h-4 w-4 mr-2">
+                Download
+              </Download>
+            </Button>
+          ))}
+        </CardFooter>
+      </Card>
+    </div>
+  ))}
+</div>
                 </div>
             </div>
         </div>
