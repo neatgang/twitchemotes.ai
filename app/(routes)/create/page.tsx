@@ -100,7 +100,7 @@ const PhotoPage = () => {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="amount"
               render={({ field }) => (
@@ -159,7 +159,7 @@ const PhotoPage = () => {
                   </Select>
                 </FormItem>
               )}
-            />
+            /> */}
             <Button className="col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
               Generate
             </Button>
