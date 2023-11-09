@@ -32,7 +32,7 @@ export function Navbar() {
         <ul className="flex gap-4">
           <li>
             <Button variant="ghost">
-              <Link href="/generate">Generate</Link>
+              <Link href="/create">Create</Link>
             </Button>
           </li>
           {/* <li>

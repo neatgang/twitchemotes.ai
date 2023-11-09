@@ -20,10 +20,7 @@ import { Heading } from "@/components/Heading";
 import { Loader } from "@/components/Loader";
 import Empty from "@/components/Empty";
 
-type Image = {
-  id: string;
-  output: string[];
-};
+type Image = string;
 
 // const images: Image[] 
 
@@ -61,7 +58,7 @@ const ImagePage = () => {
             const finalPrompt = `A TOK emoji of a ${values.prompt}`;
             const response = await axios.post("/api/generate", {
                 finalPrompt,
-                ...values,
+                // ...values,
                 // amount: parseInt(values.amount),
             });
             setImages(response.data);
@@ -249,38 +246,28 @@ const ImagePage = () => {
                         <Empty label="No images generated." />
                     )} */}
                     <div className="grid grid-cols-1 mid:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-                    {images.map((image: Image) => (
-    <div className="pb-4" key={image.id}>
-      <Card
-        key={image.id}
-        className="rounded-lg overflow-hidden"
-      >
+                    <div className="grid grid-cols-1 mid:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+  {images.map((src, index) => (
+    <div className="pb-4" key={index}>
+      <Card className="rounded-lg overflow-hidden">
         <div className="relative aspect-square">
-          {image.output.map((src, index) => (
-            <Image
-              key={index}
-              alt="Image"
-              fill
-              src={src}
-            />
-          ))}
+          <Image alt="Image" fill src={src} />
         </div>
         <CardFooter className="p-2">
-          {image.output.map((src, index) => (
-            <Button key={index} variant="secondary" className="w-full" onClick={() => window.open(src)}>
-              <Download className="h-4 w-4 mr-2">
-                Download
-              </Download>
-            </Button>
-          ))}
+          <Button variant="secondary" className="w-full" onClick={() => window.open(src)}>
+            <Download className="h-4 w-4 mr-2">
+              Download
+            </Download>
+          </Button>
         </CardFooter>
       </Card>
     </div>
   ))}
-</div>
-                </div>
-            </div>
-        </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
     );
 }
 

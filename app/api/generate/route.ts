@@ -11,7 +11,7 @@ import { NextResponse } from "next/server";
 // }
 
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN!,
+  auth: process.env.REPLICATE_API_TOKEN || '',
 });
 
 export async function POST(req: Request) {
@@ -38,11 +38,21 @@ export async function POST(req: Request) {
     // }
 
     const response = await replicate.run(
-      "fofr/sdxl-emoji:dee76b5afde21b0f01ed7925f0665b7e879c50ee718c5f78a9d38e04d523cc5e",
+      "fofr/sdxl-emoji:fadf75f542463e8fd1e3d83a0775ad0f3a0fd2ca3f6bb5ad52a7639cdf8ba93f",
       {
         input: {
           prompt: finalPrompt,
+          negative_prompt: "",
+          // width: "1024",
+          // height: "1024",
           // num_outputs: 1,
+          // scheduler: "K_EULER",
+          // num_inference_steps: 50,
+          // guidance_scale: 7.5,
+          // prompt_strength: 0.8,
+          // refine: "no_refiner",
+          // high_noise_frac: 0.8,
+          // lora_scale: 0.6,
         }
       }
     );
@@ -55,6 +65,8 @@ export async function POST(req: Request) {
     //     userId: userId,
     //   }
     // });
+
+    console.log(response)
 
     return NextResponse.json(response);
 
