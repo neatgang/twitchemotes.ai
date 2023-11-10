@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useProModal } from "@/hooks/use-pro-modal";
 import { MAX_FREE_COUNTS } from "@/constants";
+import { SubscriptionButton } from "./SubscriptionButton";
 
 export const FreeCounter = ({
   isPro = false,
@@ -27,7 +28,7 @@ export const FreeCounter = ({
   
 
   if (isPro) {
-    return null;
+    return <SubscriptionButton isPro={isPro} />;
   }
 
   return (
