@@ -11,7 +11,7 @@ import Link from "next/link";
 
 // import { PrimaryLink } from "./PrimaryLink";
 import { Button } from "./ui/button";
-import { UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { FreeCounter } from "./FreeCounter";
 import { SubscriptionButton } from "./SubscriptionButton";
 
@@ -39,13 +39,20 @@ export const Navbar = ({
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
         <div className="flex items-center space-x-2">
-        <FreeCounter 
-          apiLimitCount={apiLimitCount} 
-          isPro={isPro}
-        />
-        <UserButton 
-          afterSignOutUrl="/"
-        />
+        <SignedIn>
+  <FreeCounter 
+    apiLimitCount={apiLimitCount} 
+    isPro={isPro}
+  />
+  <UserButton 
+    afterSignOutUrl="/"
+  />
+</SignedIn>
+<SignedOut>
+  <Button variant="ghost">
+    <Link href="/login">Login</Link>
+  </Button>
+</SignedOut>
       </div>
       </div>
     </header>
