@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon } from "lucide-react";
+import { Download, ImageIcon, Wand, Wand2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 // import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -109,7 +109,7 @@ const PhotoPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading} 
-                      placeholder="An emote of a happy frog." 
+                      placeholder="A happy frog" 
                       {...field}
                     />
                   </FormControl>
@@ -177,7 +177,7 @@ const PhotoPage = () => {
               )}
             /> */}
             <Button className="col-start-11 col-span-2 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
-  Generate
+  <Wand2 />
 </Button>
           </form>
         </Form>
