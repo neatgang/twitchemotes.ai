@@ -9,7 +9,6 @@ const MAX_FREE_COUNTS = 5;
 export const incrementApiLimit = async () => {
   const { userId } = auth();
   
-
   if (!userId) {
     return;
   }

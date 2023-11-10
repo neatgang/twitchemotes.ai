@@ -9,8 +9,6 @@ import { checkSubscription } from '@/lib/subscription'
 import { ModalProvider } from '@/components/ModalProvider'
 import { ToasterProvider } from '@/components/ToasterProvider'
 
-
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

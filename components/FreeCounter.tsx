@@ -1,14 +1,11 @@
 import { Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// import { MAX_FREE_COUNTS } from "@/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useProModal } from "@/hooks/use-pro-modal";
-// import { useProModal } from "@/hooks/use-pro-modal";
-
-const MAX_FREE_COUNTS = 5;
+import { MAX_FREE_COUNTS } from "@/constants";
 
 export const FreeCounter = ({
   isPro = false,
@@ -53,4 +50,4 @@ export const FreeCounter = ({
       </div>
     </div>
   )
-        }
+      }
