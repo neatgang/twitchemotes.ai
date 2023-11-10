@@ -64,12 +64,12 @@ const PhotoPage = () => {
   return ( 
     <div className="flex flex-col items-center mt-36">
       <div className="text-center px-3 md:px-6 flex items-center gap-x-3 mb-8">
-        <div className="p-2 w-fit rounded-md bg-pink-700/10">
+        {/* <div className="p-2 w-fit rounded-md bg-pink-700/10">
           <ImageIcon className="w-10 h-10 text-pink-700" />
-        </div>
+        </div> */}
         <div>
-          <h2 className="text-3xl font-bold">
-            Emote Generation
+          <h2 className="text-5xl font-bold mb-2">
+            EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
             Turn your prompt into an emote.
@@ -109,7 +109,7 @@ const PhotoPage = () => {
                     <Input
                       className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading} 
-                      placeholder="A picture of a horse in Swiss alps" 
+                      placeholder="An emote of a happy frog." 
                       {...field}
                     />
                   </FormControl>
