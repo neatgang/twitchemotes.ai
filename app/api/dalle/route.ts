@@ -34,9 +34,11 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
+    const finalPrompt = `Create a ${prompt} emote suitable for a Twitch streamer's channel. The emote should be distinct and convey a different emotion or reaction commonly used during live streams, such as excitement, disappointment, surprise, and laughter. The emote should be designed with a vibrant, cartoonish style, have rounded features for a friendly appearance, and be clearly visible at a small size. Make the emote stand out, but ensure it follows a cohesive visual theme.`
+
     const response = await openai.images.generate({
         model: "dall-e-3",
-        prompt: prompt,
+        prompt: finalPrompt,
         // n: amount,
         // size: resolution,
       });

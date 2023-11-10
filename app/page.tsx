@@ -62,7 +62,7 @@ const PhotoPage = () => {
   }
 
   return ( 
-    <div className="flex flex-col items-center mt-36">
+    <div className="flex flex-col items-center mt-12">
       <div className="text-center px-3 md:px-6 flex items-center gap-x-3 mb-8">
         {/* <div className="p-2 w-fit rounded-md bg-pink-700/10">
           <ImageIcon className="w-10 h-10 text-pink-700" />
