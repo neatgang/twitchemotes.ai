@@ -7,6 +7,7 @@ interface HeadingProps {
     Icon: LucideIcon;
     iconColor?: string;
     bgColor?: string;
+    className?: string; // Add this line
 }
 
 export const Heading = ({
@@ -15,10 +16,11 @@ export const Heading = ({
     Icon,
     iconColor,
     bgColor,
+    className,
 }: HeadingProps ) => {
   return (
     <>
-        <div className="px-4 lg:px-8 flex items-center gap-x-3 mb-8">
+        <div className={cn("px-3 md:px-6 flex items-center gap-x-3 mb-8", className)}> {/* Adjusted padding here */}
             <div className={cn("p-2 w-fit rounded-md", bgColor)}>
                 <Icon className={cn("w-10 h-10", iconColor)} />
             </div>
