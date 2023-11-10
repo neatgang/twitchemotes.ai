@@ -1,7 +1,13 @@
-import { Navbar } from '@/components/Navbar'
+// import { Navbar } from '@/components/Navbar'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+import Navbar from '@/components/Navbar'
+import { getApiLimitCount } from '@/lib/api-limit'
+import { checkSubscription } from '@/lib/subscription'
+import { ModalProvider } from '@/components/ModalProvider'
+import { ToasterProvider } from '@/components/ToasterProvider'
 
 
 
@@ -12,12 +18,17 @@ export const metadata: Metadata = {
   description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+  const apiLimitCount = await getApiLimitCount();
+  const isPro = await checkSubscription();
+
   return (
+    <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
     <div className="h-full relative">
@@ -27,11 +38,14 @@ export default function RootLayout({
             </div>
         </div> */}
         {/* <main className="md:pl-72"> */}
-            <Navbar />
+            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} />
+            <ToasterProvider />
+          <ModalProvider />
             {children}
               {/* <Header /> */}
     </div>
     </body>
     </html>
+    </ClerkProvider>
   )
 }

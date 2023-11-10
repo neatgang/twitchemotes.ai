@@ -11,8 +11,17 @@ import Link from "next/link";
 
 // import { PrimaryLink } from "./PrimaryLink";
 import { Button } from "./ui/button";
+import { UserButton } from "@clerk/nextjs";
+import { FreeCounter } from "./FreeCounter";
+import { SubscriptionButton } from "./SubscriptionButton";
 
-export function Navbar() {
+export const Navbar = ({
+  apiLimitCount = 0,
+  isPro = false
+}: {
+  apiLimitCount: number;
+  isPro: boolean;
+}) => {
 //   const session = useSession();
 //   const { buyCredits } = useBuyCredits();
 
@@ -29,66 +38,18 @@ export function Navbar() {
         <Button variant="ghost">
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
-        <ul className="flex gap-4">
-          {/* <li>
-            <Button variant="ghost">
-              <Link href="/create">Create</Link>
-            </Button>
-          </li> */}
-          {/* <li>
-          <Button variant="ghost">
-              <Link href="/community">Community</Link>
-            </Button>
-          </li> */}
-          {/* {isLoggedIn && ( */}
-            {/* <li>
-            <Button variant="ghost">
-              <Link href="/collection">Collection</Link>
-            </Button>
-            </li> */}
-          {/* )} */}
-        </ul>
-        <ul className="flex gap-4">
-          {/* {isLoggedIn && ( */}
-            <>
-              <div className="flex items-center">
-                Credits remaining 
-                {/* {credits.data} */}
-              </div>
-              <li>
-                <Button
-                  // onClick={() => {
-                  //   buyCredits().catch(console.error);
-                  // }}
-                >
-                  Buy Credits
-                </Button>
-              </li>
-              <li>
-                <Button
-                  variant="secondary"
-                  // onClick={() => {
-                  //   signOut().catch(console.error);
-                  // }}
-                >
-                  Logout
-                </Button>
-              </li>
-            </>
-          {/* )} */}
-          {/* {!isLoggedIn && ( */}
-            <li>
-              <Button
-                // onClick={() => {
-                //   signIn().catch(console.error);
-                // }}
-              >
-                Login
-              </Button>
-            </li>
-          {/* )} */}
-        </ul>
+        <div className="flex items-center space-x-2">
+        <FreeCounter 
+          apiLimitCount={apiLimitCount} 
+          isPro={isPro}
+        />
+        <UserButton 
+          afterSignOutUrl="/"
+        />
+      </div>
       </div>
     </header>
   );
 }
+
+export default Navbar;

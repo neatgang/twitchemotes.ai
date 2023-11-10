@@ -1,3 +1,5 @@
+import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
@@ -34,6 +36,13 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
+    const freeTrial = await checkApiLimit();
+    const isPro = await checkSubscription();
+
+    if (!freeTrial && !isPro) {
+      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    }
+
     const finalPrompt = `Design a vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel, centered in the image with a solid white background. The emote should depict a single emotion from ${prompt}, ensuring it is expressive and visible at a small scale. It should feature exaggerated facial features appropriate for the emotion being conveyed, like excitement or surprise. The style should be playful and friendly, with a distinct, cohesive look.`
     
 const finalPrompt2 = `Design a single, vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring expressiveness and visibility at a small scale. It should feature exaggerated facial features appropriate for the ${prompt}, conveying a specific emotion like excitement or surprise. The background should be a solid white background. The style should be playful and friendly, with a distinct, cohesive look that could easily be part of a larger set of emotes."`
@@ -47,6 +56,10 @@ const finalPrompt2 = `Design a single, vibrant, cartoonish digital emote suitabl
       });
 
     console.log(response.data[0].url);
+
+    if (!isPro) {
+      await incrementApiLimit();
+    }
 
     // Return the response data
     return NextResponse.json(response.data);
