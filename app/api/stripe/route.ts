@@ -1,8 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-
-
 import { absoluteUrl } from "@/lib/utils";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
