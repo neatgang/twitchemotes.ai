@@ -60,17 +60,17 @@ export default function LandingPage() {
           </div>
           
         </div>
-        <div className="gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {demophotos.map((photo, index) => (
-  <Card key={index} style={{ position: "relative", width: "200px", height: "200px" }}>
-    <Image
-      layout="fill"
-      objectFit="cover"
-      alt={`Demo photo ${photo.id}`}
-      src={photo.image} // Use photo.image as the image path
-    />
-  </Card>
-))}
+        <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {demophotos.map((photo, index) => (
+    <Card key={index} style={{ position: "relative", width: "200px", height: "200px" }}>
+      <Image
+        layout="fill"
+        objectFit="cover"
+        alt={`Demo photo ${photo.id}`}
+        src={photo.image} // Use photo.image as the image path
+      />
+    </Card>
+  ))}
 </div>
       </div>
     </section>
