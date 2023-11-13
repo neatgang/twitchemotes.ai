@@ -27,8 +27,8 @@ export default function LandingPage() {
     <section className="w-full py-12 bg-white dark:bg-[#222]">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center space-y-4 text-center">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-800 dark:text-white">
-            🎮 Unleash Your Creativity with EmoteMaker.ai! 🚀💬
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-gray-800 dark:text-white pb-6">
+            🎮 Unleash Your Creativity with EmoteMaker.ai! 🚀
           </h1>
           <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl dark:text-gray-300">
             Welcome to EmoteMaker.ai, your ultimate tool for crafting epic emotes with the power of AI! 🤖✨ Whether you&apos;re a gamer, streamer, digital conqueror, or an artist, get ready to revolutionize your digital presence!
