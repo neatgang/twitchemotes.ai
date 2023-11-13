@@ -40,26 +40,38 @@ export default function LandingPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-          <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Gamers and Streamers 🌟🎨</h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">Transform your wildest ideas into pixel-perfect emotes at the click of a button. Whether you&apos;re a Twitch hero, a Discord master, or just looking to amp up your digital presence, EmoteMaker.ai is your ultimate ally.</p>
-            <Link href="/create">
-              <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                Start Creating
-              </Button>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Artists 🎨🖌️</h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">EmoteMaker.ai isn&apos;t just for gamers and streamers. Artists can also leverage the power of our AI to generate emotes for clients in less time. Spend less time on the tedious parts of design and more time on what you love - being creative!</p>
-            <Link href="/create">
-              <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                Start Creating
-              </Button>
-            </Link>
-          </div>
-          
-        </div>
+        <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Gamers and Streamers 🌟🎨</h2>
+  <p className="mt-2 text-gray-600 dark:text-gray-300">Transform your wildest ideas into pixel-perfect emotes at the click of a button. Whether you&apos;re a Twitch hero, a Discord master, or just looking to amp up your digital presence, EmoteMaker.ai is your ultimate ally.</p>
+  <div className="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+  <p className="font-bold">🌪️ Instant Creation Magic:</p><p> Type your vision, and watch as AI brings it to life in seconds.</p>
+  <p className="font-bold">🖌️ Unleash Your Creativity:</p><p>Make emotes that truly vibe with your unique style.</p>
+  <p className="font-bold">🤖 AI Precision at Its Finest:</p><p> Expect crisp, professional-quality emotes every time.</p>
+  <p className="font-bold">🕹️ Easy and Accessible:</p><p> User-friendly for all, from gaming newbies to esports legends.</p>
+  <p className="font-bold">🌐 Perfect for All Platforms:</p><p> Rule Twitch, Discord, and the entire digital realm with your custom emotes!</p>
+  </div>
+  <Link href="/create">
+    <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+      Start Creating
+    </Button>
+  </Link>
+</div>
+<div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+  <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Artists 🎨🖌️</h2>
+  <p className="mt-2 text-gray-600 dark:text-gray-300">EmoteMaker.ai isn&apost just for gamers and streamers. Artists can also leverage the power of our AI to generate emotes for clients in less time. Spend less time on the tedious parts of design and more time on what you love - being creative!</p>
+  <div className="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
+    <p className="font-bold">🚀 Speed Up Your Workflow: </p>
+    <p>Generate emote drafts in seconds, giving you more time to refine and perfect your designs.</p>
+    <p className="font-bold">🎯 Meet Client Needs:</p><p>Quickly create a variety of emotes based on client specifications.</p>
+    <p className="font-bold">🔄 Iterate Faster:</p><p>Use the AI-generated emotes as a starting point and iterate on them to create the final product.</p>
+  </div>
+  <Link href="/create">
+    <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+      Start Creating
+    </Button>
+  </Link>
+</div>
+</div>
         <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   {demophotos.map((photo, index) => (
     <Card key={index} style={{ position: "relative", width: "200px", height: "200px" }}>
