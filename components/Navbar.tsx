@@ -38,6 +38,11 @@ export const Navbar = ({
         <Button variant="ghost">
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
+        <div>
+          <Button variant="ghost">
+            <Link href="/create">Create</Link>
+          </Button>
+        </div>
         <div className="flex items-center space-x-2">
         <SignedIn>
   <FreeCounter 

@@ -3,6 +3,7 @@ import { checkSubscription } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
+import { templates } from "@/app/constants"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -14,7 +15,23 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { prompt, amount = 1, resolution = "512x512" } = body;
+    const { prompt, amount = 1, resolution = "512x512"} = body;
+
+//     type Template = {
+//       value: string;
+//       label: string;
+//       prompt: string;
+//     };
+    
+//     const selectedTemplate = templates.find((t: Template) => t.value === template);
+
+// if (!selectedTemplate) {
+//   // Handle the case where no matching template was found
+//   // For example, you might return an error response
+//   return new NextResponse("Invalid template", { status: 400 });
+// }
+
+// const finalPrompt = selectedTemplate.prompt.replace('${prompt}', prompt);
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -60,7 +77,7 @@ const finalPrompt2 = `Design a single, vibrant, cartoonish digital emote suitabl
     if (!isPro) {
       await incrementApiLimit();
     }
-
+    
     // Return the response data
     return NextResponse.json(response.data);
   } catch (error) {
