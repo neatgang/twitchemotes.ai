@@ -26,6 +26,10 @@ import { Loader } from "@/components/Loader";
 import Empty from "@/components/Empty";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { UploadButton } from "@/utils/uploadthing";
+import { FileUpload } from "@/components/FileUpload";
+import ImageToPrompt from "@/components/ImageToPrompt";
+import ChatContainer from "@/components/ChatContainer";
 
 const demophotos = [
   {
@@ -102,6 +106,17 @@ const PhotoPage = () => {
         </div>
       </div>
       <div className="mx-auto max-w-screen-lg">
+      {/* <FileUpload 
+            endpoint="imageUploader"
+            onChange={(url) =>{
+              // if (url) {
+              //   onSubmit({
+              //     imageUrl: url
+              //   })
+              // }
+            }}
+          /> */}
+
   <Form {...form}>
   {/* <Heading
   title="Image Generation"

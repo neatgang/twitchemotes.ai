@@ -6,6 +6,7 @@ const nextConfig = {
       "replicate.delivery",
       "pbxt.replicate.delivery",
       "oaidalleapiprodscus.blob.core.windows.net",
+      "utfs.io",
     ],
     remotePatterns: [
       {

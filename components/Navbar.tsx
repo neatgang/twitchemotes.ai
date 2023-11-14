@@ -40,7 +40,10 @@ export const Navbar = ({
         </Button>
         <div>
           <Button variant="ghost">
-            <Link href="/create">Create</Link>
+            <Link href="/create">Create Emotes</Link>
+          </Button>
+          <Button variant="ghost">
+            <Link href="/imagetoprompt">Generate Prompts</Link>
           </Button>
         </div>
         <div className="flex items-center space-x-2">
