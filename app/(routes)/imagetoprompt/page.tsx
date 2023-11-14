@@ -101,7 +101,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into an emote.
+            Turn a picture of yourself into a prompt that you can use to generate emotes.
           </p>
         </div>
       </div>

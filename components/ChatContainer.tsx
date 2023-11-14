@@ -29,7 +29,7 @@ type ImageContent = {
 
 function ChatContainer() {
   const [images, setImages] = useState<File[]>([]);
-  const [message, setMessage] = useState("Analyze the provided image of a person and identify the predominant emotion displayed. Describe the facial expression in detail, focusing on features like the eyes, eyebrows, mouth, and any other aspects that contribute to the emotion. Also, note any distinctive hairstyle or accessories that can be emphasized in a cartoonish style. Summarize these details in a way that will guide the creation of a vibrant, expressive Twitch emote capturing this emotion."
+  const [message, setMessage] = useState("Analyze the provided image of a person and identify the gender and the predominant emotion displayed. Describe the facial expression in detail, focusing on features like the eyes, eyebrows, mouth, and any other aspects that contribute to the emotion. Also, note any distinctive hairstyle or accessories that can be emphasized in a cartoonish style."
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
