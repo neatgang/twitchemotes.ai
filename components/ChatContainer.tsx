@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ArrowRight, Loader, Paperclip, Wand2 } from "lucide-react";
+import { ArrowRight, Clipboard, Loader, Paperclip, Wand2 } from "lucide-react";
 import { Button } from "./ui/button";
 
 // Define the structure of a message
@@ -29,7 +29,7 @@ type ImageContent = {
 
 function ChatContainer() {
   const [images, setImages] = useState<File[]>([]);
-  const [message, setMessage] = useState("Analyze the provided image of a person and identify the gender and the predominant emotion displayed. Describe the facial expression in detail, focusing on features like the eyes, eyebrows, mouth, and any other aspects that contribute to the emotion. Also, note any distinctive hairstyle or accessories that can be emphasized in a cartoonish style."
+  const [message, setMessage] = useState("Analyze the person"
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
@@ -135,44 +135,61 @@ function ChatContainer() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4">
-        {messages.map((message, idx) => (
-          <div
-            key={idx}
-            className={`flex mb-4 ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`rounded-lg p-2 max-w-xs lg:max-w-md ${
-                message.role === "user"
-                  ? "bg-purple-500 text-white"
-                  : "bg-pink-500 text-white"
-              }`}
-            >
-              {/* Ensure that content is an array before mapping */}
-              {Array.isArray(message.content) ? (
-                message.content.map((content, index) => {
-                  if (content.type === "text") {
-                    return <p key={index}>{content.text}</p>;
-                  } else if (content.type === "image_url") {
-                    return (
-                      <img
-                        key={index}
-                        src={content.image_url.url}
-                        alt={`Uploaded by ${message.role}`}
-                        className="h-16 w-16 object-cover rounded-lg"
-                      />
-                    );
-                  }
-                })
-              ) : (
-                // If message.content is not an array, render it as a string
-                <p>{message.content}</p>
-              )}
-            </div>
-          </div>
-        ))}
+  {messages.map((message, idx) => (
+    message.role !== "user" && (
+      <div
+        key={idx}
+        className={`flex mb-4 ${
+          message.role === "system" ? "justify-end" : "justify-start"
+        }`}
+      >
+        <div
+          className={`rounded-lg p-2 max-w-xs lg:max-w-md ${
+            message.role === "system"
+              ? "bg-purple-500 text-white"
+              : "bg-pink-500 text-white"
+          }`}
+        >
+          {/* Ensure that content is an array before mapping */}
+          {Array.isArray(message.content) ? (
+            message.content.map((content, index) => {
+              if (content.type === "text") {
+                return <p key={index}>{content.text}</p>;
+              } else if (content.type === "image_url") {
+                return (
+                  <img
+                    key={index}
+                    src={content.image_url.url}
+                    alt={`Uploaded by ${message.role}`}
+                    className="h-16 w-16 object-cover rounded-lg"
+                  />
+                );
+              }
+            })
+          ) : (
+            // If message.content is not an array, render it as a string
+            <p>{message.content}</p>
+          )}
+          <Button
+          variant="secondary"
+  className="w-full mt-2"
+  onClick={() => {
+    navigator.clipboard.writeText(JSON.stringify(message.content))
+      .then(() => {
+        toast.success("Text copied successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to copy text: ", error);
+      });
+  }}
+>
+  <Clipboard className="h-5 w-5" />
+</Button>
+        </div>
       </div>
+    )
+  ))}
+</div>
       {/* Image preview row */}
       <div className="p-4">
         {images.map((image, index) => (
@@ -192,40 +209,33 @@ function ChatContainer() {
         ))}
       </div>
       {/* Input area */}
-      <div className="flex items-center space-x-2 p-4 bg-white">
-        <label className="flex justify-center items-center p-2 rounded-full bg-gray-200 text-gray-500 w-10 h-10 cursor-pointer">
-          <Paperclip className="h-5 w-5" />
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageChange}
-            className="hidden"
-            disabled={isSending}
-          />
-        </label>
-        {/* <textarea
-          className="flex-1 border p-2 rounded-lg focus:ring-0 resize-none"
-          placeholder="Type your message here..."
-          rows={1}
-          value={message}
-          onChange={handleMessageChange}
-        ></textarea> */}
-        <Button
-          className=""
-          onClick={sendMessage}
-          disabled={isSending}
-        >
-          {isSending ? (
-            <Loader className="h-5 w-5 fa-spin" />
-          ) : (
-            <div className="flex">
-              Generate
-            <Wand2 className="pl-1 h-5 w-5" />
-            </div>
-          )}
-        </Button>
+      <div className="flex flex-col items-center space-y-2 p-4 bg-white">
+  <label className="flex justify-center items-center p-2 rounded-full bg-gray-200 text-gray-500 w-10 h-10 cursor-pointer">
+    <Paperclip className="h-5 w-5" />
+    <input
+      type="file"
+      accept="image/*"
+      multiple
+      onChange={handleImageChange}
+      className="hidden"
+      disabled={isSending}
+    />
+  </label>
+  <Button
+    className="w-full mt-2"
+    onClick={sendMessage}
+    disabled={isSending}
+  >
+    {isSending ? (
+      <Loader className="h-5 w-5 fa-spin" />
+    ) : (
+      <div className="flex">
+        Generate
+        <Wand2 className="pl-1 h-5 w-5" />
       </div>
+    )}
+  </Button>
+</div>
     </div>
   );
 }
