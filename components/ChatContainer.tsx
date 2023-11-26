@@ -29,7 +29,7 @@ type ImageContent = {
 
 function ChatContainer() {
   const [images, setImages] = useState<File[]>([]);
-  const [message, setMessage] = useState("Analyze the person"
+  const [message, setMessage] = useState("Identify gender and age. List face shape. Describe eye size, shape, and distinctive traits. Note eyebrow thickness, shape, and color. Detail nose size and shape. Outline mouth and lip changes. State skin tone and notable features (wrinkles, freckles). Summarize hair color, length, texture. Observe facial expression. Mention additional features like glasses, facial hair. Conclude with standout features."
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
@@ -114,6 +114,8 @@ function ChatContainer() {
     try {
       // Send the message to the backend
       const response = await axios.post("/api/vision", payload);
+
+      console.log("API response:", response.data);
 
       if (!response.data.success) {
         toast.error(response.data.error);

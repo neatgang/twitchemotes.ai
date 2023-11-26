@@ -73,6 +73,7 @@ export async function POST(request: Request) {
   return axios
     .post(OPENAI_URL, payload, { headers })
     .then((response) => {
+      console.log("API response:", response.data); // Add this line
       const firstMessage = response.data.choices[0].message;
       return NextResponse.json({ success: true, message: firstMessage });
     })
