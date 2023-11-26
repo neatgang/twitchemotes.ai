@@ -33,6 +33,22 @@ import ChatContainer from "@/components/ChatContainer";
 
 const demophotos = [
   {
+    id: 5,
+    image: "/asmonemote.png",
+  },
+  {
+    id: 6,
+    image: "/quinemote.png",
+  },
+  {
+    id: 7,
+    image: "/esfandemote1.png",
+  },
+  {
+    id: 7,
+    image: "/tyler1.png",
+  },
+  {
   id: 1,
   image: "/foxemote1.png",
 },
@@ -48,7 +64,7 @@ const demophotos = [
   id: 4,
   image: "/gamercat.png",
 },
-]; // Add more image names as needed
+];
 
 
 // const demophotos = ["/foxemote1.png"]; // Add more image paths as needed

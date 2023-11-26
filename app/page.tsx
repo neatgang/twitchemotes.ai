@@ -5,6 +5,22 @@ import Link from "next/link"
 
 const demophotos = [
   {
+    id: 5,
+    image: "/asmonemote.png",
+  },
+  {
+    id: 6,
+    image: "/quinemote.png",
+  },
+  {
+    id: 7,
+    image: "/esfandemote1.png",
+  },
+  {
+    id: 7,
+    image: "/tyler1.png",
+  },
+  {
   id: 1,
   image: "/foxemote1.png",
 },
@@ -20,6 +36,7 @@ const demophotos = [
   id: 4,
   image: "/gamercat.png",
 },
+
 ]; 
 
 export default function LandingPage() {
