@@ -36,14 +36,6 @@ const demophotos = [
   id: 4,
   image: "/gamercat.png",
 },
-{
-  id: 8,
-  image: "/witch.png",
-},
-{
-  id: 9,
-  image: "/hamsandwitch.png",
-},
 
 ]; 
 
