@@ -107,7 +107,7 @@ const PhotoPage = () => {
           break;
       }
   
-      const response = await axios.post('/api/dalle', { ...values, prompt: finalPrompt });
+      const response = await axios.post('/api/dalle', { ...values, finalPrompt });
   
       const urls = response.data.map((image: { url: string }) => image.url);
   
@@ -144,13 +144,13 @@ const PhotoPage = () => {
             }}
           /> */}
           <div className="flex items-center">
-<Tabs defaultValue="Face">
-    <TabsList>
-      <TabsTrigger value="Face">Face Emotes</TabsTrigger>
-      <TabsTrigger value="Text">Text Emotes</TabsTrigger>
-      <TabsTrigger value="Object">Object Emotes</TabsTrigger>
-    </TabsList>
-    <TabsContent value="Face">
+          {/* <Tabs defaultValue="Face" onChange={(tabValue) => setSelectedTab(tabValue)}>
+  <TabsList>
+    <TabsTrigger value="Face">Face Emotes</TabsTrigger>
+    <TabsTrigger value="Text">Text Emotes</TabsTrigger>
+    <TabsTrigger value="Object">Object Emotes</TabsTrigger>
+  </TabsList>
+    <TabsContent value="Face"> */}
   <Form {...form}>
     <form 
       onSubmit={form.handleSubmit(onSubmit)} 
@@ -187,7 +187,7 @@ const PhotoPage = () => {
 </Button>
           </form>
         </Form>
-        </TabsContent>
+        {/* </TabsContent>
         <TabsContent value="Text">
   <Form {...form}>
     <form 
@@ -264,7 +264,7 @@ const PhotoPage = () => {
           </form>
         </Form>
         </TabsContent>
-        </Tabs>
+        </Tabs> */}
         </div>
         {isLoading && (
           <div className="p-20">

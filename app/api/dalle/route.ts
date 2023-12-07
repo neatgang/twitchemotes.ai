@@ -15,7 +15,7 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { prompt, amount = 1, resolution = "512x512"} = body;
+    const { finalPrompt, amount = 1, resolution = "512x512"} = body;
 
 //     type Template = {
 //       value: string;
@@ -32,6 +32,8 @@ export async function POST(
 // }
 
 // const finalPrompt = selectedTemplate.prompt.replace('${prompt}', prompt);
+
+const prompt = finalPrompt
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -60,14 +62,13 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Design a vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel, centered in the image with a solid white background. The emote should depict a single emotion from ${prompt}, ensuring it is expressive and visible at a small scale. It should feature exaggerated facial features appropriate for the emotion being conveyed, like excitement or surprise. The style should be playful and friendly, with a distinct, cohesive look.`
-    
-const finalPrompt2 = `Design a single, vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring expressiveness and visibility at a small scale. It should feature exaggerated facial features appropriate for the ${prompt}, conveying a specific emotion like excitement or surprise. The background should be a solid white background. The style should be playful and friendly, with a distinct, cohesive look that could easily be part of a larger set of emotes."`
-    const finalPrompt1 = `Create a ${prompt} emote suitable for a Twitch streamer's channel. The emote should be distinct and convey a different emotion or reaction commonly used during live streams, such as excitement, disappointment, surprise, and laughter. The emote should be designed with a vibrant, cartoonish style, have rounded features for a friendly appearance, and be clearly visible at a small size. Make the emote stand out, but ensure it follows a cohesive visual theme.`
+    console.log(prompt);
 
     const response = await openai.images.generate({
         model: "dall-e-3",
-        prompt: finalPrompt,
+        prompt: prompt,
+        size: "1024x1024",
+        quality: "standard",
         // n: amount,
         // size: resolution,
       });
