@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { FreeCounter } from "./FreeCounter";
 import { SubscriptionButton } from "./SubscriptionButton";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 export const Navbar = ({
   apiLimitCount = 0,
@@ -33,19 +34,26 @@ export const Navbar = ({
 
   return (
     <header className="dark:bg-gray-900">
+      
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* <PrimaryLink href="/">Icon Generator</PrimaryLink> */}
-        <Button variant="ghost">
-          <Link href="/">EmoteMaker.ai</Link>
-        </Button>
-        <div>
-          <Button variant="ghost">
-            <Link href="/create">Create Emotes</Link>
-          </Button>
-          <Button variant="ghost">
-            <Link href="/imagetoprompt">Generate Prompts</Link>
-          </Button>
-        </div>
+  <div className="flex items-center">
+    <Avatar>
+      <AvatarImage src="/emotemakerlogo.png"/>
+    </Avatar>
+    <Button variant="link">
+      <Link href="/">EmoteMaker.ai</Link>
+    </Button>
+  </div>
+        {isPro && (
+  <div>
+    <Button variant="ghost">
+      <Link href="/create">Create Emotes</Link>
+    </Button>
+    <Button variant="ghost">
+      <Link href="/imagetoprompt">Generate Prompts</Link>
+    </Button>
+  </div>
+)}
         <div className="flex items-center space-x-2">
         <SignedIn>
   <FreeCounter 

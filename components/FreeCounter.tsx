@@ -35,7 +35,7 @@ export const FreeCounter = ({
     <div className="px-3">
       <div className="flex justify-between items-center text-sm text-black">
         {apiLimitCount < MAX_FREE_COUNTS && (
-          <div className="text-center">
+          <div className="text-center pr-6">
             <p>
               {apiLimitCount} / {MAX_FREE_COUNTS} Free Generations
             </p>
