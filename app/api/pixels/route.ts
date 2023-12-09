@@ -60,7 +60,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Design a single, vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring expressiveness and visibility at a small scale. It should feature exaggerated facial features appropriate for the ${prompt}, conveying a specific emotion like excitement or surprise. The background should be transparent for seamless integration into various Twitch chat backgrounds, or have a solid white background if transparency is not available. The style should be playful and friendly, with a distinct, cohesive look that could easily be part of a larger set of emotes.`
+    const finalPrompt = `Design a pixel art emote for Twitch, encapsulating ${prompt}. The emote should be reminiscent of classic 8-bit or 16-bit video games, with a limited color palette and pixelated design. Emphasize the emotion through simple yet effective pixelated expressions, suitable for small scale visibility.`
 
     const response = await openai.images.generate({
         model: "dall-e-3",
