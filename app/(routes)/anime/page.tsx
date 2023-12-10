@@ -83,7 +83,10 @@ const PhotoPage = () => {
       prompt: "",
       amount: "1",
       resolution: "512x512",
-      // style: "",
+      emotion: "",
+      additionalAttributes: "",
+      hair: "",
+      eyecolor: "",      // style: "",
     }
   });
 
@@ -93,7 +96,7 @@ const PhotoPage = () => {
     try {
       setPhotos([]);
   
-      const response = await axios.post('/api/objects', { ...values, });
+      const response = await axios.post('/api/kawaii', { ...values, });
   
       const urls = response.data.map((image: { url: string }) => image.url);
   
@@ -114,7 +117,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into an object emote.
+            Turn your prompt into a kawaii emote.
           </p>
         </div>
       </div>
@@ -149,26 +152,61 @@ const PhotoPage = () => {
         md:px-6 
         focus-within:shadow-sm
         grid
-        grid-cols-12
+        grid-cols-1
         gap-2
       "
     >
-            <FormField
-              name="prompt"
-              render={({ field }) => (
-                <FormItem className="col-span-8 lg:col-span-6">
-                  <FormControl className="m-0 p-0">
-                    <Input
-                      className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                      disabled={isLoading} 
-                      placeholder="A space invader" 
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button className="col-start-11 col-span-2 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
+  <FormField
+  name="prompt"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>What would you like to see?</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="A space invader" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/>
+<FormField
+  name="emotion"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>Enter Emotion</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="Happy" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/>
+<FormField
+  name="additionalAttributes"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>Add Additional Attributes</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="Sunglasses" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/>
+<Button className="col-span-12 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
+  
+  <p className="mr-2">Generate</p>
   <Wand2 />
 </Button>
           </form>
@@ -282,7 +320,7 @@ const PhotoPage = () => {
         </div>
         
       </div>
-      {/* <div className="justify-center">
+      <div className="justify-center">
   <h2 className="text-1xl font-bold mb-2">
     Here are some examples of what you can generate:
   </h2>
@@ -298,7 +336,7 @@ const PhotoPage = () => {
     />
   </Card>
 ))}
-</div> */}
+</div>
     </div>
 
    );

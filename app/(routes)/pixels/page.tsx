@@ -282,7 +282,7 @@ const PhotoPage = () => {
         </div>
         
       </div>
-      <div className="justify-center">
+      {/* <div className="justify-center">
   <h2 className="text-1xl font-bold mb-2">
     Here are some examples of what you can generate:
   </h2>
@@ -298,7 +298,7 @@ const PhotoPage = () => {
     />
   </Card>
 ))}
-</div>
+</div> */}
     </div>
 
    );
