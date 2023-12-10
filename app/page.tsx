@@ -51,7 +51,7 @@ export default function LandingPage() {
           <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl dark:text-gray-300">
             Welcome to EmoteMaker.ai, your ultimate tool for crafting epic emotes with the power of AI! 🤖✨ Whether you&apos;re a gamer, streamer, digital conqueror, or an artist, get ready to revolutionize your digital presence!
           </p>
-          <Link href="/create">
+          <Link href="/emotes">
             <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
               Start Creating
             </Button>
@@ -68,7 +68,7 @@ export default function LandingPage() {
   <p className="font-bold">🕹️ Easy and Accessible:</p><p> User-friendly for all, from gaming newbies to esports legends.</p>
   <p className="font-bold">🌐 Perfect for All Platforms:</p><p> Rule Twitch, Discord, and the entire digital realm with your custom emotes!</p>
   </div>
-  <Link href="/create">
+  <Link href="/emotes">
     <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
       Start Creating
     </Button>
@@ -83,7 +83,7 @@ export default function LandingPage() {
     <p className="font-bold">🎯 Meet Client Needs:</p><p>Quickly create a variety of emotes based on client specifications.</p>
     <p className="font-bold">🔄 Iterate Faster:</p><p>Use the AI-generated emotes as a starting point and iterate on them to create the final product.</p>
   </div>
-  <Link href="/create">
+  <Link href="/emotes">
     <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
       Start Creating
     </Button>
