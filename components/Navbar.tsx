@@ -47,7 +47,7 @@ export const Navbar = ({
         {isPro && (
   <div>
     <Button variant="ghost">
-      <Link href="/create">Create Emotes</Link>
+      <Link href="/emotes">Create Emotes</Link>
     </Button>
     <Button variant="ghost">
       <Link href="/imagetoprompt">Generate Prompts</Link>
