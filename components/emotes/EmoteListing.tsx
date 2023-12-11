@@ -48,9 +48,9 @@ export default function EmoteListing() {
           </Button>
         </CardContent>
       </Card>
-      {/* <Card className="border shadow-sm rounded-lg">
+      <Card className="border shadow-sm rounded-lg">
         <CardHeader className="pb-2">
-          <CardTitle className="font-semibold text-lg">Laughing Emote</CardTitle>
+          <CardTitle className="font-semibold text-lg">Cute Bold Line Emotes</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
@@ -58,10 +58,10 @@ export default function EmoteListing() {
             <AvatarFallback>LE</AvatarFallback>
           </Avatar>
           <Button className="ml-2" variant="outline">
-            Use
+            <Link href="/cuteboldlines">Use</Link>
           </Button>
         </CardContent>
-      </Card> */}
+      </Card>
       {/* <Card className="border shadow-sm rounded-lg">
         <CardHeader className="pb-2">
           <CardTitle className="font-semibold text-lg">Surprised Emote</CardTitle>
