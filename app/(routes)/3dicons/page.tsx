@@ -114,7 +114,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into a kawaii emote.
+            Turn your prompt into a 3d emote.
           </p>
         </div>
       </div>
