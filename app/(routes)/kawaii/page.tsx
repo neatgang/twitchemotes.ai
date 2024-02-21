@@ -31,6 +31,7 @@ import { FileUpload } from "@/components/FileUpload";
 import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import toast from "react-hot-toast";
 
 const demophotos = [
   {
@@ -94,14 +95,15 @@ const PhotoPage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setPhotos([]);
-  
-      const response = await axios.post('/api/kawaii', { ...values, });
-  
+      const response = await axios.post('/api/kawaii', { ...values });
       const urls = response.data.map((image: { url: string }) => image.url);
-  
       setPhotos(urls);
+      // Display a success toast message
+      toast.success('Emote generated successfully!');
     } catch (error: any) {
-      // Handle error
+      // Display an error toast message
+      toast.error('Failed to generate emote. Please try again.');
+      console.error(error);
     }
   }
 
