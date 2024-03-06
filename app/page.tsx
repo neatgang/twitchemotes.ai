@@ -1,7 +1,14 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useProModal } from "@/hooks/use-pro-modal";
+import { checkSubscription } from "@/lib/subscription";
+import { Zap } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const demophotos = [
   {
@@ -40,6 +47,27 @@ const demophotos = [
 ]; 
 
 export default function LandingPage() {
+  const [isPro, setIsPro] = useState(false);
+  const router = useRouter();
+  const proModal = useProModal();
+
+  useEffect(() => {
+    const fetchIsPro = async () => {
+      const proStatus = await checkSubscription();
+      setIsPro(proStatus);
+    };
+
+    fetchIsPro();
+  }, []);
+
+  const handleStartCreating = () => {
+    if (isPro) {
+      router.push('/emotes');
+    } else {
+      proModal.onOpen();
+    }
+  };
+
   return (
     <section className="w-full py-12 bg-white dark:bg-[#222]">
       
@@ -51,11 +79,12 @@ export default function LandingPage() {
           <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl dark:text-gray-300">
             Welcome to EmoteMaker.ai, your ultimate tool for crafting epic emotes with the power of AI! 🤖✨ Whether you&apos;re a gamer, streamer, digital conqueror, or an artist, get ready to revolutionize your digital presence!
           </p>
-          <Link href="/emotes">
-            <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-              Start Creating
-            </Button>
-          </Link>
+          {/* <Link href="/emotes"> */}
+          <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+        Start Creating
+        <Zap className="w-4 h-4 ml-2 fill-white" />
+      </Button>
+          {/* </Link> */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
@@ -68,11 +97,12 @@ export default function LandingPage() {
   <p className="font-bold">🕹️ Easy and Accessible:</p><p> User-friendly for all, from gaming newbies to esports legends.</p>
   <p className="font-bold">🌐 Perfect for All Platforms:</p><p> Rule Twitch, Discord, and the entire digital realm with your custom emotes!</p>
   </div>
-  <Link href="/emotes">
-    <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-      Start Creating
-    </Button>
-  </Link>
+  {/* <Link href="/emotes"> */}
+  <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+        Start Creating
+        <Zap className="w-4 h-4 ml-2 fill-white" />
+      </Button>
+  {/* </Link> */}
 </div>
 <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Artists 🎨🖌️</h2>
@@ -83,11 +113,12 @@ export default function LandingPage() {
     <p className="font-bold">🎯 Meet Client Needs:</p><p>Quickly create a variety of emotes based on client specifications.</p>
     <p className="font-bold">🔄 Iterate Faster:</p><p>Use the AI-generated emotes as a starting point and iterate on them to create the final product.</p>
   </div>
-  <Link href="/emotes">
-    <Button className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-      Start Creating
-    </Button>
-  </Link>
+  {/* <Link href="/emotes"> */}
+  <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+        Start Creating
+        <Zap className="w-4 h-4 ml-2 fill-white" />
+      </Button>
+  {/* </Link> */}
 </div>
 </div>
         <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
