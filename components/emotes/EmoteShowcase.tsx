@@ -1,3 +1,5 @@
+
+
 import { useEffect, useState } from "react";
 import { getEmotes } from "@/actions/get-emotes";
 import { EmoteCard } from "./EmoteCard";
@@ -29,7 +31,7 @@ const EmoteShowcase = async () => {
         />
       ))}
       {emotes.length === 0 && (
-        <div className="text-center text-sm text-muted-foreground mt-10">
+        <div className="text-center text-sm text-muted-foreground mt-10 items-center">
           No emotes found
         </div>
       )}

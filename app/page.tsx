@@ -81,15 +81,15 @@ export default function LandingPage() {
           <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl dark:text-gray-300">
             Welcome to EmoteMaker.ai, your ultimate tool for crafting epic emotes with the power of AI! 🤖✨ Whether you&apos;re a gamer, streamer, digital conqueror, or an artist, get ready to revolutionize your digital presence!
           </p>
-          {/* <Link href="/emotes"> */}
+
           <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
         Start Creating
         <Zap className="w-4 h-4 ml-2 fill-white" />
       </Button>
-          {/* </Link> */}
+
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
-        <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+        <div className="flex flex-col items-center p-6 bg-white rounded-lg">
   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Gamers and Streamers 🌟🎨</h2>
   <p className="mt-2 text-gray-600 dark:text-gray-300">Transform your wildest ideas into pixel-perfect emotes at the click of a button. Whether you&apos;re a Twitch hero, a Discord master, or just looking to amp up your digital presence, EmoteMaker.ai is your ultimate ally.</p>
   <div className="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
@@ -99,14 +99,14 @@ export default function LandingPage() {
   <p className="font-bold">🕹️ Easy and Accessible:</p><p> User-friendly for all, from gaming newbies to esports legends.</p>
   <p className="font-bold">🌐 Perfect for All Platforms:</p><p> Rule Twitch, Discord, and the entire digital realm with your custom emotes!</p>
   </div>
-  {/* <Link href="/emotes"> */}
+
   <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
         Start Creating
         <Zap className="w-4 h-4 ml-2 fill-white" />
       </Button>
-  {/* </Link> */}
+
 </div>
-<div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+<div className="flex flex-col items-center p-6 bg-white rounded-lg">
   <h2 className="text-2xl font-bold text-gray-800 dark:text-white">For Artists 🎨🖌️</h2>
   <p className="mt-2 text-gray-600 dark:text-gray-300">EmoteMaker.ai isn&apost just for gamers and streamers. Artists can also leverage the power of our AI to generate emotes for clients in less time. Spend less time on the tedious parts of design and more time on what you love - being creative!</p>
   <div className="list-disc list-inside mt-2 text-gray-600 dark:text-gray-300">
@@ -115,15 +115,15 @@ export default function LandingPage() {
     <p className="font-bold">🎯 Meet Client Needs:</p><p>Quickly create a variety of emotes based on client specifications.</p>
     <p className="font-bold">🔄 Iterate Faster:</p><p>Use the AI-generated emotes as a starting point and iterate on them to create the final product.</p>
   </div>
-  {/* <Link href="/emotes"> */}
+
   <Button onClick={handleStartCreating} variant="default" className="inline-flex h-9 items-center justify-center rounded-md bg-blue-600 px-4 py-2 mt-4 text-sm font-medium text-white shadow-lg transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
         Start Creating
         <Zap className="w-4 h-4 ml-2 fill-white" />
       </Button>
-  {/* </Link> */}
+
 </div>
 </div>
-<EmoteShowcase />
+{/* <EmoteShowcase /> */}
       </div>
     </section>
   )
