@@ -34,20 +34,20 @@ export const FreeCounter = ({
   return (
     <div className="px-3">
       <div className="flex justify-between items-center text-sm text-black">
-        {/* {apiLimitCount < MAX_FREE_COUNTS && (
+        {apiLimitCount < MAX_FREE_COUNTS && (
           <div className="text-center pr-6">
             <p>
               {apiLimitCount} / {MAX_FREE_COUNTS} Free Generations
             </p>
             <Progress className="h-3" value={(apiLimitCount / MAX_FREE_COUNTS) * 100} />
           </div>
-        )} */}
-        {/* {apiLimitCount >= MAX_FREE_COUNTS && ( */}
+        )}
+        {apiLimitCount >= MAX_FREE_COUNTS && (
           <Button onClick={proModal.onOpen} variant="default" className="w-full">
             Upgrade
             <Zap className="w-4 h-4 ml-2 fill-white" />
           </Button>
-        {/* )} */}
+        )}
       </div>
     </div>
   )
