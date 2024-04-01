@@ -141,7 +141,7 @@ const removeBackground = async (src: string, index: number) => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into a cute bold line emote.
+            Turn your prompt into a text based emote.
           </p>
         </div>
       </div>
