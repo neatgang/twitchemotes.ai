@@ -55,10 +55,24 @@ export default function EmoteListing() {
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
             <AvatarImage alt="Laughing Emote" src="/placeholder.svg?height=64&width=64" />
-            <AvatarFallback>LE</AvatarFallback>
+            <AvatarFallback>CBL</AvatarFallback>
           </Avatar>
           <Button className="ml-2" variant="outline">
             <Link href="/cuteboldlines">Use</Link>
+          </Button>
+        </CardContent>
+      </Card>
+      <Card className="border shadow-sm rounded-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="font-semibold text-lg">Text Based Emotes</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-between items-center">
+          <Avatar className="w-16 h-16">
+            <AvatarImage alt="Laughing Emote" src="/placeholder.svg?height=64&width=64" />
+            <AvatarFallback>TB</AvatarFallback>
+          </Avatar>
+          <Button className="ml-2" variant="outline">
+            <Link href="/textbased">Use</Link>
           </Button>
         </CardContent>
       </Card>

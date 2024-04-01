@@ -5,9 +5,10 @@ import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import Navbar from '@/components/Navbar'
 import { getApiLimitCount } from '@/lib/api-limit'
-import { checkSubscription } from '@/lib/subscription'
+
 import { ModalProvider } from '@/components/ModalProvider'
 import { ToasterProvider } from '@/components/ToasterProvider'
+import { checkSubscription } from '../lib/subscription'
 
 const inter = Inter({ subsets: ['latin'] })
 

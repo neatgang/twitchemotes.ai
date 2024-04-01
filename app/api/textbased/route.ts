@@ -1,6 +1,5 @@
-import { checkSubscription } from "@/lib/subscription";
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
-
+import { checkSubscription } from "@/lib/oldsubscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
@@ -16,8 +15,23 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { prompt, amount = 1, emotion, additionalAttributes} = body;
+    const { prompt, amount = 1, resolution = "512x512"} = body;
 
+//     type Template = {
+//       value: string;
+//       label: string;
+//       prompt: string;
+//     };
+    
+//     const selectedTemplate = templates.find((t: Template) => t.value === template);
+
+// if (!selectedTemplate) {
+//   // Handle the case where no matching template was found
+//   // For example, you might return an error response
+//   return new NextResponse("Invalid template", { status: 400 });
+// }
+
+// const finalPrompt = selectedTemplate.prompt.replace('${prompt}', prompt);
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -35,16 +49,8 @@ export async function POST(
       return new NextResponse("Amount is required", { status: 400 });
     }
 
-    // if (!resolution) {
-    //   return new NextResponse("Resolution is required", { status: 400 });
-    // }
-
-    if (!emotion) {
-      return new NextResponse("Emotion is required", { status: 400 });
-    }
-
-    if (!additionalAttributes) {
-      return new NextResponse("Additional Attributes are required", { status: 400 });
+    if (!resolution) {
+      return new NextResponse("Resolution is required", { status: 400 });
     }
 
     const freeTrial = await checkApiLimit();
@@ -54,16 +60,16 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Create a single kawaii-style emote icon, where the subject can be an ${prompt}, with an ${emotion} expression. The icon should have distinct, large eyes and a fitting mouth to express the emotion. Enhance the character with ${additionalAttributes}, like a color scheme, accessories, or background elements that complement the main subject. The entire icon should be presented with a clean outline, pastel colors, and a drop shadow for a slight 3D effect on a plain background to maintain focus on the character itself.`
+    const finalPrompt = `Design a bold and vibrant text-based emote featuring the word ${prompt} in an ultra-bold font. The design should emphasize clarity and visual impact, making the word stand out against varied backgrounds. Opt for bright colors and a playful font style to convey a lighthearted, ironic tone. The goal is simplicity and high visibility, ensuring the text is effective and recognizable at a glance in any digital chat environment.`
 
     const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: finalPrompt,
-      size: '1024x1024',
-      quality: "standard",
-      // n: amount,
-      // size: resolution,
-    });
+        model: "dall-e-3",
+        prompt: finalPrompt,
+        size: "1024x1024",
+        quality: "standard",
+        // n: amount,
+        // size: resolution,
+      });
 
     console.log(response.data[0].url);
 

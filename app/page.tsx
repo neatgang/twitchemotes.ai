@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useProModal } from "@/hooks/use-pro-modal";
-import { checkSubscription } from "@/lib/subscription";
+
 import { Zap } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { checkSubscription } from "../lib/subscription";
 
 const demophotos = [
   {

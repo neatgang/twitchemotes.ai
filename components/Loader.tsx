@@ -1,14 +1,14 @@
-import { Loader2 } from "lucide-react";
+import { Loader2, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 
 export const Loader = () => {
     return (
         <div className="h-full flex flex-col gap-y-4 items-center justify-center"> 
-            <div className="w-10 h-10 relative animate-spin "> 
-                <Loader2 />
+            <div className="relative animate-spin flex items-center justify-center mt-4"> 
+                <Loader2Icon />
             </div>
             <p>
-                Generating...
+                {/* Generating... */}
             </p>
         </div>
     )

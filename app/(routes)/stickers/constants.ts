@@ -10,18 +10,6 @@ export const formSchema = z.object({
   //   message: "Image is required",
   // }),
   // templates: z.string(),
-  emotion: z.string().min(1, { // New field for emotion
-    message: "Emotion is required"
-  }),
-  additionalAttributes: z.string().min(1, { // New field for additional attributes
-    message: "Additional attributes are required"
-  }),
-  hair: z.string().min(1, { // New field for emotion
-    message: "Emotion is required"
-  }),
-  eyecolor: z.string().min(1, { // New field for additional attributes
-    message: "Additional attributes are required"
-  }),
 });
 
 export const amountOptions = [

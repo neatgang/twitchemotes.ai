@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon, Wand, Wand2 } from "lucide-react";
+import { AppWindow, Download, File, ImageIcon, Paintbrush2, RemoveFormatting, SaveAll, SprayCan, Wand, Wand2, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 // import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -106,6 +106,32 @@ const PhotoPage = () => {
       console.error(error);
     }
   }
+
+  const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+
+const removeBackground = async (src: string, index: number) => {
+  try {
+    setIsRemovingBackground(true); // Start loading
+    const response = await axios.post('/api/replicate/bg-remove', { image: src });
+    const newImageUrl = response.data; // Assuming the server returns a plain URL string
+
+    if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
+      setPhotos((currentPhotos) => {
+        const updatedPhotos = [...currentPhotos];
+        updatedPhotos[index] = newImageUrl;
+        return updatedPhotos;
+      });
+      toast.success('Background removed successfully!');
+    } else {
+      toast.error('Unexpected response from server. Please try again.');
+    }
+  } catch (error) {
+    console.error('Failed to remove background:', error);
+    toast.error('Failed to remove background. Please try again.');
+  } finally {
+    setIsRemovingBackground(false); // End loading
+  }
+};
 
   return ( 
     <div className="flex flex-col items-center mt-12">
@@ -301,7 +327,7 @@ const PhotoPage = () => {
         )}
         <div className="gap-4 mt-8 mb-8">
         {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 */}
-          {photos.map((src) => (
+        {photos.map((src, index) => (
             <Card key={src} className="rounded-lg overflow-hidden">
               <div className="relative aspect-square">
                 <Image
@@ -310,10 +336,24 @@ const PhotoPage = () => {
                   src={src}
                 />
               </div>
-              <CardFooter className="p-2">
+              <CardFooter className="p-2 flex flex-col gap-2">
+              <Button onClick={() => removeBackground(src, index)} disabled={isRemovingBackground} className="w-full flex">
+  {isRemovingBackground ? (
+    <Loader /> // Replace with your actual loading spinner component
+  ) : (
+    <>
+      <Paintbrush2 className="h-4 w-4 mr-2" />
+      Remove Background
+    </>
+  )}
+</Button>
                 <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
                   <Download className="h-4 w-4 mr-2" />
                   Download
+                </Button>
+                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
+                  <SaveAll className="h-4 w-4 mr-2" />
+                  Save
                 </Button>
               </CardFooter>
             </Card>

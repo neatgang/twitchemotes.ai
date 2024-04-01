@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon, Wand, Wand2 } from "lucide-react";
+import { Download, ImageIcon, Paintbrush2, SaveAll, Wand, Wand2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 // import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -31,6 +31,7 @@ import { FileUpload } from "@/components/FileUpload";
 import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import toast from "react-hot-toast";
 
 const demophotos = [
   {
@@ -83,10 +84,7 @@ const PhotoPage = () => {
       prompt: "",
       amount: "1",
       resolution: "512x512",
-      emotion: "",
-      additionalAttributes: "",
-      hair: "",
-      eyecolor: "",      // style: "",
+      // style: "",
     }
   });
 
@@ -95,16 +93,45 @@ const PhotoPage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setPhotos([]);
-  
-      const response = await axios.post('/api/kawaii', { ...values, });
-  
-      const urls = response.data.map((image: { url: string }) => image.url);
-  
-      setPhotos(urls);
+      const response = await axios.post('/api/replicate/stickers', { ...values });
+      // Assuming the response data is directly an array of URLs
+      if (Array.isArray(response.data) && response.data.every(url => typeof url === 'string')) {
+        setPhotos(response.data);
+        toast.success('Stickers generated successfully!');
+      } else {
+        toast.error('Invalid response format from server.');
+      }
     } catch (error: any) {
-      // Handle error
+      console.error('Failed to generate stickers:', error);
+      toast.error('Failed to generate stickers. Please try again.');
     }
-  }
+  };
+
+  const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+
+const removeBackground = async (src: string, index: number) => {
+    try {
+      setIsRemovingBackground(true); // Start loading
+      const response = await axios.post('/api/replicate/bg-remove', { image: src });
+      const newImageUrl = response.data; // Assuming the server returns a plain URL string
+  
+      if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
+        setPhotos((currentPhotos) => {
+          const updatedPhotos = [...currentPhotos];
+          updatedPhotos[index] = newImageUrl;
+          return updatedPhotos;
+        });
+        toast.success('Background removed successfully!');
+      } else {
+        toast.error('Unexpected response from server. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to remove background:', error);
+      toast.error('Failed to remove background. Please try again.');
+    } finally {
+      setIsRemovingBackground(false); // End loading
+    }
+  };
 
   return ( 
     <div className="flex flex-col items-center mt-12">
@@ -117,7 +144,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into a kawaii emote.
+            Turn your prompt into a cute bold line emote.
           </p>
         </div>
       </div>
@@ -152,61 +179,26 @@ const PhotoPage = () => {
         md:px-6 
         focus-within:shadow-sm
         grid
-        grid-cols-1
+        grid-cols-12
         gap-2
       "
     >
-  <FormField
-  name="prompt"
-  render={({ field }) => (
-    <FormItem className="col-span-12">
-      <FormLabel>What would you like to see?</FormLabel>
-      <FormControl className="m-0 p-0">
-        <Input
-          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-          disabled={isLoading} 
-          placeholder="A space invader" 
-          {...field}
-        />
-      </FormControl>
-    </FormItem>
-  )}
-/>
-<FormField
-  name="emotion"
-  render={({ field }) => (
-    <FormItem className="col-span-12">
-      <FormLabel>Enter Emotion</FormLabel>
-      <FormControl className="m-0 p-0">
-        <Input
-          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-          disabled={isLoading} 
-          placeholder="Happy" 
-          {...field}
-        />
-      </FormControl>
-    </FormItem>
-  )}
-/>
-<FormField
-  name="additionalAttributes"
-  render={({ field }) => (
-    <FormItem className="col-span-12">
-      <FormLabel>Add Additional Attributes</FormLabel>
-      <FormControl className="m-0 p-0">
-        <Input
-          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-          disabled={isLoading} 
-          placeholder="Sunglasses" 
-          {...field}
-        />
-      </FormControl>
-    </FormItem>
-  )}
-/>
-<Button className="col-span-12 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
-  
-  <p className="mr-2">Generate</p>
+            <FormField
+              name="prompt"
+              render={({ field }) => (
+                <FormItem className="col-span-8 lg:col-span-6">
+                  <FormControl className="m-0 p-0">
+                    <Input
+                      className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+                      disabled={isLoading} 
+                      placeholder="A happy turtle" 
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button className="col-start-11 col-span-2 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
   <Wand2 />
 </Button>
           </form>
@@ -300,8 +292,8 @@ const PhotoPage = () => {
         )}
         <div className="gap-4 mt-8 mb-8">
         {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 */}
-          {photos.map((src) => (
-            <Card key={src} className="rounded-lg overflow-hidden">
+        {photos.map((src, index) => (
+            <Card key={src} className="rounded-lg overflow-hidden m-4">
               <div className="relative aspect-square">
                 <Image
                   fill
@@ -309,10 +301,24 @@ const PhotoPage = () => {
                   src={src}
                 />
               </div>
-              <CardFooter className="p-2">
+              <CardFooter className="p-2 flex flex-col gap-2">
+              <Button onClick={() => removeBackground(src, index)} disabled={isRemovingBackground} className="w-full flex">
+  {isRemovingBackground ? (
+    <Loader /> // Replace with your actual loading spinner component
+  ) : (
+    <>
+      <Paintbrush2 className="h-4 w-4 mr-2" />
+      Remove Background
+    </>
+  )}
+</Button>
                 <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
                   <Download className="h-4 w-4 mr-2" />
                   Download
+                </Button>
+                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
+                  <SaveAll className="h-4 w-4 mr-2" />
+                  Save
                 </Button>
               </CardFooter>
             </Card>
@@ -320,7 +326,7 @@ const PhotoPage = () => {
         </div>
         
       </div>
-      <div className="justify-center">
+      {/* <div className="justify-center">
   <h2 className="text-1xl font-bold mb-2">
     Here are some examples of what you can generate:
   </h2>
@@ -336,7 +342,7 @@ const PhotoPage = () => {
     />
   </Card>
 ))}
-</div>
+</div> */}
     </div>
 
    );

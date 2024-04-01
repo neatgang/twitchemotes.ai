@@ -94,7 +94,7 @@ const PhotoPage = () => {
     try {
       setPhotos([]);
   
-      const response = await axios.post('/api/cuteboldlines', { ...values, });
+      const response = await axios.post('/api/textbased', { ...values, });
   
       const urls = response.data.map((image: { url: string }) => image.url);
   
@@ -188,7 +188,7 @@ const removeBackground = async (src: string, index: number) => {
                     <Input
                       className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                       disabled={isLoading} 
-                      placeholder="A curious kitten" 
+                      placeholder="Bozo" 
                       {...field}
                     />
                   </FormControl>
