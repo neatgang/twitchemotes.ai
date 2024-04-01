@@ -12,41 +12,41 @@ import { useEffect, useState } from "react";
 import { checkSubscription } from "../lib/subscription";
 import EmoteShowcase from "@/components/emotes/EmoteShowcase";
 
-const demophotos = [
-  {
-    id: 5,
-    image: "/asmonemote.png",
-  },
-  {
-    id: 6,
-    image: "/quinemote.png",
-  },
-  {
-    id: 7,
-    image: "/esfandemote1.png",
-  },
-  {
-    id: 7,
-    image: "/tyler1.png",
-  },
-  {
-  id: 1,
-  image: "/foxemote1.png",
-},
-{
-  id: 2,
-  image: "/elf.png",
-},
-{
-  id: 3,
-  image: "/determinedcat.png",
-},
-{
-  id: 4,
-  image: "/gamercat.png",
-},
+// const demophotos = [
+//   {
+//     id: 5,
+//     image: "/asmonemote.png",
+//   },
+//   {
+//     id: 6,
+//     image: "/quinemote.png",
+//   },
+//   {
+//     id: 7,
+//     image: "/esfandemote1.png",
+//   },
+//   {
+//     id: 7,
+//     image: "/tyler1.png",
+//   },
+//   {
+//   id: 1,
+//   image: "/foxemote1.png",
+// },
+// {
+//   id: 2,
+//   image: "/elf.png",
+// },
+// {
+//   id: 3,
+//   image: "/determinedcat.png",
+// },
+// {
+//   id: 4,
+//   image: "/gamercat.png",
+// },
 
-]; 
+// ]; 
 
 export default function LandingPage() {
   const [isPro, setIsPro] = useState(false);
@@ -123,18 +123,6 @@ export default function LandingPage() {
   {/* </Link> */}
 </div>
 </div>
-        {/* <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-  {demophotos.map((photo, index) => (
-    <Card key={index} style={{ position: "relative", width: "200px", height: "200px" }}>
-      <Image
-        layout="fill"
-        objectFit="cover"
-        alt={`Demo photo ${photo.id}`}
-        src={photo.image} // Use photo.image as the image path
-      />
-    </Card>
-  ))}
-</div> */}
 <EmoteShowcase />
       </div>
     </section>
