@@ -10,6 +10,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { checkSubscription } from "../lib/subscription";
+import EmoteShowcase from "@/components/emotes/EmoteShowcase";
 
 const demophotos = [
   {
@@ -122,7 +123,7 @@ export default function LandingPage() {
   {/* </Link> */}
 </div>
 </div>
-        <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* <div className="justify-items-center items-center gap-4 mt-8 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   {demophotos.map((photo, index) => (
     <Card key={index} style={{ position: "relative", width: "200px", height: "200px" }}>
       <Image
@@ -133,7 +134,8 @@ export default function LandingPage() {
       />
     </Card>
   ))}
-</div>
+</div> */}
+<EmoteShowcase />
       </div>
     </section>
   )

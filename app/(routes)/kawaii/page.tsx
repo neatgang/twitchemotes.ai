@@ -32,6 +32,7 @@ import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
+import { auth, useAuth } from "@clerk/nextjs";
 
 const demophotos = [
   {
@@ -77,6 +78,7 @@ const PhotoPage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState("Face");
+  const { userId } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -132,6 +134,24 @@ const removeBackground = async (src: string, index: number) => {
     setIsRemovingBackground(false); // End loading
   }
 };
+
+const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+  try {
+    const response = await axios.post('/api/saveemote', {
+      userId: userId,
+      prompt,
+      imageUrl,
+    });
+
+    // Handle the response as needed
+    console.log(response.data);
+    toast.success('Emote saved successfully!');
+  } catch (error) {
+    console.error('Failed to save emote:', error);
+    toast.error('Failed to save emote. Please try again.');
+  }
+};
+
 
   return ( 
     <div className="flex flex-col items-center mt-12">
@@ -351,10 +371,10 @@ const removeBackground = async (src: string, index: number) => {
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
-                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
-                  <SaveAll className="h-4 w-4 mr-2" />
-                  Save
-                </Button>
+                <Button onClick={() => handleSave(src, form.getValues().prompt, userId || '')} variant="secondary" className="w-full">
+  <SaveAll className="h-4 w-4 mr-2" />
+  Save
+</Button>
               </CardFooter>
             </Card>
           ))}
