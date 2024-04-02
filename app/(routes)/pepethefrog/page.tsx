@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon, Paintbrush2, SaveAll, SaveAllIcon, Wand, Wand2 } from "lucide-react";
+import { Download, ImageIcon, Paintbrush2, SaveAll, Wand, Wand2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 // import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -96,7 +96,7 @@ const PhotoPage = () => {
     try {
       setPhotos([]);
   
-      const response = await axios.post('/api/pixels', { ...values, });
+      const response = await axios.post('/api/pepethefrog', { ...values, });
   
       const urls = response.data.map((image: { url: string }) => image.url);
   
@@ -108,46 +108,46 @@ const PhotoPage = () => {
 
   const [isRemovingBackground, setIsRemovingBackground] = useState(false);
 
-  const removeBackground = async (src: string, index: number) => {
-    try {
-      setIsRemovingBackground(true); // Start loading
-      const response = await axios.post('/api/replicate/bg-remove', { image: src });
-      const newImageUrl = response.data; // Assuming the server returns a plain URL string
-  
-      if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
-        setPhotos((currentPhotos) => {
-          const updatedPhotos = [...currentPhotos];
-          updatedPhotos[index] = newImageUrl;
-          return updatedPhotos;
-        });
-        toast.success('Background removed successfully!');
-      } else {
-        toast.error('Unexpected response from server. Please try again.');
-      }
-    } catch (error) {
-      console.error('Failed to remove background:', error);
-      toast.error('Failed to remove background. Please try again.');
-    } finally {
-      setIsRemovingBackground(false); // End loading
-    }
-  };
+const removeBackground = async (src: string, index: number) => {
+  try {
+    setIsRemovingBackground(true); // Start loading
+    const response = await axios.post('/api/replicate/bg-remove', { image: src });
+    const newImageUrl = response.data; // Assuming the server returns a plain URL string
 
-  const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
-    try {
-      const response = await axios.post('/api/saveemote', {
-        userId: userId,
-        prompt,
-        imageUrl,
+    if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
+      setPhotos((currentPhotos) => {
+        const updatedPhotos = [...currentPhotos];
+        updatedPhotos[index] = newImageUrl;
+        return updatedPhotos;
       });
-  
-      // Handle the response as needed
-      console.log(response.data);
-      toast.success('Emote saved successfully!');
-    } catch (error) {
-      console.error('Failed to save emote:', error);
-      toast.error('Failed to save emote. Please try again.');
+      toast.success('Background removed successfully!');
+    } else {
+      toast.error('Unexpected response from server. Please try again.');
     }
-  };
+  } catch (error) {
+    console.error('Failed to remove background:', error);
+    toast.error('Failed to remove background. Please try again.');
+  } finally {
+    setIsRemovingBackground(false); // End loading
+  }
+};
+
+const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+  try {
+    const response = await axios.post('/api/saveemote', {
+      userId: userId,
+      prompt,
+      imageUrl,
+    });
+
+    // Handle the response as needed
+    console.log(response.data);
+    toast.success('Emote saved successfully!');
+  } catch (error) {
+    console.error('Failed to save emote:', error);
+    toast.error('Failed to save emote. Please try again.');
+  }
+};
 
   return ( 
     <div className="flex flex-col items-center mt-12">
@@ -160,7 +160,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into a pixel emote.
+            Turn your prompt into a pepe the frog emote.
           </p>
         </div>
       </div>

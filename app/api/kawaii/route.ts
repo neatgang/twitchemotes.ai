@@ -54,7 +54,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Create a single kawaii-style emote icon, where the subject can be an ${prompt}, with an ${emotion} expression. The icon should have distinct, large eyes and a fitting mouth to express the emotion. Enhance the character with ${additionalAttributes}, like a color scheme, accessories, or background elements that complement the main subject. The entire icon should be presented with a clean outline, pastel colors, and a drop shadow for a slight 3D effect on a plain background to maintain focus on the character itself.`
+    const finalPrompt = `Create a single kawaii-style emote icon, where the subject can be an ${prompt}, with an ${emotion} expression. The icon should have distinct, large eyes and a fitting mouth to express the emotion. Enhance the character with ${additionalAttributes}. The entire icon should be presented with a clean outline, pastel colors, on a plain background to maintain focus on the character itself.`
 
     const response = await openai.images.generate({
       model: "dall-e-3",

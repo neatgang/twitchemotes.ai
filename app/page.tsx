@@ -66,7 +66,8 @@ export default function LandingPage() {
     if (isPro) {
       router.push('/emotes');
     } else {
-      proModal.onOpen();
+      // proModal.onOpen();
+      router.push('/emotes');
     }
   };
 

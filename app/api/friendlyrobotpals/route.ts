@@ -60,7 +60,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Create a cute and vibrant icon illustration featuring a ${prompt}, drawn with bold and clean lines. The subject should have exaggerated, playful features to enhance its charming character, with bright and cheerful colors. Include a solid white background. The overall design should be minimalistic but lively, suitable for use as a bold line icon.`
+    const finalPrompt = `Craft a friendly cartoon robot ${prompt} illustration against a stark white backdrop. Conveying a warm and approachable demeanor, accentuate the robot's distinct robotic features. Embellish with vibrant colors, smooth contours, and playful details to achieve a whimsical and captivating cartoon aesthetic. Capture the essence of a friendly robotic persona, rendered in a visually appealing style suitable for diverse applications. `
 
     const response = await openai.images.generate({
         model: "dall-e-3",

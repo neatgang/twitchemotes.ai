@@ -60,7 +60,9 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Create a cute and vibrant icon illustration featuring a ${prompt}, drawn with bold and clean lines. The subject should have exaggerated, playful features to enhance its charming character, with bright and cheerful colors. Include a solid white background. The overall design should be minimalistic but lively, suitable for use as a bold line icon.`
+    const finalPrompt = `Create a pepe the meme frog emote for the following prompt: ${prompt}`
+    // const finalPromptX = `Create a pepe the meme frog emote featuring a ${prompt}. Include a simple solid background.`
+    
 
     const response = await openai.images.generate({
         model: "dall-e-3",

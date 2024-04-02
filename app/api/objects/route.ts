@@ -60,7 +60,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Design a vibrant, cartoonish digital emote suitable for Twitch streamers, featuring the object '${prompt}'. The emote should creatively and clearly represent the object, making it easily identifiable at a small scale. Focus on imaginative and exaggerated features to highlight the object's unique characteristics. The background of the emote should be solid white, ensuring it stands out and remains visually clear on various Twitch chat backgrounds. The style should be playful and engaging, with a distinct and cohesive appearance, perfect for enhancing the visual appeal of a Twitch streamer's channel.`
+    const finalPrompt = `Design a vibrant, cartoonish digital object icon, featuring the object '${prompt}'. The object icon should creatively and clearly represent the object, making it easily identifiable at a small scale. The background of the object icon should be solid white, ensuring it stands out and remains visually clear. The style should be playful and engaging, with a distinct and cohesive appearance, perfect for enhancing the visual appeal.`
 
     const response = await openai.images.generate({
         model: "dall-e-3",
