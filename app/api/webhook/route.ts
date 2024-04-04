@@ -60,6 +60,7 @@ export async function POST(req: Request) {
         stripeCurrentPeriodEnd: new Date(
           subscription.current_period_end * 1000
         ),
+
       },
     })
   }

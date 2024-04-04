@@ -37,14 +37,15 @@ export const Navbar = ({
       
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
   <div className="flex items-center">
-    <Avatar>
-      <AvatarImage src="/emotemakerlogo.png"/>
+    
+    <Button variant="ghost">
+    <Avatar className="mr-2">
+      <AvatarImage src="/peepopainter.png"/>
     </Avatar>
-    <Button variant="link">
       <Link href="/">EmoteMaker.ai</Link>
     </Button>
   </div>
-        {isPro && (
+        {/* {isPro && ( */}
   <div>
     <Button variant="ghost">
       <Link href="/emotes">Create Emotes</Link>
@@ -53,7 +54,7 @@ export const Navbar = ({
       <Link href="/imagetoprompt">Generate Prompts</Link>
     </Button>
   </div>
-)}
+{/* )} */}
         <div className="flex items-center space-x-2">
         <SignedIn>
   <FreeCounter 

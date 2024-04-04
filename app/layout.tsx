@@ -9,6 +9,7 @@ import { getApiLimitCount } from '@/lib/api-limit'
 import { ModalProvider } from '@/components/ModalProvider'
 import { ToasterProvider } from '@/components/ToasterProvider'
 import { checkSubscription } from '../lib/subscription'
+import { ConvexClientProvider } from '@/providers/canvas/convex-client-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -60,7 +60,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Craft a friendly cartoon robot ${prompt} illustration against a stark white backdrop. Conveying a warm and approachable demeanor, accentuate the robot's distinct robotic features. Embellish with vibrant colors, smooth contours, and playful details to achieve a whimsical and captivating cartoon aesthetic. Capture the essence of a friendly robotic persona, rendered in a visually appealing style suitable for diverse applications. `
+    const finalPrompt = `Craft a friendly cartoon robot ${prompt} emote against a stark white backdrop. Conveying a warm and approachable demeanor, accentuate the robot's distinct robotic features. Embellish with vibrant colors, smooth contours, and playful details to achieve a whimsical and captivating cartoon aesthetic. Capture the essence of a friendly robotic persona, rendered in a visually appealing style suitable for diverse applications. `
 
     const response = await openai.images.generate({
         model: "dall-e-3",

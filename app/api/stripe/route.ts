@@ -46,7 +46,7 @@ export async function GET() {
               name: "EmoteMaker.ai Pro",
               description: "Generate Emotes using a single prompt."
             },
-            unit_amount: 500,
+            unit_amount: 1500,
             recurring: {
               interval: "month"
             }

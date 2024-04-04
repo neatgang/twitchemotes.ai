@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { ArrowRight, Clipboard, Loader, Paperclip, Wand2 } from "lucide-react";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 // Define the structure of a message
 type Message = {
@@ -159,7 +160,7 @@ function ChatContainer() {
                 return <p key={index}>{content.text}</p>;
               } else if (content.type === "image_url") {
                 return (
-                  <img
+                  <Image
                     key={index}
                     src={content.image_url.url}
                     alt={`Uploaded by ${message.role}`}
@@ -196,7 +197,7 @@ function ChatContainer() {
       <div className="p-4">
         {images.map((image, index) => (
           <div key={index} className="relative inline-block">
-            <img
+            <Image
               src={URL.createObjectURL(image)}
               alt={`upload-preview ${index}`}
               className="h-16 w-16 object-cover rounded-lg mr-2"
