@@ -1,8 +1,9 @@
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
 import { checkSubscription } from "@/lib/oldsubscription";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
+import toast from "react-hot-toast";
 
 
 const openai = new OpenAI({
@@ -15,7 +16,7 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { prompt, amount = 1, resolution = "512x512"} = body;
+    const { prompt } = body;
 
 //     type Template = {
 //       value: string;
@@ -45,13 +46,13 @@ export async function POST(
       return new NextResponse("Prompt is required", { status: 400 });
     }
 
-    if (!amount) {
-      return new NextResponse("Amount is required", { status: 400 });
-    }
+    // if (!amount) {
+    //   return new NextResponse("Amount is required", { status: 400 });
+    // }
 
-    if (!resolution) {
-      return new NextResponse("Resolution is required", { status: 400 });
-    }
+    // if (!resolution) {
+    //   return new NextResponse("Resolution is required", { status: 400 });
+    // }
 
     const freeTrial = await checkApiLimit();
     const isPro = await checkSubscription();
@@ -81,8 +82,11 @@ export async function POST(
     
     // Return the response data
     return NextResponse.json(response.data);
+    toast.success("Image generated");
   } catch (error) {
     console.log('[IMAGE_ERROR]', error);
+    toast.error("Internal Error");
     return new NextResponse("Internal Error", { status: 500 });
   }
 };
+
