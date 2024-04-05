@@ -93,7 +93,7 @@ export default function LandingPage() {
         <h2 className="text-2xl font-bold tracking-tighter sm:text-4xl  text-gray-800 dark:text-white pb-6 px-24 py-12">
         🌟 Emote Styles for Every Occasion 🎨
           </h2>
-      <div className="grid grid-cols-5 gap-6 px-6 py-4">
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 px-6 py-4">
 
       <Card className="border shadow-sm rounded-lg">
         <CardHeader className="pb-2">

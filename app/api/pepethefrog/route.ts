@@ -10,6 +10,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+export const maxDuration = 300;
+
 export async function POST(
   req: Request
 ) {
@@ -69,7 +71,6 @@ export async function POST(
         model: "dall-e-3",
         prompt: finalPrompt,
         size: "1024x1024",
-        quality: "standard",
         // n: amount,
         // size: resolution,
       });
@@ -81,8 +82,8 @@ export async function POST(
     }
     
     // Return the response data
-    return NextResponse.json(response.data);
     toast.success("Image generated");
+    return NextResponse.json(response.data);
   } catch (error) {
     console.log('[IMAGE_ERROR]', error);
     toast.error("Internal Error");
