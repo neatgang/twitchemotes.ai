@@ -98,7 +98,8 @@ const PhotoPage = () => {
     try {
       setPhotos([]);
       const response = await axios.post('/api/kawaii', { ...values });
-      const urls = response.data.map((image: { url: string }) => image.url);
+      console.log(response.data);  // Add this line
+      const urls = response.data.map((image: { b64_json: string }) => `data:image/jpeg;base64,${image.b64_json}`);
       setPhotos(urls);
       // Display a success toast message
       toast.success('Emote generated successfully!');
@@ -137,14 +138,20 @@ const removeBackground = async (src: string, index: number) => {
 
 const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
   try {
-    const response = await axios.post('/api/saveemote', {
-      userId: userId,
-      prompt,
-      imageUrl,
+    // First, upload the image
+    const uploadResponse = await axios.post('/api/uploadthing', {
+      fileUrl: imageUrl,
     });
 
-    // Handle the response as needed
-    console.log(response.data);
+    // Then, save the emote with the uploaded image URL
+    const saveResponse = await axios.post('/api/saveemote', {
+      userId: userId,
+      prompt,
+      imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
+    });
+
+    // Handle the responses as needed
+    console.log(uploadResponse.data, saveResponse.data);
     toast.success('Emote saved successfully!');
   } catch (error) {
     console.error('Failed to save emote:', error);
@@ -350,11 +357,11 @@ const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
         {photos.map((src, index) => (
             <Card key={src} className="rounded-lg overflow-hidden">
               <div className="relative aspect-square">
-                <Image
-                  fill
-                  alt="Generated"
-                  src={src}
-                />
+              <Image
+  fill
+  alt="Generated"
+  src={src && src.startsWith('data:image') ? src : `data:image/jpeg;base64,${src}`}
+/>
               </div>
               <CardFooter className="p-2 flex flex-col gap-2">
               <Button onClick={() => removeBackground(src, index)} disabled={isRemovingBackground} className="w-full flex">

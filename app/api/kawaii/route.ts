@@ -61,10 +61,13 @@ export async function POST(
       prompt: finalPrompt,
       size: '1024x1024',
       quality: "standard",
+      response_format: "b64_json"
       // n: amount,
       // size: resolution,
     });
 
+
+    console.log(response.data[0].b64_json);
     console.log(response.data[0].url);
 
     if (!isPro) {
@@ -72,7 +75,7 @@ export async function POST(
     }
     
     // Return the response data
-    return NextResponse.json(response.data);
+    return NextResponse.json(response.data.map(item => item.b64_json));
   } catch (error) {
     console.log('[IMAGE_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });

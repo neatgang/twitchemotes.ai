@@ -40,7 +40,7 @@ export const Navbar = ({
     
     <Button variant="ghost">
     <Avatar className="mr-2">
-      <AvatarImage src="/peepopainter.png"/>
+      <AvatarImage src="/peepopainter.jpg"/>
     </Avatar>
       <Link href="/">EmoteMaker.ai</Link>
     </Button>
