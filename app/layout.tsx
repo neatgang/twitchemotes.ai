@@ -10,6 +10,7 @@ import { ModalProvider } from '@/components/ModalProvider'
 import { ToasterProvider } from '@/components/ToasterProvider'
 import { checkSubscription } from '../lib/subscription'
 import { ConvexClientProvider } from '@/providers/canvas/convex-client-provider'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,8 +34,10 @@ export default async function RootLayout({
           <div className="h-full relative">
             <Navbar isPro={isPro} apiLimitCount={apiLimitCount} />
             <ToasterProvider />
+            <TooltipProvider>
             <ModalProvider />
             {children}
+            </TooltipProvider>
           </div>
         </body>
       </html>
