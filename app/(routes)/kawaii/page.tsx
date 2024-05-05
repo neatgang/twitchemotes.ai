@@ -99,7 +99,8 @@ const PhotoPage = () => {
       setPhotos([]);
       const response = await axios.post('/api/kawaii', { ...values });
       console.log(response.data);  // Add this line
-      const urls = response.data.map((image: { b64_json: string }) => `data:image/jpeg;base64,${image.b64_json}`);
+      // const urls = response.data.map((image: { b64_json: string }) => `data:image/jpeg;base64,${image.b64_json}`);
+      const urls = response.data.map((image: { url: string }) => image.url);
       setPhotos(urls);
       // Display a success toast message
       toast.success('Emote generated successfully!');
@@ -147,7 +148,8 @@ const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
     const saveResponse = await axios.post('/api/saveemote', {
       userId: userId,
       prompt,
-      imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
+      imageUrl,
+      // imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
     });
 
     // Handle the responses as needed
@@ -360,7 +362,8 @@ const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
               <Image
   fill
   alt="Generated"
-  src={src && src.startsWith('data:image') ? src : `data:image/jpeg;base64,${src}`}
+  // src={src && src.startsWith('data:image') ? src : `data:image/jpeg;base64,${src}`}
+  src={src}
 />
               </div>
               <CardFooter className="p-2 flex flex-col gap-2">
