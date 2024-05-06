@@ -36,7 +36,7 @@ export async function POST(
     }
 
     // if (!resolution) {
-    //   return new NextResponse("Resolution is required", { status: 400 });
+  //   return new NextResponse("Resolution is required", { status: 400 });
     // }
 
     if (!emotion) {

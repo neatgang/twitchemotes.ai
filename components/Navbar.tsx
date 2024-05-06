@@ -15,6 +15,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { FreeCounter } from "./FreeCounter";
 import { SubscriptionButton } from "./SubscriptionButton";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { LandingMobileNavbar } from "./LandingMobileNav";
 
 export const Navbar = ({
   apiLimitCount = 0,
@@ -32,48 +33,47 @@ export const Navbar = ({
 //     enabled: isLoggedIn,
 //   });
 
-  return (
-    <header className="dark:bg-gray-900">
-      
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-  <div className="flex items-center">
-    
-    <Button variant="ghost">
-    <Avatar className="mr-2">
-      <AvatarImage src="/peepopainter.jpg"/>
-    </Avatar>
-      <Link href="/">EmoteMaker.ai</Link>
-    </Button>
-  </div>
-        {/* {isPro && ( */}
-  <div>
-    <Button variant="ghost">
-      <Link href="/emotes">Create Emotes</Link>
-    </Button>
-    <Button variant="ghost">
-      <Link href="/imagetoprompt">Generate Prompts</Link>
-    </Button>
-  </div>
-{/* )} */}
-        <div className="flex items-center space-x-2">
+return (
+  <header className="dark:bg-gray-900">
+    <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <nav className="flex items-center justify-center">
+        <LandingMobileNavbar />
+        {/* <div className="sm:hidden"> */}
+        <Button variant="ghost">
+          <Avatar className="mr-2">
+            <AvatarImage src="/peepopainter.jpg"/>
+          </Avatar>
+          <Link href="/">EmoteMaker.ai</Link>
+        </Button>
+        <div className="md:block hidden">
+        <Button variant="link">
+          <Link href="/emotes">Create Emotes</Link>
+        </Button>
+        <Button variant="link">
+          <Link href="/imagetoprompt">Generate Prompts</Link>
+        </Button>
+        </div>
+      </nav>
+      <div className="flex items-center space-x-2">
         <SignedIn>
-  <FreeCounter 
-    apiLimitCount={apiLimitCount} 
-    isPro={isPro}
-  />
-  <UserButton 
-    afterSignOutUrl="/"
-  />
-</SignedIn>
-<SignedOut>
-  <Button variant="ghost">
-    <Link href="/sign-in">Login</Link>
-  </Button>
-</SignedOut>
+          <FreeCounter 
+            apiLimitCount={apiLimitCount} 
+            isPro={isPro}
+          />
+          <UserButton 
+            afterSignOutUrl="/"
+
+          />
+        </SignedIn>
+        <SignedOut>
+          <Button variant="ghost">
+            <Link href="/sign-in">Login</Link>
+          </Button>
+        </SignedOut>
       </div>
-      </div>
-    </header>
-  );
+    </div>
+  </header>
+);
 }
 
 export default Navbar;
