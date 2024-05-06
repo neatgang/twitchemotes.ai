@@ -60,7 +60,7 @@ export async function POST(
       return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     }
 
-    const finalPrompt = `Design a bold and vibrant text-based icon featuring the word or phrase '${prompt}' in an ultra-bold font. The design should emphasize clarity and visual impact, making the word stand out against a solid white background. Opt for bright colors and a playful font style to convey a lighthearted, ironic tone. The goal is simplicity and high visibility, ensuring the text is effective and recognizable at a glance. The background of the emote should be solid white, ensuring it stands out and remains visually clear on various backgrounds. The style should be playful and engaging, with a distinct and cohesive appearance, perfect for enhancing the visual appeal.`
+    const finalPrompt = `Design a bold and vibrant text-based icon featuring the word or phrase '${prompt}' in an ultra-bold, sans-serif font. Emphasize clarity and visual impact, making the word stand out against a solid white background. Opt for a single bright color for the text to ensure it is highly visible and readable at smaller sizes. The background should be solid white, enhancing the text’s visibility against various backgrounds. Avoid additional decorative elements to maintain simplicity and effectiveness, perfect for Twitch emotes.    `
 
     const response = await openai.images.generate({
         model: "dall-e-3",

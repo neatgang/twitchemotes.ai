@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, ImageIcon, Wand, Wand2 } from "lucide-react";
+import { AppWindow, Download, File, ImageIcon, Paintbrush2, RemoveFormatting, SaveAll, SprayCan, Wand, Wand2, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 // import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -31,6 +31,8 @@ import { FileUpload } from "@/components/FileUpload";
 import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import toast from "react-hot-toast";
+import { auth, useAuth } from "@clerk/nextjs";
 
 const demophotos = [
   {
@@ -67,11 +69,6 @@ const demophotos = [
 },
 ];
 
-export const metadata: Metadata = {
-  title: 'EmoteMaker.ai',
-  description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
-}
-
 
 // const demophotos = ["/foxemote1.png"]; // Add more image paths as needed
 
@@ -81,6 +78,7 @@ const PhotoPage = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState("Face");
+  const { userId } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,6 +86,8 @@ const PhotoPage = () => {
       prompt: "",
       amount: "1",
       resolution: "512x512",
+      // emotion: "",
+      // additionalAttributes: "",
       // style: "",
     }
   });
@@ -97,30 +97,70 @@ const PhotoPage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setPhotos([]);
-  
-      let finalPrompt = "";
-  
-      switch (selectedTab) {
-        case "Face":
-          finalPrompt = `Design a vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel, centered in the image with a solid white background. The emote should depict a single emotion from ${values.prompt}, ensuring it is expressive and visible at a small scale. It should feature exaggerated facial features appropriate for the emotion being conveyed, like excitement or surprise. The style should be playful and friendly, with a distinct, cohesive look.`;
-          break;
-        case "Text":
-          finalPrompt = `Create a dynamic text design in an anime style for a Twitch stream, incorporating the phrase '${values.prompt}'. The design should feature bold, clean lines and vibrant colors, with elements like speed lines or explosive backgrounds typical of anime. The text should be stylized to match the energetic and dramatic flair of anime art.`
-          break;
-        case "Object":
-          finalPrompt = `Design a dynamic icon in an anime style for Twitch, featuring the concept '${values.prompt}'. The icon should embrace the vibrant and dynamic essence of anime, with bold, clean lines and bright, eye-catching colors. Incorporate elements characteristic of anime, such as dramatic speed lines, explosive effects, or stylized motion blur to convey energy and movement. The overall design should reflect the high-energy and drama typical of anime, making it visually striking and instantly recognizable. This icon should capture the essence of the specified concept in a way that resonates with the spirited and expressive world of anime.`
-          break;
-      }
-  
-      const response = await axios.post('/api/dalle', { ...values, finalPrompt });
-  
+      const response = await axios.post('/api/meme', { ...values });
+      console.log(response.data);  // Add this line
+      // const urls = response.data.map((image: { b64_json: string }) => `data:image/jpeg;base64,${image.b64_json}`);
       const urls = response.data.map((image: { url: string }) => image.url);
-  
       setPhotos(urls);
+      // Display a success toast message
+      toast.success('Emote generated successfully!');
     } catch (error: any) {
-      // Handle error
+      // Display an error toast message
+      toast.error('Failed to generate emote. Please try again.');
+      console.error(error);
     }
   }
+
+  const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+
+const removeBackground = async (src: string, index: number) => {
+  try {
+    setIsRemovingBackground(true); // Start loading
+    const response = await axios.post('/api/replicate/bg-remove', { image: src });
+    const newImageUrl = response.data; // Assuming the server returns a plain URL string
+
+    if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
+      setPhotos((currentPhotos) => {
+        const updatedPhotos = [...currentPhotos];
+        updatedPhotos[index] = newImageUrl;
+        return updatedPhotos;
+      });
+      toast.success('Background removed successfully!');
+    } else {
+      toast.error('Unexpected response from server. Please try again.');
+    }
+  } catch (error) {
+    console.error('Failed to remove background:', error);
+    toast.error('Failed to remove background. Please try again.');
+  } finally {
+    setIsRemovingBackground(false); // End loading
+  }
+};
+
+const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+  try {
+    // First, upload the image
+    const uploadResponse = await axios.post('/api/uploadthing', {
+      fileUrl: imageUrl,
+    });
+
+    // Then, save the emote with the uploaded image URL
+    const saveResponse = await axios.post('/api/saveemote', {
+      userId: userId,
+      prompt,
+      imageUrl,
+      // imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
+    });
+
+    // Handle the responses as needed
+    console.log(uploadResponse.data, saveResponse.data);
+    toast.success('Emote saved successfully!');
+  } catch (error) {
+    console.error('Failed to save emote:', error);
+    toast.error('Failed to save emote. Please try again.');
+  }
+};
+
 
   return ( 
     <div className="flex flex-col items-center mt-12">
@@ -133,7 +173,7 @@ const PhotoPage = () => {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn your prompt into an emote.
+            Turn your prompt into a Meme emote.
           </p>
         </div>
       </div>
@@ -168,26 +208,61 @@ const PhotoPage = () => {
         md:px-6 
         focus-within:shadow-sm
         grid
-        grid-cols-12
+        grid-cols-1
         gap-2
       "
     >
-            <FormField
-              name="prompt"
-              render={({ field }) => (
-                <FormItem className="col-span-8 lg:col-span-6">
-                  <FormControl className="m-0 p-0">
-                    <Input
-                      className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
-                      disabled={isLoading} 
-                      placeholder="A happy frog" 
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button className="col-start-11 col-span-2 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
+  <FormField
+  name="prompt"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>What would you like to see?</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="A space invader" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/>
+{/* <FormField
+  name="emotion"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>Enter Emotion</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="Happy" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/>
+<FormField
+  name="additionalAttributes"
+  render={({ field }) => (
+    <FormItem className="col-span-12">
+      <FormLabel>Add Additional Attributes</FormLabel>
+      <FormControl className="m-0 p-0">
+        <Input
+          className="w-full border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+          disabled={isLoading} 
+          placeholder="Sunglasses" 
+          {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+/> */}
+<Button className="col-span-12 w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
+  
+  <p className="mr-2">Generate</p>
   <Wand2 />
 </Button>
           </form>
@@ -281,27 +356,42 @@ const PhotoPage = () => {
         )}
         <div className="gap-4 mt-8 mb-8">
         {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 */}
-          {photos.map((src) => (
+        {photos.map((src, index) => (
             <Card key={src} className="rounded-lg overflow-hidden">
               <div className="relative aspect-square">
-                <Image
-                  fill
-                  alt="Generated"
-                  src={src}
-                />
+              <Image
+  fill
+  alt="Generated"
+  // src={src && src.startsWith('data:image') ? src : `data:image/jpeg;base64,${src}`}
+  src={src}
+/>
               </div>
-              <CardFooter className="p-2">
+              <CardFooter className="p-2 flex flex-col gap-2">
+              <Button onClick={() => removeBackground(src, index)} disabled={isRemovingBackground} className="w-full flex">
+  {isRemovingBackground ? (
+    <Loader /> // Replace with your actual loading spinner component
+  ) : (
+    <>
+      <Paintbrush2 className="h-4 w-4 mr-2" />
+      Remove Background
+    </>
+  )}
+</Button>
                 <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
+                <Button onClick={() => handleSave(src, form.getValues().prompt, userId || '')} variant="secondary" className="w-full">
+  <SaveAll className="h-4 w-4 mr-2" />
+  Save
+</Button>
               </CardFooter>
             </Card>
           ))}
         </div>
         
       </div>
-      <div className="justify-center">
+      {/* <div className="justify-center">
   <h2 className="text-1xl font-bold mb-2">
     Here are some examples of what you can generate:
   </h2>
@@ -317,7 +407,7 @@ const PhotoPage = () => {
     />
   </Card>
 ))}
-</div>
+</div> */}
     </div>
 
    );

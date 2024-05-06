@@ -165,6 +165,8 @@ function ChatContainer() {
                     src={content.image_url.url}
                     alt={`Uploaded by ${message.role}`}
                     className="h-16 w-16 object-cover rounded-lg"
+                    width={64}
+                    height={64}
                   />
                 );
               }
@@ -201,6 +203,8 @@ function ChatContainer() {
               src={URL.createObjectURL(image)}
               alt={`upload-preview ${index}`}
               className="h-16 w-16 object-cover rounded-lg mr-2"
+              width={64}
+              height={64}
             />
             <button
               onClick={() => removeImage(index)}

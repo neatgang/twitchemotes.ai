@@ -157,7 +157,7 @@ export default function LandingPage() {
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage alt="Laughing Emote" src="/placeholder.svg?height=64&width=64" />
+            <AvatarImage alt="BOZO!" src="/textbased.png" />
             <AvatarFallback>TB</AvatarFallback>
           </Avatar>
           <Button className="ml-2" variant="outline">
@@ -171,7 +171,7 @@ export default function LandingPage() {
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage alt="Laughing Emote" src="/placeholder.svg?height=64&width=64" />
+            <AvatarImage alt="Laughing Emote" src="/3dbasketball.png" />
             <AvatarFallback>3D</AvatarFallback>
           </Avatar>
           <Button className="ml-2" variant="outline">
@@ -181,7 +181,7 @@ export default function LandingPage() {
       </Card>
       <Card className="border shadow-sm rounded-lg">
         <CardHeader className="pb-2">
-          <CardTitle className="font-semibold text-lg">Pepe the Frog Based Emotes</CardTitle>
+          <CardTitle className="font-semibold text-lg">Pepe Based Emotes</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
@@ -199,7 +199,7 @@ export default function LandingPage() {
         </CardHeader>
         <CardContent className="flex justify-between items-center">
           <Avatar className="w-16 h-16">
-            <AvatarImage alt="Laughing Emote" src="/placeholder.svg?height=64&width=64" />
+            <AvatarImage alt="Laughing Emote" src="/turtlesticker.png" />
             <AvatarFallback>S</AvatarFallback>
           </Avatar>
           <Button className="ml-2" variant="outline">
@@ -208,6 +208,34 @@ export default function LandingPage() {
         </CardContent>
       </Card>
       <Card className="border shadow-sm rounded-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="font-semibold text-lg">Chibi Emotes</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-between items-center">
+          <Avatar className="w-16 h-16">
+            <AvatarImage alt="Chibi Emote" src="/chibi1.png" />
+            <AvatarFallback>S</AvatarFallback>
+          </Avatar>
+          <Button className="ml-2" variant="outline">
+            <Link href="/chibi">Use</Link>
+          </Button>
+        </CardContent>
+      </Card>
+      <Card className="border shadow-sm rounded-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="font-semibold text-lg">Meme Emotes</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-between items-center">
+          <Avatar className="w-16 h-16">
+            <AvatarImage alt="Meme Emote" src="/meme.png" />
+            <AvatarFallback>S</AvatarFallback>
+          </Avatar>
+          <Button className="ml-2" variant="outline">
+            <Link href="/meme">Use</Link>
+          </Button>
+        </CardContent>
+      </Card>
+      {/* <Card className="border shadow-sm rounded-lg">
         <CardHeader className="pb-2">
           <CardTitle className="font-semibold text-lg">Text Based Emotes</CardTitle>
         </CardHeader>
@@ -220,7 +248,7 @@ export default function LandingPage() {
             <Link href="/textbased">Use</Link>
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
     </div>
 

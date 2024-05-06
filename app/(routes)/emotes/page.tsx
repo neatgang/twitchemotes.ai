@@ -1,6 +1,7 @@
 import EmoteListing from "@/components/emotes/EmoteListing";
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Metadata } from "next";
 import Image from "next/image"
 import Link from "next/link"
 
@@ -39,6 +40,11 @@ const demophotos = [
 },
 
 ]; 
+
+export const metadata: Metadata = {
+  title: 'EmoteMaker.ai',
+  description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
+}
 
 export default function LandingPage() {
   return (
