@@ -31,6 +31,7 @@ import { FileUpload } from "@/components/FileUpload";
 import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Metadata } from "next";
 
 const demophotos = [
   {
@@ -66,12 +67,6 @@ const demophotos = [
   image: "/gamercat.png",
 },
 ];
-
-export const metadata: Metadata = {
-  title: 'EmoteMaker.ai',
-  description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
-}
-
 
 // const demophotos = ["/foxemote1.png"]; // Add more image paths as needed
 
