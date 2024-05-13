@@ -34,8 +34,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <Script async src="//cdn.trackdesk.com/tracking.js" />
-        <Script
+        <head>
+         <Script async src="//cdn.trackdesk.com/tracking.js" />
+          <Script
           id="trackdesk-script"
           dangerouslySetInnerHTML={{
             __html: `
@@ -44,6 +45,7 @@ export default async function RootLayout({
             `,
           }}
         />
+        </head>
         <body className={inter.className}>
           <div className="h-full relative">
             <Navbar isPro={isPro} apiLimitCount={apiLimitCount} />
