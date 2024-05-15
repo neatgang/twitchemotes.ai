@@ -1,7 +1,7 @@
 import { checkSubscription } from "@/lib/subscription";
-// import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
+import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
 
-// import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 
@@ -17,14 +17,14 @@ export async function POST(
   req: Request
 ) {
   try {
-    // const { userId } = auth();
+    const { userId } = auth();
     const body = await req.json();
     const { prompt, amount = 1 } = body;
 
 
-    // if (!userId) {
-    //   return new NextResponse("Unauthorized", { status: 401 });
-    // }
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     if (!openai.apiKey) {
       return new NextResponse("OpenAI API Key not configured.", { status: 500 });
@@ -50,12 +50,12 @@ export async function POST(
     //   return new NextResponse("Additional Attributes are required", { status: 400 });
     // }
 
-    // const freeTrial = await checkApiLimit();
-    // const isPro = await checkSubscription();
+    const freeTrial = await checkApiLimit();
+    const isPro = await checkSubscription();
 
-    // if (!freeTrial && !isPro) {
-    //   return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
-    // }
+    if (!freeTrial && !isPro) {
+      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    }
 
     const finalPrompt = `Design a chibi-style Twitch emote featuring '${prompt}'. Emphasize the playful and adorable aspects of the design using exaggerated proportions—large heads and small bodies—and vibrant colors. Ensure the emote maintains clarity and expressiveness at smaller sizes for optimal visibility in Twitch chat.`
 
