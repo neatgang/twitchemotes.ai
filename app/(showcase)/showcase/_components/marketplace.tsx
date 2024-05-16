@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { EmoteForSale } from "@prisma/client";
@@ -13,9 +15,9 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
         <header className="mb-8 md:mb-12">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h1 className="text-2xl font-bold md:text-3xl">Emote Marketplace</h1>
+              <h1 className="text-2xl font-bold md:text-3xl">Emote Showcase</h1>
               <p className="text-gray-500 dark:text-gray-400">
-                Browse and purchase unique emotes created by other users.
+                Browse unique emotes created by other users.
               </p>
             </div>
             <Button variant="outline">
@@ -46,10 +48,10 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
     {/* <p className="text-xs text-gray-500 dark:text-gray-400">By: {emote.userId}</p> */}
     {/* <p className="text-sm font-bold mt-2">${emote.price}</p> */}
   </div>
-  <Button className="mt-2 w-full flex" variant="outline">
-    <ShoppingCartIcon className="mr-2 h-4 w-4" />
-    Purchase
-  </Button>
+    <Button onClick={() => window.open(emote.imageUrl || '')} className="mt-2 w-full flex" variant="outline">
+  <ShoppingCartIcon className="mr-2 h-4 w-4" />
+  Download
+</Button>
 </CardFooter>
             </Card>
           ))}
