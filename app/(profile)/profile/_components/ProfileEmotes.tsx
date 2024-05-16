@@ -2,9 +2,9 @@
 
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
-import { Emote } from "@prisma/client";
+import { Emote, EmoteForSale } from "@prisma/client";
 import axios from "axios";
-import { CoinsIcon, Download } from "lucide-react";
+import { CoinsIcon, Download, HomeIcon, List, ListPlus, ListTodo, Settings2Icon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 interface ProfileEmotesProps {
-    emotes: Emote[];
+    emotes: (Emote & { EmoteForSale?: EmoteForSale | null })[];
   }
 
   export default function ProfileEmotes({ emotes }: ProfileEmotesProps) {
@@ -76,10 +76,17 @@ interface ProfileEmotesProps {
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
+                {!emote.EmoteForSale ? (
                 <Button onClick={() => sellEmote(emote.id)} variant="default" className="w-full mt-2">
-                <CoinsIcon className="h-4 w-4 mr-2" />
-          Sell Emote
+                <ListPlus className="h-4 w-4 mr-2" />
+          List Emote
         </Button>
+        ) : (
+            <Button onClick={() => router.push(`/profile/list/${emote.id}`)} variant="default" className="w-full mt-2">
+            <Settings2Icon className="h-4 w-4 mr-2" />
+            Edit Listing
+          </Button>
+        )}
                 </div>
                  </div>
             </CardFooter>

@@ -10,6 +10,9 @@ const ProfilePage = async () => {
     where: {
       userId: userId,
     },
+    include: {
+        EmoteForSale: true,
+    },
     orderBy: {
       createdAt: "desc",
     }
@@ -18,7 +21,7 @@ const ProfilePage = async () => {
 
     return (
         <>
-            <ProfileEmotes emotes={emotes}/>
+            <ProfileEmotes emotes={emotes} />
         </>
     )
 }

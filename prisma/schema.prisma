@@ -66,18 +66,31 @@ model Emote {
   @@index([userId], name: "userId")
 }
 
+enum EmoteStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum EmoteType {
+  FREE
+  PREMIUM
+}
+
 model EmoteForSale {
-  id             String   @id @default(cuid())
-  emoteId        String   @unique
-  imageUrl       String   @db.Text
-  watermarkedUrl String?  @db.Text
+  id             String      @id @default(cuid())
+  emoteId        String      @unique
+  imageUrl       String      @db.Text
+  watermarkedUrl String?     @db.Text
   prompt         String
   price          Float?
   style          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  status         EmoteStatus @default(DRAFT)
+  type           EmoteType   @default(FREE)
 
-  emote Emote @relation(fields: [emoteId], references: [id])
+  emote    Emote      @relation(fields: [emoteId], references: [id])
+  Purchase Purchase[]
 }
 
 // model VerificationToken {
@@ -107,4 +120,16 @@ model UserSubscription {
   updatedAt              DateTime? @updatedAt
   name                   String?
   email                  String?
+}
+
+model Purchase {
+  id              String   @id @default(cuid())
+  userId          String
+  emoteForSaleId  String
+  paymentIntentId String
+  createdAt       DateTime @default(now())
+
+  emoteForSale EmoteForSale @relation(fields: [emoteForSaleId], references: [id])
+
+  @@index([emoteForSaleId])
 }

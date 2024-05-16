@@ -20,7 +20,7 @@ const emotes = await db.emote.findMany({
 
     return (
         <>
-            <ListEmote />
+            {/* <ListEmote /> */}
         </>
     )
 }
