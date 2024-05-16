@@ -54,7 +54,7 @@ return (
           <Link href="/imagetoprompt">Generate Prompts</Link>
         </Button>
         <Button variant="ghost">
-          <Link href="/marketplace">View Marketplace</Link>
+          <Link href="/showcase">Showcase</Link>
         </Button>
         </div>
       </nav>

@@ -24,7 +24,7 @@ interface ProfileEmotesProps {
         setIsLoading(true);
         await axios.post('/api/sell-emote', { emoteId });
         toast.success("Emote listed");
-        router.push("/marketplace");
+        router.push("/showcase");
       } catch {
         toast.error("Something went wrong");
       } finally {
