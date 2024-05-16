@@ -14,7 +14,7 @@ type Emote = {
 
 const EmoteShowcase = async () => {
 
-  const emotes = await getEmotes();
+  // const emotes = await getEmotes();
 
   return (
     <div className="flex flex-col items-center space-y-4 text-center mt-8">
@@ -22,19 +22,19 @@ const EmoteShowcase = async () => {
             Emote Showcase!
         </h2>
     <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 mt-4">
-      {emotes.map((emote) => (
+      {/* {emotes.map((emote) => (
         <EmoteCard
           key={emote.id}
           id={emote.id}
           imageUrl={emote.imageUrl || ""}
           prompt={emote.prompt}
         />
-      ))}
-      {emotes.length === 0 && (
+      ))} */}
+      {/* {emotes.length === 0 && (
         <div className="text-center text-sm text-muted-foreground mt-10 items-center">
           No emotes found
         </div>
-      )}
+      )} */}
     </div>
     </div>
   );
