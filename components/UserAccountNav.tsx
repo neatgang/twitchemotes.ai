@@ -60,7 +60,7 @@ export const UserAccountNav = ({
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href='https://discord.gg/sVPGxbnM'>Join our Discord</Link>
+          <Link href='https://discord.gg/GSKRnD4hB6'>Join our Discord</Link>
         </DropdownMenuItem>
         
         <DropdownMenuItem asChild>
