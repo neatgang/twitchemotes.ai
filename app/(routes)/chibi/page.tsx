@@ -137,23 +137,41 @@ const removeBackground = async (src: string, index: number) => {
   }
 };
 
+// const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+//   try {
+//     // First, upload the image
+//     const uploadResponse = await axios.post('/api/uploadthing', {
+//       fileUrl: imageUrl,
+//     });
+
+//     // Then, save the emote with the uploaded image URL
+//     const saveResponse = await axios.post('/api/saveemote', {
+//       userId: userId,
+//       prompt,
+//       imageUrl,
+//       // imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
+//     });
+
+//     // Handle the responses as needed
+//     console.log(uploadResponse.data, saveResponse.data);
+//     toast.success('Emote saved successfully!');
+//   } catch (error) {
+//     console.error('Failed to save emote:', error);
+//     toast.error('Failed to save emote. Please try again.');
+//   }
+// };
+
 const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
   try {
-    // First, upload the image
-    const uploadResponse = await axios.post('/api/uploadthing', {
-      fileUrl: imageUrl,
-    });
-
     // Then, save the emote with the uploaded image URL
     const saveResponse = await axios.post('/api/saveemote', {
       userId: userId,
       prompt,
       imageUrl,
-      // imageUrl: uploadResponse.data.fileUrl, // Use the uploaded image URL
     });
 
     // Handle the responses as needed
-    console.log(uploadResponse.data, saveResponse.data);
+    console.log(saveResponse.data);
     toast.success('Emote saved successfully!');
   } catch (error) {
     console.error('Failed to save emote:', error);
