@@ -21,8 +21,6 @@ export const metadata: Metadata = {
   description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
 }
 
-
-
 export default async function RootLayout({
   children,
 }: {

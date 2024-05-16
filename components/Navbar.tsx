@@ -40,18 +40,21 @@ return (
       <nav className="flex items-center justify-center">
         <LandingMobileNavbar />
         {/* <div className="sm:hidden"> */}
-        <Button variant="ghost">
+        <Button variant="link">
           <Avatar className="mr-2">
             <AvatarImage src="/peepopainter.jpg"/>
           </Avatar>
           <Link href="/">EmoteMaker.ai</Link>
         </Button>
         <div className="md:block hidden">
-        <Button variant="link">
+        <Button variant="ghost">
           <Link href="/emotes">Create Emotes</Link>
         </Button>
-        <Button variant="link">
+        <Button variant="ghost">
           <Link href="/imagetoprompt">Generate Prompts</Link>
+        </Button>
+        <Button variant="ghost">
+          <Link href="/marketplace">View Marketplace</Link>
         </Button>
         </div>
       </nav>

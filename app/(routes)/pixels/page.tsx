@@ -69,9 +69,7 @@ const demophotos = [
 },
 ];
 
-
 // const demophotos = ["/foxemote1.png"]; // Add more image paths as needed
-
 
 const PhotoPage = () => {
 //   const proModal = useProModal();

@@ -2,11 +2,11 @@ import { auth } from "@clerk/nextjs"
 import ProfileEmotes from "./_components/ProfileEmotes"
 import { db } from "@/lib/db";
 
-const PhotoPage = async () => {
+const ProfilePage = async () => {
 
-const { userId } = auth();
+    const { userId } = auth();
 
-const emotes = await db.emote.findMany({
+    const emotes = await db.emote.findMany({
     where: {
       userId: userId,
     },
@@ -23,4 +23,4 @@ const emotes = await db.emote.findMany({
     )
 }
 
-export default PhotoPage
+export default ProfilePage

@@ -3,15 +3,36 @@
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { Emote } from "@prisma/client";
-import { Download } from "lucide-react";
+import axios from "axios";
+import { CoinsIcon, Download } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface ProfileEmotesProps {
     emotes: Emote[];
   }
 
-export default function ProfileEmotes({ emotes }: ProfileEmotesProps) {
+  export default function ProfileEmotes({ emotes }: ProfileEmotesProps) {
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+  
+    const sellEmote = async (emoteId: string) => {
+      try {
+        setIsLoading(true);
+        await axios.post('/api/sell-emote', { emoteId });
+        toast.success("Emote listed");
+        router.push("/marketplace");
+      } catch {
+        toast.error("Something went wrong");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -55,6 +76,10 @@ export default function ProfileEmotes({ emotes }: ProfileEmotesProps) {
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
+                <Button onClick={() => sellEmote(emote.id)} variant="default" className="w-full mt-2">
+                <CoinsIcon className="h-4 w-4 mr-2" />
+          Sell Emote
+        </Button>
                 </div>
                  </div>
             </CardFooter>
