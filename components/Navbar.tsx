@@ -16,6 +16,7 @@ import { FreeCounter } from "./FreeCounter";
 import { SubscriptionButton } from "./SubscriptionButton";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LandingMobileNavbar } from "./LandingMobileNav";
+import { UserAccountNav } from "./UserAccountNav";
 
 export const Navbar = ({
   apiLimitCount = 0,
@@ -60,10 +61,11 @@ return (
             apiLimitCount={apiLimitCount} 
             isPro={isPro}
           />
-          <UserButton 
+          {/* <UserButton 
             afterSignOutUrl="/"
 
-          />
+          /> */}
+          <UserAccountNav isPro={isPro}/>
         </SignedIn>
         <SignedOut>
           <Button variant="ghost">

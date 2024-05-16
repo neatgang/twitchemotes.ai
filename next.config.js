@@ -8,6 +8,7 @@ const nextConfig = {
       "oaidalleapiprodscus.blob.core.windows.net",
       "utfs.io",
       "pprcanvas.s3.amazonaws.com",
+      "img.clerk.com",
     ],
     remotePatterns: [
       {
