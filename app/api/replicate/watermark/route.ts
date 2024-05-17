@@ -1,4 +1,4 @@
-import { addWatermark } from '@/lib/Watermark';
+import { addWatermark } from '@/lib/watermark';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
