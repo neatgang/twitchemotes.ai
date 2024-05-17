@@ -6,6 +6,8 @@ import { db } from "./db";
 
 const MAX_FREE_COUNTS = 5;
 
+export const runtime = "edge"
+
 export const incrementApiLimit = async () => {
   const { userId } = auth();
   
