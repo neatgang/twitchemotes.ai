@@ -8,7 +8,7 @@ import { MessageCircle } from 'lucide-react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { User } from '@prisma/client'
 import { UserAvatar } from './UserAvatar'
-import { useUser } from '@clerk/nextjs'
+import { useClerk, useUser } from '@clerk/nextjs'
 import { SubscriptionButton } from './SubscriptionButton'
 
 // interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -26,6 +26,7 @@ export const UserAccountNav = ({
   }) => {
 
     const { user } = useUser();
+      const { signOut } = useClerk();
 
   return (
     <DropdownMenu>
@@ -68,17 +69,12 @@ export const UserAccountNav = ({
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        {/* <DropdownMenuItem
+        <DropdownMenuItem
           className='cursor-pointer'
-        //   onSelect={(event) => {
-        //     event.preventDefault()
-        //     signOut({
-        //       callbackUrl: `${window.location.origin}/sign-in`,
-        //     })
-        //   }}
-          >
+          onClick={() => signOut()}
+        >
           Sign out
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
