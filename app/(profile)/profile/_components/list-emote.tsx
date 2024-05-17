@@ -1,3 +1,5 @@
+"use client"
+
 
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -6,12 +8,31 @@ import { Button } from "@/components/ui/button"
 import { CardContent, Card } from "@/components/ui/card"
 import { EmoteForSale } from "@prisma/client"
 import Image from "next/image"
+import { useState } from "react"
+import axios from "axios"
+import toast from "react-hot-toast"
 
 interface ListEmoteProps {
   emotesForSale: EmoteForSale | null;
 }
 
 export default function ListEmote({ emotesForSale }: ListEmoteProps) {
+
+  const [watermarkedUrl, setWatermarkedUrl] = useState('');
+
+  const handleWatermark = async () => {
+  try {
+    const response = await axios.post('/api/replicate/watermark', {
+      image: emotesForSale?.imageUrl,
+    });
+    setWatermarkedUrl(response.data.output);
+    toast.success('Watermark added successfully!');
+  } catch (error) {
+    console.error('Failed to add watermark:', error);
+    toast.error('Failed to add watermark. Please try again.');
+  }
+};
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -49,10 +70,20 @@ export default function ListEmote({ emotesForSale }: ListEmoteProps) {
   {/* Rest of your code */}
 
             </div>
-            {/* <div className="grid gap-2">
-              <Label htmlFor="watermarkedUrl">Watermarked URL</Label>
-              <Input id="watermarkedUrl" placeholder="Enter the watermarked URL (optional)" type="text" />
-            </div> */}
+            <div className="grid gap-2">
+  <Label htmlFor="watermarkedUrl">Watermarked URL</Label>
+  <div className="flex items-center space-x-2">
+    <Input
+      id="watermarkedUrl"
+      value={watermarkedUrl}
+      readOnly
+      placeholder="Watermarked URL will appear here"
+    />
+    <Button onClick={handleWatermark} disabled={!emotesForSale?.imageUrl}>
+      Add Watermark
+    </Button>
+  </div>
+</div>
             <div className="grid gap-2">
               <Label htmlFor="prompt">Prompt</Label>
               <p>{emotesForSale?.prompt}</p>
