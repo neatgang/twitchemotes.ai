@@ -53,39 +53,39 @@ export async function GET() {
           },
           quantity: 1,
         },
-        {
-          price_data: {
-            currency: "USD",
-            product_data: {
-              name: "Starter Package",
-              description: "10 credits for generating emotes."
-            },
-            unit_amount: 100,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: "USD",
-            product_data: {
-              name: "Basic Package",
-              description: "50 credits for generating emotes."
-            },
-            unit_amount: 400,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: "USD",
-            product_data: {
-              name: "Pro Package",
-              description: "100 credits for generating emotes."
-            },
-            unit_amount: 700,
-          },
-          quantity: 1,
-        },
+        // {
+        //   price_data: {
+        //     currency: "USD",
+        //     product_data: {
+        //       name: "Starter Package",
+        //       description: "10 credits for generating emotes."
+        //     },
+        //     unit_amount: 100,
+        //   },
+        //   quantity: 1,
+        // },
+        // {
+        //   price_data: {
+        //     currency: "USD",
+        //     product_data: {
+        //       name: "Basic Package",
+        //       description: "50 credits for generating emotes."
+        //     },
+        //     unit_amount: 400,
+        //   },
+        //   quantity: 1,
+        // },
+        // {
+        //   price_data: {
+        //     currency: "USD",
+        //     product_data: {
+        //       name: "Pro Package",
+        //       description: "100 credits for generating emotes."
+        //     },
+        //     unit_amount: 700,
+        //   },
+        //   quantity: 1,
+        // },
       ],
       metadata: {
         userId,
