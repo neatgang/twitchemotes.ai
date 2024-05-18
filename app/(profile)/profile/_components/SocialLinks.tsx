@@ -28,12 +28,12 @@ export const SocialLinksCard = ({ profile, userId }: ProfileCardProps) => {
   const form = useForm({
     resolver: zodResolver(socialLinksSchema),
     defaultValues: {
-      twitch: profile.twitch || '',
+      twitch: profile?.twitch || '',
       // username: profile?.name || '',
       // bio: profile?.bio || '',
-      youtube: profile.youtube || '',
-      instagram: profile.instagram || '',
-      twitter: profile.twitter || '',
+      youtube: profile?.youtube || '',
+      instagram: profile?.instagram || '',
+      twitter: profile?.twitter || '',
     }
   });
 
