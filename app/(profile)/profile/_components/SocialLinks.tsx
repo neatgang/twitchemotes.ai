@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TwitchIcon, YoutubeIcon, InstagramIcon, TwitterIcon } from 'lucide-react';
+import { Profile } from '@prisma/client';
 
 const socialLinksSchema = z.object({
   twitch: z.string().optional(),
@@ -18,14 +19,21 @@ const socialLinksSchema = z.object({
   twitter: z.string().optional(),
 });
 
-export const SocialLinksCard = ({ userId }: { userId: string }) => {
+interface ProfileCardProps {
+  userId: string,
+  profile: Profile | null;
+}
+
+export const SocialLinksCard = ({ profile, userId }: ProfileCardProps) => {
   const form = useForm({
     resolver: zodResolver(socialLinksSchema),
     defaultValues: {
-      twitch: '',
-      youtube: '',
-      instagram: '',
-      twitter: '',
+      twitch: profile.twitch || '',
+      // username: profile?.name || '',
+      // bio: profile?.bio || '',
+      youtube: profile.youtube || '',
+      instagram: profile.instagram || '',
+      twitter: profile.twitter || '',
     }
   });
 
