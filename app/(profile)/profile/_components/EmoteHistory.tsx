@@ -38,7 +38,7 @@ export const EmoteHistoryCard = ({ emotes }: EmoteHistoryProps) => {
         <CardDescription>View and manage your generated emotes.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-4">
           {emotes.map((emote) => (
             <div key={emote.id} onClick={() => setSelectedEmote(emote)} className="cursor-pointer">
               <Image

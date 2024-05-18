@@ -43,7 +43,7 @@ const ProfilePage = async () => {
             <ProfileCard profile={profile} userId={userId!}/>
           </div>
           <div>
-            <SocialLinksCard />
+            <SocialLinksCard userId={userId!}/>
           </div>
         </div>
         <div className="py-4">
