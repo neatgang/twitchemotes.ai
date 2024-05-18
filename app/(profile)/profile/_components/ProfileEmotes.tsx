@@ -10,6 +10,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { ProfileCard } from "./ProfileCard";
+import { SocialLinksCard } from "./SocialLinks";
 
 interface ProfileEmotesProps {
     emotes: (Emote & { EmoteForSale?: EmoteForSale | null })[];
@@ -49,7 +51,9 @@ interface ProfileEmotesProps {
           </Link>
         </div>
       </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <ProfileCard />
+            <SocialLinksCard />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
         {emotes.map((emote) => (
           <Card key={emote.id} className="group">
             <CardContent className="flex flex-col items-center justify-center p-6 aspect-square">
