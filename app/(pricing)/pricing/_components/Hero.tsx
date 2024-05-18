@@ -24,17 +24,41 @@ export const PricingHero = ({
 
     const [loading, setLoading] = useState(false);
 
-    const basicClick = async () => {
+    const onBasicSubscribe = async () => {
         try {
           setLoading(true);
       
-          const response = await axios.get("/api/stripe", {
-            params: {
-              isPro,
-            },
-          });
+          const response = await axios.get("/api/stripe/subscriptions/basic")
+      
+          window.location.href = response.data.url;
+        } catch (error) {
+            console.log(error)
+          toast.error("Something went wrong");
+        } finally {
+          setLoading(false);
+        }
+      };
 
+      const onStandardSubscribe = async () => {
+        try {
+          setLoading(true);
+      
+          const response = await axios.get("/api/stripe/subscriptions/standard")
+      
+          window.location.href = response.data.url;
+        } catch (error) {
+            console.log(error)
+          toast.error("Something went wrong");
+        } finally {
+          setLoading(false);
+        }
+      };
 
+      const onPremiumSubscribe = async () => {
+        try {
+          setLoading(true);
+      
+          const response = await axios.get("/api/stripe/subscriptions/premium")
       
           window.location.href = response.data.url;
         } catch (error) {
@@ -47,7 +71,7 @@ export const PricingHero = ({
 
   return (
 
-<div className="w-full py-12 md:py-24 lg:py-16 bg-gradient-to-r from-purple-500 to-pink-500">
+<div className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-purple-500 to-pink-500">
 <div className="container px-4 md:px-6">
   <div className="flex flex-col items-center justify-center space-y-4 text-center">
     <div className="space-y-2">
@@ -79,9 +103,9 @@ export const PricingHero = ({
         </ul>
       </CardContent>
       <CardFooter className="px-6 py-4 border-t">
-        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600" variant="outline" onClick={() => (basicClick)}>
-          Choose Basic
-        </Button>
+      <Button className="w-full bg-purple-500 text-white hover:bg-purple-600" variant="outline" onClick={onBasicSubscribe}>
+  Choose Basic
+</Button>
       </CardFooter>
     </Card>
     <Card className="flex flex-col bg-white rounded-lg shadow-lg border-2 border-purple-500">
@@ -102,7 +126,7 @@ export const PricingHero = ({
         </ul>
       </CardContent>
       <CardFooter className="px-6 py-4 border-t">
-        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600">Choose Standard</Button>
+        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600" onClick={onStandardSubscribe}>Choose Standard</Button>
       </CardFooter>
     </Card>
     <Card className="flex flex-col bg-white rounded-lg shadow-lg">
@@ -123,7 +147,7 @@ export const PricingHero = ({
         </ul>
       </CardContent>
       <CardFooter className="px-6 py-4 border-t">
-        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600" variant="outline">
+        <Button className="w-full bg-purple-500 text-white hover:bg-purple-600" variant="outline" onClick={onPremiumSubscribe}>
           Choose Premium
         </Button>
       </CardFooter>

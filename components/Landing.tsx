@@ -1,10 +1,40 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import Image from "next/image"
 import { CloudLightningIcon, ComputerIcon, SparkleIcon, TimerIcon, TwitchIcon, WandIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { useProModal } from "@/hooks/use-pro-modal"
+import { checkSubscription } from "@/lib/subscription"
 
 export default function Landing() {
+
+    const [isPro, setIsPro] = useState(false);
+    const router = useRouter();
+    const proModal = useProModal();
+  
+    useEffect(() => {
+      const fetchIsPro = async () => {
+        const proStatus = await checkSubscription();
+        setIsPro(proStatus);
+      };
+  
+      fetchIsPro();
+    }, []);
+  
+    const handleStartCreating = () => {
+      if (isPro) {
+        router.push('/emotes');
+      } else {
+        // proModal.onOpen();
+        router.push('/pricing');
+      }
+    };
+
+
   return (
     <>
       <section className="relative w-full bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-12 md:py-18 lg:py-20">
@@ -22,11 +52,11 @@ export default function Landing() {
                 Empower your Twitch streams and Discord communities with custom, vibrant emotes created effortlessly.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/emotes">
-                <Button className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default">
+                {/* <Link href="/emotes"> */}
+                <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
                   Get Started
                 </Button>
-                </Link>
+                {/* </Link> */}
               </div>
             </div>
             <div className="relative">

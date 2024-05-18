@@ -17,13 +17,16 @@ import { SubscriptionButton } from "./SubscriptionButton";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LandingMobileNavbar } from "./LandingMobileNav";
 import { UserAccountNav } from "./UserAccountNav";
+import { CreditsDisplay } from "./CreditsDisplay";
 
 export const Navbar = ({
   apiLimitCount = 0,
-  isPro = false
+  isPro = false,
+  credits = 0
 }: {
   apiLimitCount: number;
   isPro: boolean;
+  credits: number;
 }) => {
 //   const session = useSession();
 //   const { buyCredits } = useBuyCredits();
@@ -63,10 +66,11 @@ return (
       </nav>
       <div className="flex items-center space-x-2">
         <SignedIn>
-          <FreeCounter 
+        <CreditsDisplay credits={credits} />
+          {/* <FreeCounter 
             apiLimitCount={apiLimitCount} 
             isPro={isPro}
-          />
+          /> */}
           {/* <UserButton 
             afterSignOutUrl="/"
 

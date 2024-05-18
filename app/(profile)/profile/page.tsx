@@ -16,11 +16,38 @@ const ProfilePage = async () => {
       redirect('/signin')
     )
 
-    const profile = await db.profile.findUnique({
+    let user = await db.user.findUnique({
       where: {
-        userId: userId || ''
+          id: userId!
       }
-    })
+  });
+
+  if (!user) {
+      user = await db.user.create({
+          data: {
+              id: userId!
+              // Add other default fields as necessary
+              // name: 
+              // email: userId
+          }
+      });
+  }
+
+  // Check if the profile exists, create if not
+  let profile = await db.profile.findUnique({
+      where: {
+          userId: userId!
+      }
+  });
+
+  if (!profile) {
+      profile = await db.profile.create({
+          data: {
+              userId: userId!
+              // Add other default fields as necessary
+          }
+      });
+  }
 
     const emotes = await db.emote.findMany({
     where: {

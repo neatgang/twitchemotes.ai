@@ -2,7 +2,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs'
+import { auth, ClerkProvider } from '@clerk/nextjs'
 import Navbar from '@/components/Navbar'
 import { getApiLimitCount } from '@/lib/api-limit'
 
@@ -13,6 +13,7 @@ import { ConvexClientProvider } from '@/providers/canvas/convex-client-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Head from 'next/head'
 import Script from 'next/script'
+import { getUserCredits } from '@/actions/get-user-credits'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,8 +27,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+    const { userId } = auth()
   const apiLimitCount = await getApiLimitCount();
   const isPro = await checkSubscription();
+  const credits = await getUserCredits()
+
+  
 
   return (
     <ClerkProvider>
@@ -46,7 +51,7 @@ export default async function RootLayout({
         </head>
         <body className={inter.className}>
           <div className="h-full relative">
-            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} />
+          <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
             <ToasterProvider />
             <TooltipProvider>
             <ModalProvider />

@@ -45,10 +45,10 @@ export async function GET(req: Request) {
           price_data: {
             currency: "USD",
             product_data: {
-              name: "EmoteMaker.ai Basic Plan",
-              description: "Generate unique emotes with a single prompt. For $5/month, receive 50 credits to create custom emotes. Additional credits available at $0.12 each. "
+              name: "EmoteMaker.ai Premium Plan",
+              description: "Generate unique emotes with a single prompt. For $24/month, receive 300 credits to create custom emotes. Additional credits available at $0.08 each. "
             },
-            unit_amount: 500,
+            unit_amount: 2400,
             recurring: {
               interval: "month"
             }
@@ -63,15 +63,15 @@ export async function GET(req: Request) {
 
     // await db.userApiLimit.upsert({
     //   where: { userId: userId },
-    //   update: { count: 50 },
-    //   create: { userId: userId, count: 50 },
+    //   update: { count: 300 },
+    //   create: { userId: userId, count: 300 },
     // });
 
     await db.user.update({
       where: { id: userId },
       data: {
           credits: {
-              increment: 50 // Increment by 50 credits or based on the specific plan
+              increment: 300 // Increment by 50 credits or based on the specific plan
           }
       }
   });
