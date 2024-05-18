@@ -6,6 +6,7 @@ import { ProfileCard } from "./_components/ProfileCard";
 import { SocialLinksCard } from "./_components/SocialLinks";
 import { Footer } from "./_components/Footer";
 import { redirect } from "next/navigation";
+import { GuidesForGamersCTA } from "./_components/GuidesForGamers";
 
 const ProfilePage = async () => {
 
@@ -48,6 +49,9 @@ const ProfilePage = async () => {
         </div>
         <div className="py-4">
           <EmoteHistoryCard emotes={emotes} />
+        </div>
+        <div className="py-4">
+        <GuidesForGamersCTA />
         </div>
       </main>
       <Footer />
