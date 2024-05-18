@@ -32,11 +32,11 @@ const ProfilePage = async () => {
             <ProfileCard />
           </div>
           <div>
-            <EmoteHistoryCard emotes={emotes} />
+            <SocialLinksCard />
           </div>
         </div>
         <div className="py-4">
-         <SocialLinksCard />
+          <EmoteHistoryCard emotes={emotes} />
         </div>
       </main>
       <Footer />

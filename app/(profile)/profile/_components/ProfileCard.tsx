@@ -19,18 +19,18 @@ export const ProfileCard = () => (
           <Label htmlFor="username">Username</Label>
           <Input defaultValue="@emomaker" id="username" />
         </div>
-        <div>
+        {/* <div>
           <Label htmlFor="email">Email</Label>
           <Input defaultValue="emomaker@example.com" id="email" type="email" />
-        </div>
+        </div> */}
         <div className="md:col-span-2">
           <Label htmlFor="bio">Bio</Label>
           <Textarea defaultValue="I create awesome emotes for streamers and content creators." id="bio" />
         </div>
-        <div>
+        {/* <div>
           <Label htmlFor="password">Change Password</Label>
           <Input id="password" placeholder="Enter new password" type="password" />
-        </div>
+        </div> */}
       </div>
     </CardContent>
     <CardFooter>
