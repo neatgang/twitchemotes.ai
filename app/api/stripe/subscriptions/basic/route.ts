@@ -48,7 +48,7 @@ export async function GET(req: Request) {
               name: "EmoteMaker.ai Basic Plan",
               description: "Generate unique emotes with a single prompt. For $5/month, receive 50 credits to create custom emotes. Additional credits available at $0.12 each. "
             },
-            unit_amount: 1500,
+            unit_amount: 500,
             recurring: {
               interval: "month"
             }
@@ -60,6 +60,12 @@ export async function GET(req: Request) {
         userId,
       },
     })
+
+    await db.userApiLimit.upsert({
+      where: { userId: userId },
+      update: { count: 50 },
+      create: { userId: userId, count: 50 },
+    });
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {

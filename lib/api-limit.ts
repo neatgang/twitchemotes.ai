@@ -68,3 +68,22 @@ export const getApiLimitCount = async () => {
 
   return userApiLimit.count;
 };
+
+export const decrementApiLimit = async () => {
+  const { userId } = auth();
+  
+  if (!userId) {
+    return;
+  }
+
+  const userApiLimit = await db.userApiLimit.findUnique({
+    where: { userId: userId },
+  });
+
+  if (userApiLimit && userApiLimit.count > 0) {
+    await db.userApiLimit.update({
+      where: { userId: userId },
+      data: { count: userApiLimit.count - 1 },
+    });
+  }
+};

@@ -50,7 +50,7 @@ export default async function RootLayout({
             <ToasterProvider />
             <TooltipProvider>
             <ModalProvider />
-            {children}
+              {children}
             </TooltipProvider>
           </div>
         </body>
