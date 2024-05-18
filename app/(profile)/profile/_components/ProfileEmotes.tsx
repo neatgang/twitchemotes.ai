@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { Emote, EmoteForSale } from "@prisma/client";
 import axios from "axios";
-import { CoinsIcon, Download, HomeIcon, List, ListPlus, ListTodo, Settings2Icon } from "lucide-react";
+import { CoinsIcon, Download, HomeIcon, List, ListPlus, ListTodo, PlusIcon, Settings2Icon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"
 import { useRouter } from "next/navigation";
@@ -51,7 +51,7 @@ interface ProfileEmotesProps {
           </Link>
         </div>
       </header>
-            <ProfileCard />
+            {/* <ProfileCard /> */}
             <SocialLinksCard />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-12">
         {emotes.map((emote) => (
@@ -98,25 +98,5 @@ interface ProfileEmotesProps {
         ))}
       </div>
     </main>
-  )
-}
-
-function PlusIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
   )
 }
