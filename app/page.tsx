@@ -67,10 +67,11 @@ export default function LandingPage() {
       if (user) {
         const name = user.firstName || 'Default Name';
         const email = user.primaryEmailAddress?.emailAddress || 'default@example.com';
+        console.log("Updating user:", user.id, name, email); // Debugging line
         await getUser({ userId: user.id, name, email });
       }
     };
-
+  
     initUser();
   }, [user]); // Dependency array includes user to re-run when user changes
 

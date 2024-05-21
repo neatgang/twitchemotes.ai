@@ -9,22 +9,13 @@ type UserProps = {
 
 export const getUser = async ({ userId, name = 'Default Name', email = 'default@example.com' }: UserProps) => {
   try {
-    // Use upsert to either update an existing user or create a new one
+    console.log("Upserting user:", userId, name, email); // Debugging line
     const user = await db.user.upsert({
-      where: {
-        id: userId,
-      },
-      update: {
-        name: name,
-        email: email,
-      },
-      create: {
-        id: userId,
-        name: name,
-        email: email,
-      },
+      where: { id: userId },
+      update: { name, email },
+      create: { id: userId, name, email },
     });
-
+    console.log("Upsert result:", user); // Debugging line
     return user;
   } catch (error) {
     console.log("[GET_USER] Error:", error); // Log any errors
