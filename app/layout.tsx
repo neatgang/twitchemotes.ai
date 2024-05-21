@@ -28,29 +28,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const { userId, user } = auth()
+    const { userId } = auth()
+    // const { user } = useUser()
   const apiLimitCount = await getApiLimitCount();
   const isPro = await checkSubscription();
   const credits = await getUserCredits()
-
-  const name = user?.firstName
-
-
-  if (userId) {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      await db.user.create({
-        data: {
-          id: userId,
-          name: name
-          // email: clerkUser.user?.primaryEmailAddress?.emailAddress || '',
-        }
-      });
-    }
-  }
 
   return (
     <ClerkProvider>

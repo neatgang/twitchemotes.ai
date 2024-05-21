@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { checkSubscription } from "../lib/subscription";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Landing from "@/components/Landing";
+import { auth, useUser } from "@clerk/nextjs";
+import { db } from "@/lib/db";
 
 // const demophotos = [
 //   {
@@ -53,6 +55,34 @@ export default function LandingPage() {
   const [isPro, setIsPro] = useState(false);
   const router = useRouter();
   const proModal = useProModal();
+  const { user } = useUser()
+  const { userId } = auth()
+
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const name = user?.firstName || 'Default Name'; // Default name if not available
+      const email = user?.primaryEmailAddress?.emailAddress || 'default@example.com'; // Default email if not available
+
+      if (userId) {
+        const existingUser = await db.user.findUnique({
+          where: { id: userId },
+        });
+
+        if (!existingUser) {
+          await db.user.create({
+            data: {
+              id: userId,
+              name: name,
+              email: email
+            }
+          });
+        }
+      }
+    };
+
+    checkUser();
+  }, [userId, user]); // Dependency array includes userId and user to re-run when these change
 
   useEffect(() => {
     const fetchIsPro = async () => {
