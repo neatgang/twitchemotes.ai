@@ -69,7 +69,7 @@ export default function Landing() {
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 {/* <Link href="/emotes"> */}
-                <Button onClick={onSubscribe} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
+                <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
                   Get Started
                 </Button>
                 {/* </Link> */}
