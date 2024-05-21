@@ -55,7 +55,7 @@ interface UserProps {
   userId: string
 }
 
-const LandingPage = ({ userId }: UserProps) => {
+export default function LandingPage({ userId }: UserProps) {
   const [isPro, setIsPro] = useState(false);
   const router = useRouter();
   const proModal = useProModal();
@@ -361,5 +361,3 @@ const LandingPage = ({ userId }: UserProps) => {
 </section>
   )
 }
-
-export default LandingPage
