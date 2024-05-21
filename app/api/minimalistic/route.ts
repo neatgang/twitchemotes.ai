@@ -4,6 +4,7 @@ import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-li
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
+import { db } from "@/lib/db";
 
 
 const openai = new OpenAI({
@@ -47,11 +48,19 @@ export async function POST(
     //   return new NextResponse("Additional Attributes are required", { status: 400 });
     // }
 
-    const freeTrial = await checkApiLimit();
-    const isPro = await checkSubscription();
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
+    }
 
-    if (!freeTrial && !isPro) {
-      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
     }
 
     const finalPrompt = `Create a retro-style emote icon of a ${prompt}, featuring pixelated graphics and vibrant colors reminiscent of 80s video games, on a solid color background.    `
@@ -69,10 +78,6 @@ export async function POST(
 
     console.log(response.data[0].b64_json);
     console.log(response.data[0].url);
-
-    if (!isPro) {
-      await incrementApiLimit();
-    }
     
     // Return the response data
     return NextResponse.json(response.data);

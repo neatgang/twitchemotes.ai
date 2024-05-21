@@ -15,6 +15,7 @@ import Head from 'next/head'
 import Script from 'next/script'
 import { getUserCredits } from '@/actions/get-user-credits'
 import { db } from '@/lib/db'
+import { getUser } from '@/actions/get-user'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,10 +30,18 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
     const { userId } = auth()
+
     // const { user } = useUser()
   const apiLimitCount = await getApiLimitCount();
   const isPro = await checkSubscription();
   const credits = await getUserCredits()
+
+  if (userId) { // Ensure userId is not null before calling getUser
+    const user = await getUser({ userId });
+  } else {
+    // Handle the case where userId is null, e.g., user not logged in
+    console.log("User ID is null, user might not be logged in.");
+  }
 
   return (
     <ClerkProvider>

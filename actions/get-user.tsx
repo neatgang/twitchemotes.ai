@@ -6,7 +6,7 @@ type UserProps = {
   email?: string; // Optional email field
 };
 
-export const getUser = async ({ userId, name = 'Default Name', email = 'default@example.com' }: UserProps) => {
+export const getUser = async ({ userId, name, email }: UserProps) => {
   try {
     // First, try to find the user by ID
     const existingUser = await db.user.findUnique({
@@ -14,16 +14,16 @@ export const getUser = async ({ userId, name = 'Default Name', email = 'default@
     });
 
     let user;
-    if (existingUser) {
-      // If user exists, update their information
-      user = await db.user.update({
-        where: { id: userId },
-        data: { name, email },
-      });
-    } else {
+    if (!existingUser) {  // Check if the user does NOT exist
       // If user does not exist, create a new one
       user = await db.user.create({
         data: { id: userId, name, email },
+      });
+    } else {
+      // If user exists, optionally update existing user
+      user = await db.user.update({
+        where: { id: userId },
+        data: { name, email },
       });
     }
 

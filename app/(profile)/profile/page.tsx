@@ -54,7 +54,7 @@ const ProfilePage = async () => {
       userId: userId,
     },
     include: {
-        EmoteForSale: true,
+        emoteForSale: true,
     },
     orderBy: {
       createdAt: "desc",

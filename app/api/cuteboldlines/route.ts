@@ -1,4 +1,5 @@
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
+import { db } from "@/lib/db";
 import { checkSubscription } from "@/lib/oldsubscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
@@ -53,11 +54,19 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
-    const freeTrial = await checkApiLimit();
-    const isPro = await checkSubscription();
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
+    }
 
-    if (!freeTrial && !isPro) {
-      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
     }
 
     const finalPrompt = `Create a cute and vibrant icon illustration featuring a ${prompt}, drawn with bold and clean lines. The subject should have exaggerated, playful features to enhance its charming character, with bright and cheerful colors. Include a solid white background. The overall design should be minimalistic but lively, suitable for use as a bold line icon.`
@@ -73,10 +82,6 @@ export async function POST(
 
     console.log(response.data[0].url);
 
-    if (!isPro) {
-      await incrementApiLimit();
-    }
-    
     // Return the response data
     return NextResponse.json(response.data);
   } catch (error) {

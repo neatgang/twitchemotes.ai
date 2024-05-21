@@ -1,25 +1,21 @@
 import { db } from "@/lib/db";
-import { Emote, User } from "@prisma/client";
+import { Emote } from "@prisma/client";
 
-type EmoteWithUser = Emote & {
-  userId: User | null; // Extend Emote with user relation
-};
+// Adjust the function parameter to expect only userId
+export const getEmotes = async ({ userId }: { userId: string | null }) => {
+  try {
+    const emotes = await db.emote.findMany({
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        createdAt: "asc",
+      }
+    });
 
-export const getEmotes = async ({ userId }: EmoteWithUser) => {
-  
-    try {
-      const emotes = await db.emote.findMany({
-        where: {
-          userId: userId,
-        },
-        orderBy: {
-          createdAt: "asc",
-        }
-      });
-
-      return emotes
-    } catch (error) {
-      console.log("[GET_EMOTES] Error:", error); // Log any errors
-      return [];
-    }
+    return emotes;
+  } catch (error) {
+    console.log("[GET_EMOTES] Error:", error);
+    return [];
   }
+}

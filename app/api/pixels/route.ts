@@ -1,4 +1,5 @@
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
+import { db } from "@/lib/db";
 import { checkSubscription } from "@/lib/oldsubscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
@@ -53,11 +54,19 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
-    const freeTrial = await checkApiLimit();
-    const isPro = await checkSubscription();
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
+    }
 
-    if (!freeTrial && !isPro) {
-      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
     }
 
     const finalPrompt = `Design a pixel art emote for Twitch, encapsulating ${prompt}. The emote should be reminiscent of classic 8-bit or 16-bit video games, with a limited color palette and pixelated design. Emphasize the emotion through simple yet effective pixelated expressions, suitable for small scale visibility.`
@@ -72,10 +81,6 @@ export async function POST(
       });
 
     console.log(response.data[0].url);
-
-    if (!isPro) {
-      await incrementApiLimit();
-    }
     
     // Return the response data
     return NextResponse.json(response.data);

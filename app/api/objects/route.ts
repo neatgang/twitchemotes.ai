@@ -1,4 +1,5 @@
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
+import { db } from "@/lib/db";
 import { checkSubscription } from "@/lib/oldsubscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
@@ -53,11 +54,19 @@ export async function POST(
       return new NextResponse("Resolution is required", { status: 400 });
     }
 
-    const freeTrial = await checkApiLimit();
-    const isPro = await checkSubscription();
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
+    }
 
-    if (!freeTrial && !isPro) {
-      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
     }
 
     const finalPrompt = `Design a vibrant, cartoonish digital object icon, featuring the object '${prompt}'. The object icon should creatively and clearly represent the object, making it easily identifiable at a small scale. The background of the object icon should be solid white, ensuring it stands out and remains visually clear. The style should be playful and engaging, with a distinct and cohesive appearance, perfect for enhancing the visual appeal.`
@@ -72,10 +81,6 @@ export async function POST(
       });
 
     console.log(response.data[0].url);
-
-    if (!isPro) {
-      await incrementApiLimit();
-    }
     
     // Return the response data
     return NextResponse.json(response.data);
