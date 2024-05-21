@@ -9,22 +9,21 @@ type UserProps = {
 
 export const getUser = async ({ userId, name = 'Default Name', email = 'default@example.com' }: UserProps) => {
   try {
-    let user = await db.user.findUnique({
+    // Use upsert to either update an existing user or create a new one
+    const user = await db.user.upsert({
       where: {
         id: userId,
       },
+      update: {
+        name: name,
+        email: email,
+      },
+      create: {
+        id: userId,
+        name: name,
+        email: email,
+      },
     });
-
-    // If user does not exist, create a new one with additional fields
-    if (!user) {
-      user = await db.user.create({
-        data: {
-          id: userId,
-          name: name,  // Use provided name or default
-          email: email // Use provided email or default
-        },
-      });
-    }
 
     return user;
   } catch (error) {
