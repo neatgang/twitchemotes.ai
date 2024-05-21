@@ -32,7 +32,8 @@ export default async function RootLayout({
   const apiLimitCount = await getApiLimitCount();
   const isPro = await checkSubscription();
   const credits = await getUserCredits()
-  const clerkUser = useUser()
+
+  const name = user?.firstName
 
 
   if (userId) {
@@ -44,8 +45,8 @@ export default async function RootLayout({
       await db.user.create({
         data: {
           id: userId,
-          name: clerkUser.user?.firstName,
-          email: clerkUser.user?.primaryEmailAddress?.emailAddress || '',
+          name: name
+          // email: clerkUser.user?.primaryEmailAddress?.emailAddress || '',
         }
       });
     }
