@@ -51,7 +51,11 @@ import { db } from "@/lib/db";
 
 // ]; 
 
-export default function LandingPage() {
+interface UserProps {
+  userId: string
+}
+
+export default function LandingPage({ userId }: UserProps) {
   const [isPro, setIsPro] = useState(false);
   const router = useRouter();
   const proModal = useProModal();
@@ -60,7 +64,6 @@ export default function LandingPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { userId } = auth()
       const name = user?.firstName || 'Default Name'; // Default name if not available
       const email = user?.primaryEmailAddress?.emailAddress || 'default@example.com'; // Default email if not available
 
@@ -82,7 +85,7 @@ export default function LandingPage() {
     };
 
     checkUser();
-  }, [user]); // Dependency array includes userId and user to re-run when these change
+  }, [user, userId]); // Dependency array includes userId and user to re-run when these change
 
   useEffect(() => {
     const fetchIsPro = async () => {
