@@ -11,7 +11,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// export const runtime = "edge"
+export const runtime = "edge"
 
 export async function POST(
   req: Request
@@ -72,7 +72,7 @@ export async function POST(
     //   return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
     // }
 
-    const finalPrompt = `Design a chibi-style Twitch emote featuring '${prompt}'. Emphasize the playful and adorable aspects of the design using exaggerated proportions—large heads and small bodies—and vibrant colors. Ensure the emote maintains clarity and expressiveness at smaller sizes for optimal visibility in Twitch chat.`
+    const finalPrompt = `Design a chibi-style Twitch emote of a '${prompt}'. Emphasize the playful and adorable aspects of the design using exaggerated proportions—large heads and small bodies—and vibrant colors. Ensure the emote maintains clarity and expressiveness at smaller sizes for optimal visibility in Twitch chat. The background should be transparent or a solid color.`
 
     const response = await openai.images.generate({
       model: "dall-e-3",
