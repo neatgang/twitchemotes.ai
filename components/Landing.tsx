@@ -306,8 +306,7 @@ export default function Landing() {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3 lg:grid-cols-3">
-            <div></div>
-            <div className="bg-gray-100 p-6 rounded-lg">
+          <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
                   <AvatarImage alt="@shadcn" src="/notloc.png" />
@@ -319,42 +318,60 @@ export default function Landing() {
                 </div>
               </div>
               <p className="mt-4 text-gray-500">
-              &quot;The chibi emotes were exactly what I was looking for&quot;
+              &quot;Yo, EmoteMaker.ai is straight up amazing for making custom Twitch emotes! I had some really specific ideas in mind, like a chibi avatar of myself with a chat bubble that said &quot;Yappin&quot; since I&apos;m always going off on tangents on stream. I also wanted a bold &quot;BOZO!&quot; text emote my chat could spam whenever I fail.
+Dude, the emote maker had me covered! The chibi creator had a ton of options to make a cute mini-me &quot;Yappin&quot; emote that looks just like my IRL self. And typing in my &quot;BOZO!&quot; text and picking colors and styles was a piece of cake. EmoteMaker.ai made it stupid easy to bring my emote visions to life.
+The whole process was quick and the emotes came out clean AF. They match my stream&apos;s vibe perfectly. Since uploading them, chat&apos;s been popping off with the new emotes! The custom &quot;BOZO!&quot; spam when I choke is hilarious and the &quot;Yappin&quot; emote is already an inside joke.
+Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on EmoteMaker.ai. It&apos;s the real deal and lets you make exactly what you want with no hassle. 11/10, already planning to make more!&quot;
               </p>
             </div>
-            {/* <div className="bg-gray-100 p-6 rounded-lg">
+          <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
-                  <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage alt="GoldenTurtleBoy" src="/goldenturtle.png" />
+                  <AvatarFallback>GT</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="font-bold">Jane Smith</h4>
-                  <p className="text-sm text-gray-500">Discord Community Manager</p>
+                  <h4 className="font-bold">GoldenTurtleBoy</h4>
+                  <p className="text-sm text-gray-500">Twitch Streamer</p>
                 </div>
               </div>
               <p className="mt-4 text-gray-500">
-              &quot;As a Discord community manager, I&apos;ve struggled to find affordable and high-quality emotes for our
-                server. EmoteMaker.ai has solved that problem! The AI-generated emotes are incredibly unique and
-                perfectly capture the vibe of our community. Plus, the rapid emote generation saves me so much time and
-                effort.&quot;
+              &quot;EmoteMaker.ai was a game-changer for creating the perfect pixelated golden turtle emote for my Twitch channel. The AI generated so many adorable designs and after some tweaks, I landed on the ideal shimmering gold turtle that perfectly captured what I had envisioned.&quot;
               </p>
             </div>
-            <div className="bg-gray-100 p-6 rounded-lg">
+          <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
-                  <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage alt="Ducky" src="/ducky.png" />
+                  <AvatarFallback>D</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="font-bold">Bob Johnson</h4>
-                  <p className="text-sm text-gray-500">Content Creator</p>
+                  <h4 className="font-bold">Ducky</h4>
+                  <p className="text-sm text-gray-500">WoW Guild and Discord Community</p>
                 </div>
               </div>
-              <p className="mt-4 text-gray-500" />
+              <p className="mt-4 text-gray-500">
+              &quot;Oh man, EmoteMaker.ai was a total lifesaver for our WoW guild&apos;s Discord! We really wanted some unique duck emotes that captured the vibe of the game. I wasn&apos;t sure what to expect, but holy cow - the AI came up with so many cool designs blending ducks with WoW stuff.
+After playing around with the options a bit, we found the perfect emotes. They&apos;re like ducks cosplaying as epic WoW characters, it&apos;s hilarious and awesome. Seriously, EmoteMaker.ai made the whole process a breeze and the emotes have been a huge hit with our guildies. 10/10 would quack again!&quot;
+              </p>
+            </div>
+          {/* <div className="bg-gray-100 p-6 rounded-lg">
+              <div className="flex items-center gap-4">
+                <Avatar>
+                  <AvatarImage alt="Ducky" src="/goldenturtle.png" />
+                  <AvatarFallback>GT</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h4 className="font-bold">Ducky</h4>
+                  <p className="text-sm text-gray-500">WoW Guild and Discord Community</p>
+                </div>
+              </div>
+              <p className="mt-4 text-gray-500">
+              &quot;Oh man, EmoteMaker.ai was a total lifesaver for our WoW guild&apos;s Discord! We really wanted some unique duck emotes that captured the vibe of the game. I wasn&apos;t sure what to expect, but holy cow - the AI came up with so many cool designs blending ducks with WoW stuff.
+After playing around with the options a bit, we found the perfect emotes. They&apos;re like ducks cosplaying as epic WoW characters, it&apos;s hilarious and awesome. Seriously, EmoteMaker.ai made the whole process a breeze and the emotes have been a huge hit with our guildies. 10/10 would quack again!&quot;
+              </p>
             </div> */}
           </div>
-          <div></div>
         </div>
       </section>
     </>
