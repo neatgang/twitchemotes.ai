@@ -4,6 +4,7 @@ import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-li
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
+import { db } from "@/lib/db";
 
 
 const openai = new OpenAI({
@@ -49,12 +50,27 @@ export async function POST(
     //   return new NextResponse("Additional Attributes are required", { status: 400 });
     // }
 
-    const freeTrial = await checkApiLimit();
-    const isPro = await checkSubscription();
-
-    if (!freeTrial && !isPro) {
-      return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    // const freeTrial = await checkApiLimit();
+    // const isPro = await checkSubscription();
+  
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
     }
+
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
+    }
+
+    // if (!freeTrial && !isPro) {
+    //   return new NextResponse("Free trial has expired. Please upgrade to pro.", { status: 403 });
+    // }
 
     const finalPrompt = `Design a chibi-style Twitch emote featuring '${prompt}'. Emphasize the playful and adorable aspects of the design using exaggerated proportions—large heads and small bodies—and vibrant colors. Ensure the emote maintains clarity and expressiveness at smaller sizes for optimal visibility in Twitch chat.`
 
