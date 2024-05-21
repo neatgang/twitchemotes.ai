@@ -9,6 +9,17 @@ interface MarketplaceProps {
     emotesForSale: EmoteForSale[];
   }
 
+//   function determineHeight(prompt: string): string {
+//   const length = prompt.length;
+//   if (length < 10) {
+//     return "h-48"; // Tailwind class for height
+//   } else if (length < 100) {
+//     return "h-56";
+//   } else {
+//     return "h-64";
+//   }
+// }
+
 export default function Marketplace({ emotesForSale }: MarketplaceProps) {
     return (
       <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
@@ -20,15 +31,15 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
                 Browse unique emotes created by other users.
               </p>
             </div>
-            <Button variant="outline">
+            {/* <Button variant="outline">
               <FilterIcon className="mr-2 h-4 w-4" />
               Filter
-            </Button>
+            </Button> */}
           </div>
         </header>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {emotesForSale.map((emote) => (
-            <Card key={emote.id} className="group">
+  <Card key={emote.id}>
               <CardContent className="flex flex-col items-center justify-center p-6 aspect-square">
                 <Image
                   alt={emote.prompt}
@@ -44,12 +55,12 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
               </CardContent>
               <CardFooter className="pt-4 flex-col">
   <div className="">
-    <p className="text-lg font-medium text-gray-900 dark:text-gray-50">{emote.prompt}</p>
+    <p className="text-sm font-medium text-gray-900 dark:text-gray-50">{emote.prompt}</p>
     {/* <p className="text-xs text-gray-500 dark:text-gray-400">By: {emote.userId}</p> */}
     {/* <p className="text-sm font-bold mt-2">${emote.price}</p> */}
   </div>
     <Button onClick={() => window.open(emote.imageUrl || '')} className="mt-2 w-full flex" variant="outline">
-  <ShoppingCartIcon className="mr-2 h-4 w-4" />
+  {/* <ShoppingCartIcon className="mr-2 h-4 w-4" /> */}
   Download
 </Button>
 </CardFooter>

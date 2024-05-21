@@ -305,25 +305,24 @@ export default function Landing() {
               See what our satisfied customers have to say about EmoteMaker.ai.
             </p>
           </div>
-          {/* <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3 lg:grid-cols-3">
+            <div></div>
             <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
-                  <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage alt="@shadcn" src="/notloc.png" />
+                  <AvatarFallback>NL</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h4 className="font-bold">John Doe</h4>
+                  <h4 className="font-bold">Notloc</h4>
                   <p className="text-sm text-gray-500">Twitch Streamer</p>
                 </div>
               </div>
               <p className="mt-4 text-gray-500">
-              &quot;EmoteMaker.ai has been a game-changer for my Twitch channel! I can now create custom emotes in minutes,
-                which has helped me engage with my community in a more personal and fun way. The background removal tool
-                is so easy to use, and the emote styles are top-notch.&quot;
+              &quot;The chibi emotes were exactly what I was looking for&quot;
               </p>
             </div>
-            <div className="bg-gray-100 p-6 rounded-lg">
+            {/* <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
                   <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
@@ -353,8 +352,9 @@ export default function Landing() {
                 </div>
               </div>
               <p className="mt-4 text-gray-500" />
-            </div>
-          </div> */}
+            </div> */}
+          </div>
+          <div></div>
         </div>
       </section>
     </>

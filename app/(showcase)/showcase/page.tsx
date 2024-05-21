@@ -16,7 +16,7 @@ const emotesForSale = await db.emoteForSale.findMany({
 
     return (
         <>
-        <Marketplace emotesForSale={emotesForSale}/>
+          <Marketplace emotesForSale={emotesForSale}/>
         </>
     )
 }
