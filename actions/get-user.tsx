@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { Emote } from "@prisma/client";
 
 type UserProps = {
   userId: string;
@@ -9,13 +8,26 @@ type UserProps = {
 
 export const getUser = async ({ userId, name = 'Default Name', email = 'default@example.com' }: UserProps) => {
   try {
-    console.log("Upserting user:", userId, name, email); // Debugging line
-    const user = await db.user.upsert({
+    // First, try to find the user by ID
+    const existingUser = await db.user.findUnique({
       where: { id: userId },
-      update: { name, email },
-      create: { id: userId, name, email },
     });
-    console.log("Upsert result:", user); // Debugging line
+
+    let user;
+    if (existingUser) {
+      // If user exists, update their information
+      user = await db.user.update({
+        where: { id: userId },
+        data: { name, email },
+      });
+    } else {
+      // If user does not exist, create a new one
+      user = await db.user.create({
+        data: { id: userId, name, email },
+      });
+    }
+
+    console.log("User operation result:", user); // Debugging line
     return user;
   } catch (error) {
     console.log("[GET_USER] Error:", error); // Log any errors

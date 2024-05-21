@@ -51,16 +51,18 @@ model Profile {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  credits       Int       @default(5)
-  // accounts      Account[]
-  // sessions      Session[]
-  emotes        Emote[]
-  Profile       Profile?
+  id                 String            @id @default(cuid())
+  name               String?
+  email              String?           @unique
+  emailVerified      DateTime?
+  image              String?
+  credits            Int               @default(5)
+  subscritpion       UserSubscription? @relation
+  userSubscriptionId String?
+  profile            Profile?
+  emote              Emote[]
+
+  @@index([userSubscriptionId])
 }
 
 model Emote {
@@ -70,7 +72,7 @@ model Emote {
   User         User?         @relation(fields: [userId], references: [id])
   userId       String?
   createdAt    DateTime      @default(now())
-  EmoteForSale EmoteForSale?
+  emoteForSale EmoteForSale?
 
   @@index([userId], name: "userId")
 }
@@ -99,7 +101,7 @@ model EmoteForSale {
   type           EmoteType   @default(FREE)
 
   emote    Emote      @relation(fields: [emoteId], references: [id])
-  Purchase Purchase[]
+  purchase Purchase[]
 }
 
 // model VerificationToken {
@@ -129,6 +131,7 @@ model UserSubscription {
   updatedAt              DateTime? @updatedAt
   name                   String?
   email                  String?
+  user                   User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Purchase {
