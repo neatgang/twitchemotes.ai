@@ -11,11 +11,13 @@ import { useProModal } from "@/hooks/use-pro-modal"
 import { checkSubscription } from "@/lib/subscription"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { auth, useUser } from "@clerk/nextjs"
 
 export default function Landing() {
 
   const [loading, setLoading] = useState(false);
     const [isPro, setIsPro] = useState(false);
+    const { user } = useUser()
     const router = useRouter();
     const proModal = useProModal();
   
@@ -29,11 +31,11 @@ export default function Landing() {
     }, []);
   
     const handleStartCreating = () => {
-      if (isPro) {
+      if (user) {
         router.push('/emotes');
       } else {
         // proModal.onOpen();
-        router.push('/pricing');
+        router.push('/sign-in');
       }
     };
 
