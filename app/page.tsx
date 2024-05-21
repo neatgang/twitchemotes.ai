@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Landing from "@/components/Landing";
 import { auth, useUser } from "@clerk/nextjs";
 import { db } from "@/lib/db";
+import { getUser } from "@/actions/get-user";
 
 // const demophotos = [
 //   {
@@ -51,41 +52,27 @@ import { db } from "@/lib/db";
 
 // ]; 
 
-interface UserProps {
-  userId: string
-}
+// interface UserProps {
+//   userId: string
+// }
 
-export default function LandingPage({ userId }: UserProps) {
+export default function LandingPage() {
   const [isPro, setIsPro] = useState(false);
   const router = useRouter();
   const proModal = useProModal();
-  const { user } = useUser()
-
+  const { user } = useUser();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const name = user?.firstName || 'Default Name'; // Default name if not available
-      const email = user?.primaryEmailAddress?.emailAddress || 'default@example.com'; // Default email if not available
-
-      if (userId) {
-        const existingUser = await db.user.findUnique({
-          where: { id: userId },
-        });
-
-        if (!existingUser) {
-          await db.user.create({
-            data: {
-              id: userId,
-              name: name,
-              email: email
-            }
-          });
-        }
+    const initUser = async () => {
+      if (user) {
+        const name = user.firstName || 'Default Name';
+        const email = user.primaryEmailAddress?.emailAddress || 'default@example.com';
+        await getUser({ userId: user.id, name, email });
       }
     };
 
-    checkUser();
-  }, [user, userId]); // Dependency array includes userId and user to re-run when these change
+    initUser();
+  }, [user]); // Dependency array includes user to re-run when user changes
 
   useEffect(() => {
     const fetchIsPro = async () => {

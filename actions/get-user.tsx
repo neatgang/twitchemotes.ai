@@ -1,11 +1,13 @@
 import { db } from "@/lib/db";
-import { Emote, User } from "@prisma/client";
+import { Emote } from "@prisma/client";
 
-type EmoteWithUser = Emote & {
+type UserProps = {
   userId: string;
+  name?: string;  // Optional name field
+  email?: string; // Optional email field
 };
 
-export const getUser = async ({ userId }: EmoteWithUser) => {
+export const getUser = async ({ userId, name = 'Default Name', email = 'default@example.com' }: UserProps) => {
   try {
     let user = await db.user.findUnique({
       where: {
@@ -13,12 +15,13 @@ export const getUser = async ({ userId }: EmoteWithUser) => {
       },
     });
 
-    // If user does not exist, create a new one
+    // If user does not exist, create a new one with additional fields
     if (!user) {
       user = await db.user.create({
         data: {
           id: userId,
-          // Add other fields as necessary
+          name: name,  // Use provided name or default
+          email: email // Use provided email or default
         },
       });
     }
