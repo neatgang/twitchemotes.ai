@@ -2,7 +2,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { auth, ClerkProvider } from '@clerk/nextjs'
+import { auth, ClerkProvider, currentUser, useUser } from '@clerk/nextjs'
 import Navbar from '@/components/Navbar'
 import { getApiLimitCount } from '@/lib/api-limit'
 
@@ -14,6 +14,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import Head from 'next/head'
 import Script from 'next/script'
 import { getUserCredits } from '@/actions/get-user-credits'
+import { db } from '@/lib/db'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,12 +28,28 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-    const { userId } = auth()
+    const { userId, user } = auth()
   const apiLimitCount = await getApiLimitCount();
   const isPro = await checkSubscription();
   const credits = await getUserCredits()
+  const clerkUser = useUser()
 
-  
+
+  if (userId) {
+    const user = await db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      await db.user.create({
+        data: {
+          id: userId,
+          name: clerkUser.user?.firstName,
+          email: clerkUser.user?.primaryEmailAddress?.emailAddress || '',
+        }
+      });
+    }
+  }
 
   return (
     <ClerkProvider>
