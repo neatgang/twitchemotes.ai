@@ -9,9 +9,12 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useProModal } from "@/hooks/use-pro-modal"
 import { checkSubscription } from "@/lib/subscription"
+import axios from "axios"
+import toast from "react-hot-toast"
 
 export default function Landing() {
 
+  const [loading, setLoading] = useState(false);
     const [isPro, setIsPro] = useState(false);
     const router = useRouter();
     const proModal = useProModal();
@@ -34,6 +37,19 @@ export default function Landing() {
       }
     };
 
+    const onSubscribe = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/stripe");
+  
+        window.location.href = response.data.url;
+      } catch (error) {
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
 
   return (
     <>
@@ -53,7 +69,7 @@ export default function Landing() {
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
                 {/* <Link href="/emotes"> */}
-                <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
+                <Button onClick={onSubscribe} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
                   Get Started
                 </Button>
                 {/* </Link> */}
