@@ -56,11 +56,11 @@ export default function LandingPage() {
   const router = useRouter();
   const proModal = useProModal();
   const { user } = useUser()
-  const { userId } = auth()
 
 
   useEffect(() => {
     const checkUser = async () => {
+      const { userId } = auth()
       const name = user?.firstName || 'Default Name'; // Default name if not available
       const email = user?.primaryEmailAddress?.emailAddress || 'default@example.com'; // Default email if not available
 
@@ -82,7 +82,7 @@ export default function LandingPage() {
     };
 
     checkUser();
-  }, [userId, user]); // Dependency array includes userId and user to re-run when these change
+  }, [user]); // Dependency array includes userId and user to re-run when these change
 
   useEffect(() => {
     const fetchIsPro = async () => {
