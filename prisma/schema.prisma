@@ -50,6 +50,14 @@ model Profile {
   user User? @relation(fields: [userId], references: [id])
 }
 
+enum SubscriptionType {
+  FREE
+  BASIC
+  STANDARD
+  PREMIUM
+  LEGACY // Represents users who subscribed under the old unlimited plan
+}
+
 model User {
   id                 String            @id @default(cuid())
   name               String?
@@ -61,6 +69,8 @@ model User {
   userSubscriptionId String?
   profile            Profile?
   emote              Emote[]
+  isActiveSubscriber Boolean           @default(false) // New field to indicate active subscription status
+  subscriptionType   SubscriptionType? // New field for subscription type
 
   @@index([userSubscriptionId])
 }
