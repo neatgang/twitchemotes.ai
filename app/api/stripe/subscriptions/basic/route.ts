@@ -61,6 +61,8 @@ export async function GET(req: Request) {
       },
     })
 
+    const userName = user.firstName || '' + user.lastName || ''
+
     // await db.userApiLimit.upsert({
     //   where: { userId: userId },
     //   update: { count: 50 },
@@ -72,7 +74,9 @@ export async function GET(req: Request) {
       data: {
           credits: {
               increment: 50 // Increment by 50 credits or based on the specific plan
-          }
+          },
+          name: userName,
+          email: user.emailAddresses[0].emailAddress
       }
   });
 

@@ -67,12 +67,16 @@ export async function GET(req: Request) {
     //   create: { userId: userId, count: 150 },
     // });
 
+    const userName = user.firstName || '' + user.lastName || ''
+
     await db.user.update({
       where: { id: userId },
       data: {
           credits: {
               increment: 150 // Increment by 50 credits or based on the specific plan
-          }
+          },
+          name: userName,
+          email: user.emailAddresses[0].emailAddress
       }
   });
 
