@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "script/assignUserSub.mjs", "app/(excalidraw)/excalidraw/page.jsx", "app/(excalidraw)/_components/excalidraw.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "script/assignUserSub.mjs", "app/(excalidraw)/excalidraw/page.tsx", "app/(excalidraw)/_components/excalidraw.jsx"],
   "exclude": ["node_modules"]
 }
