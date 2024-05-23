@@ -59,7 +59,7 @@ export default async function RootLayout({
         />
         </head>
         <body className={inter.className}>
-          <div className="h-full relative">
+          <div className="">
           <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
             <ToasterProvider />
             <TooltipProvider>
