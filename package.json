@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.25.6",
+    "@excalidraw/excalidraw": "^0.17.6",
+    "@fal-ai/serverless-client": "^0.10.0",
+    "@fal-ai/serverless-proxy": "^0.7.4",
     "@hookform/resolvers": "^3.3.2",
     "@liveblocks/client": "^1.11.0",
     "@liveblocks/node": "^1.9.7",
