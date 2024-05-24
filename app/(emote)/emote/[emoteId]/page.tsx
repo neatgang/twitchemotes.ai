@@ -9,51 +9,53 @@ import { Separator } from '@/components/ui/separator';
 import { auth } from '@clerk/nextjs';
 import EmoteProduct from '../_components/EmoteProduct';
 
-// const EmoteIdPage = async ({
-//     params
-//   }: {
-//     params: { emoteId: string }
-//   }) => {
-    
-  
-//     const emote = await getEmoteById({
-//       // userId,
-//       emoteId: params.emoteId,
-//     });
-
-//     if (!emote) {
-//         return <div>Emote not found.</div>;
-//     }
-
-const EmoteIdPage = async ({
-    params,
-  }: {
-    params: {
-        emoteId: string;
-    };
-  }) => {
-  
-  
+export async function generateMetadata({ params }: { params: { emoteId: string } }) {
   const emoteListing = await db.emoteForSale.findUnique({
-      where: {
-        id: params.emoteId,
-        // userId?: userId
-      },
-      // orderBy: {
-      //   createdAt: "desc",
-      // }
-    });
+    where: {
+      id: params.emoteId,
+    },
+  });
 
-    if (!emoteListing) {
-        <div>No emote found</div>
-    }
+  if (!emoteListing) {
+    return {
+      title: 'Emote Not Found',
+      description: 'The requested emote could not be found.',
+    };
+  }
 
-    return (
-        <>
-            <EmoteProduct emoteListing={emoteListing} />
-        </>
-      )
-    }
-    
-export default EmoteIdPage
-  
+  return {
+    title: emoteListing.prompt,
+    description: `View details of the emote "${emoteListing.prompt}"`,
+    openGraph: {
+      title: emoteListing.prompt,
+      description: `View details of the emote "${emoteListing.prompt}"`,
+      images: [emoteListing.imageUrl],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: emoteListing.prompt,
+      description: `View details of the emote "${emoteListing.prompt}"`,
+      images: [emoteListing.imageUrl],
+    },
+  };
+}
+
+const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
+  const emoteListing = await db.emoteForSale.findUnique({
+    where: {
+      id: params.emoteId,
+    },
+  });
+
+  if (!emoteListing) {
+    return <div>No emote found</div>;
+  }
+
+  return (
+    <>
+      <EmoteProduct emoteListing={emoteListing} />
+    </>
+  );
+};
+
+export default EmoteIdPage;
