@@ -344,6 +344,7 @@ Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on E
               </p>
             </div>
             </Link>
+            <Link href="https://www.twitch.tv/goldenturtleboy">
           <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
@@ -359,6 +360,8 @@ Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on E
               &quot;EmoteMaker.ai was a game-changer for creating the perfect pixelated golden turtle emote for my Twitch channel. The AI generated so many adorable designs and after some tweaks, I landed on the ideal shimmering gold turtle that perfectly captured what I had envisioned.&quot;
               </p>
             </div>
+            </Link>
+            <Link href="https://www.twitch.tv/goldenturtleboy">
           <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
@@ -375,6 +378,7 @@ Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on E
 After playing around with the options a bit, we found the perfect emotes. They&apos;re like ducks cosplaying as epic WoW characters, it&apos;s hilarious and awesome. Seriously, EmoteMaker.ai made the whole process a breeze and the emotes have been a huge hit with our guildies. 10/10 would quack again!&quot;
               </p>
             </div>
+            </Link>
           {/* <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
