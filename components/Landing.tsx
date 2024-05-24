@@ -361,7 +361,7 @@ Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on E
               </p>
             </div>
             </Link>
-            <Link href="https://www.twitch.tv/goldenturtleboy">
+            <Link href="https://discord.gg/33uK96vD9N">
           <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
