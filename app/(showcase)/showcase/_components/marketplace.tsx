@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { EmoteForSale } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 
 interface MarketplaceProps {
     emotesForSale: EmoteForSale[];
@@ -39,6 +40,7 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
         </header>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {emotesForSale.map((emote) => (
+            <Link key={emote.id} href={`/emote/${emote.id}`}>
   <Card key={emote.id}>
               <CardContent className="flex flex-col items-center justify-center p-6 aspect-square">
                 <Image
@@ -65,6 +67,7 @@ export default function Marketplace({ emotesForSale }: MarketplaceProps) {
 </Button>
 </CardFooter>
             </Card>
+            </Link>
           ))}
         </div>
       </main>

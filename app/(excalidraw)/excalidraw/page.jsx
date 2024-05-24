@@ -88,7 +88,7 @@ export default function Home() {
         }}
       /> */}
       <div className="flex">
-        <div className="w-full h-[550px]">
+        <div className="w-full h-[500px]">
           <Excalidraw
             excalidrawAPI={(api) => setExcalidrawAPI(api)}
             onChange={handleChange} // Updated to use the new handleChange function

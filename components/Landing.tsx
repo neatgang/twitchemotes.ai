@@ -324,6 +324,7 @@ export default function Landing() {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3 lg:grid-cols-3">
+            <Link href="https://www.twitch.tv/xnotloc">
           <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
@@ -342,6 +343,7 @@ The whole process was quick and the emotes came out clean AF. They match my stre
 Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on EmoteMaker.ai. It&apos;s the real deal and lets you make exactly what you want with no hassle. 11/10, already planning to make more!&quot;
               </p>
             </div>
+            </Link>
           <div className="bg-gray-100 p-6 rounded-lg">
               <div className="flex items-center gap-4">
                 <Avatar>
