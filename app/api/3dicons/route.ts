@@ -1,7 +1,7 @@
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
 import { db } from "@/lib/db";
 import { checkSubscription } from "@/lib/oldsubscription";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 

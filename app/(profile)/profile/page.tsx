@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import ProfileEmotes from "./_components/ProfileEmotes"
 import { db } from "@/lib/db";
 import { EmoteHistoryCard } from "./_components/EmoteHistory";

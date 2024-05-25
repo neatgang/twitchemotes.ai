@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { getEmoteById } from '@/actions/get-emote-by-id';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { auth } from '@clerk/nextjs';
 import EmoteProduct from '../_components/EmoteProduct';
 
 export async function generateMetadata({ params }: { params: { emoteId: string } }) {

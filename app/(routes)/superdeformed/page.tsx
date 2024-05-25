@@ -32,7 +32,7 @@ import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
-import { auth, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 const demophotos = [
   {

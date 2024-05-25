@@ -2,7 +2,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { auth, ClerkProvider, currentUser, useUser } from '@clerk/nextjs'
+import { ClerkProvider, useUser } from '@clerk/nextjs'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import Navbar from '@/components/Navbar'
 import { getApiLimitCount } from '@/lib/api-limit'
 

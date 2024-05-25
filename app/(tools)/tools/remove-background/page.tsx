@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useEffect, useState } from "react";
 import { getEmotes } from "@/actions/get-emotes";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import EmoteDisplay from "./_components/DisplayEmotes";
 import useEmotes from "@/hooks/useEmotes";
 import { TrashIcon, UploadIcon } from "lucide-react";

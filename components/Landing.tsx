@@ -11,7 +11,7 @@ import { useProModal } from "@/hooks/use-pro-modal"
 import { checkSubscription } from "@/lib/subscription"
 import axios from "axios"
 import toast from "react-hot-toast"
-import { auth, useUser } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 
 export default function Landing() {
 

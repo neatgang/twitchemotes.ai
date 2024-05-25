@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { getEmotes } from "@/actions/get-emotes";
-import { auth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Emote } from "@prisma/client";
 
 const useEmotes = () => {

@@ -14,7 +14,6 @@ import { z } from "zod";
 import axios from "axios";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import toast from "react-hot-toast";
-import { auth } from "@clerk/nextjs";
 
 interface ProfileFormData {
     username: string;

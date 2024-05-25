@@ -3,7 +3,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 
 import { Liveblocks } from "@liveblocks/node";
-import { auth, currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const convex = new ConvexHttpClient(
     process.env.NEXT_PUBLIC_CONVEX_URL!

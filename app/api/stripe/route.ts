@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { absoluteUrl } from "@/lib/utils";
@@ -6,6 +6,9 @@ import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 
 const settingsUrl = absoluteUrl("/");
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {
