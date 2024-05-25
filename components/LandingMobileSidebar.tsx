@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Montserrat } from 'next/font/google'
-import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Paintbrush2, Settings, UserIcon, VideoIcon } from "lucide-react";
+import { BookIcon, Code, ComputerIcon, ImageIcon, LayoutDashboard, MessageSquare, Music, Paintbrush2, Settings, StoreIcon, UserIcon, VideoIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -14,12 +14,17 @@ const routes = [
     {
       label: 'Create Emotes',
       icon: Paintbrush2, // Example icon, replace with actual icons as needed
-      href: '/create',
+      href: '/emotes',
     },
     {
       label: 'Generate Prompts',
       icon: BookIcon, // Example icon
       href: '/imagetoprompt',
+    },
+    {
+      label: 'Showcase',
+      icon: StoreIcon, // Example icon
+      href: '/showcase',
     },
   ];
 

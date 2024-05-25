@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
   return {
     title: `A ${emoteListing.prompt} ${emoteListing.style} style emote. | EmoteMaker.ai`,
     description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
+    image: `${emoteListing.imageUrl}`,
     openGraph: {
       title: emoteListing.prompt,
       description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
