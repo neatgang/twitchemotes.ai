@@ -24,17 +24,17 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
   }
 
   return {
-    title: emoteListing.prompt,
-    description: `A "${emoteListing.prompt} ${emoteListing.style} style emote."`,
+    title: `A ${emoteListing.prompt} ${emoteListing.style} style emote. | EmoteMaker.ai`,
+    description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
     openGraph: {
       title: emoteListing.prompt,
-      description: `A "${emoteListing.prompt} ${emoteListing.style} style emote."`,
+      description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
       images: [emoteListing.imageUrl],
     },
     twitter: {
       card: 'summary_large_image',
       title: emoteListing.prompt,
-      description: `View details of the emote "${emoteListing.prompt}"`,
+      description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
       images: [emoteListing.imageUrl],
     },
   };
