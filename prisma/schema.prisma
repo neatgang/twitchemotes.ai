@@ -71,6 +71,7 @@ model User {
   emote              Emote[]
   isActiveSubscriber Boolean           @default(false) // New field to indicate active subscription status
   subscriptionType   SubscriptionType? // New field for subscription type
+  EmoteForSale       EmoteForSale[]
 
   @@index([userSubscriptionId])
 }
@@ -109,9 +110,13 @@ model EmoteForSale {
   updatedAt      DateTime    @updatedAt
   status         EmoteStatus @default(DRAFT)
   type           EmoteType   @default(FREE)
+  user           User?       @relation(fields: [userId], references: [id])
+  userId         String?
 
   emote    Emote      @relation(fields: [emoteId], references: [id])
   purchase Purchase[]
+
+  @@index([userId])
 }
 
 // model VerificationToken {

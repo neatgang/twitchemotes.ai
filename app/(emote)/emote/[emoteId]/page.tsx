@@ -25,10 +25,10 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
 
   return {
     title: emoteListing.prompt,
-    description: `View details of the emote "${emoteListing.prompt}"`,
+    description: `A "${emoteListing.prompt} ${emoteListing.style} style emote."`,
     openGraph: {
       title: emoteListing.prompt,
-      description: `View details of the emote "${emoteListing.prompt}"`,
+      description: `A "${emoteListing.prompt} ${emoteListing.style} style emote."`,
       images: [emoteListing.imageUrl],
     },
     twitter: {
