@@ -99,6 +99,7 @@
   "devDependencies": {
     "@types/node-fetch": "^2.6.11",
     "@types/uuid": "^9.0.8",
-    "prisma": "^5.14.0"
+    "prisma": "^5.14.0",
+    "raw-loader": "^4.0.2"
   }
 }

@@ -106,6 +106,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import bubbleLibrary from "!!raw-loader!../../../public/excalidraw-assets/libraries/bubbles.excalidrawlib";
 
 const Excalidraw = dynamic(
   () => import("@excalidraw/excalidraw").then((module) => module.Excalidraw),
@@ -123,10 +124,13 @@ export default function Home() {
   };
 
   return (
-    <div style={{ height: "1000px" }}>
+    <div style={{ height: "1000px", width: "200" }}>
       <Excalidraw
         excalidrawAPI={(api) => setExcalidrawAPI(api)}
         onChange={handleChange}
+        initialData={{
+          libraryItems: [JSON.parse(bubbleLibrary)],
+        }}
       />
     </div>
   );

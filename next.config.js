@@ -21,8 +21,15 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    serverActions: true,
+  webpack: (config, { isServer }) => {
+    // Add custom rule for handling .excalidrawlib files
+    config.module.rules.push({
+      test: /\.excalidrawlib$/,
+      use: "raw-loader",
+    });
+
+    // Return the updated configuration
+    return config;
   },
 };
 
