@@ -14,28 +14,16 @@ export async function GET(req: Request) {
     try {
       const { userId } = auth();
       const user = await currentUser();
-      const { searchParams } = new URL(req.url);
-      const creditPackage = searchParams.get("package"); // 'small', 'medium', 'large', etc.
   
       if (!userId || !user) {
         return new NextResponse("Unauthorized", { status: 401 });
-      }
-  
-      if (!creditPackage) {
-        return new NextResponse("Package not specified", { status: 400 });
       }
   
       const creditOptions: { [key: string]: { price: number; credits: number } } = {
         small: { price: 240, credits: 20 },
         medium: { price: 500, credits: 50 },
         large: { price: 800, credits: 100 }
-    };
-  
-      const selectedPackage = creditOptions[creditPackage];
-  
-      if (!selectedPackage) {
-        return new NextResponse("Invalid package selected", { status: 400 });
-      }
+      };
   
       const stripeSession = await stripe.checkout.sessions.create({
         success_url: settingsUrl,
@@ -49,18 +37,16 @@ export async function GET(req: Request) {
             price_data: {
               currency: "USD",
               product_data: {
-                name: `EmoteMaker.ai ${creditPackage} Credit Pack`,
-                description: `${selectedPackage.credits} credits for $${selectedPackage.price / 100}`
+                name: "EmoteMaker.ai Small Credit Pack",
+                description:  "20 credits for $2.40"
               },
-              unit_amount: selectedPackage.price,
-              recurring: { interval: "month" }
+              unit_amount: 240
             },
-            quantity: 1,
+          quantity: 1,
           },
         ],
         metadata: {
           userId,
-          creditPackage
         },
       });
   
@@ -68,7 +54,7 @@ export async function GET(req: Request) {
         where: { id: userId },
         data: {
           credits: {
-            increment: selectedPackage.credits
+            increment: 20
           }
         }
       });

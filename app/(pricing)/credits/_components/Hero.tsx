@@ -28,10 +28,10 @@ export const CreditsHero = ({
 
     const [loading, setLoading] = useState(false);
 
-    const purchaseCredits = async (packageType: string) => {
+    const purchaseBasicCredits = async () => {
       try {
           setLoading(true);
-          const response = await axios.get(`/api/stripe/credits`);
+          const response = await axios.get(`/api/stripe/credits/small`);
           window.location.href = response.data.url;
       } catch (error) {
           console.error(error);
@@ -72,7 +72,7 @@ export const CreditsHero = ({
                                 <CardDescription>20 Credits | $2.40 | $0.12 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button className="w-full" onClick={() => purchaseCredits('small')}>Buy Now</Button>
+                                <Button className="w-full" onClick={() => purchaseBasicCredits()}>Buy Now</Button>
                             </CardContent>
                         </Card>
                         <Card>
@@ -81,7 +81,7 @@ export const CreditsHero = ({
                                 <CardDescription>50 Credits | $5.00 | $0.10 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button className="w-full" onClick={() => purchaseCredits('medium')}>Buy Now</Button>
+                                {/* <Button className="w-full" onClick={() => purchaseCredits('medium')}>Buy Now</Button> */}
                             </CardContent>
                         </Card>
                         <Card>
@@ -90,7 +90,7 @@ export const CreditsHero = ({
                                 <CardDescription>100 Credits | $8.00 | $0.08 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button className="w-full" onClick={() => purchaseCredits('large')}>Buy Now</Button>
+                                {/* <Button className="w-full" onClick={() => purchaseCredits('large')}>Buy Now</Button> */}
                             </CardContent>
                         </Card>
                     </div>
