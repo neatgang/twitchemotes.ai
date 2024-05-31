@@ -112,7 +112,7 @@ const emoteTypes = [
   { name: "Pixel Emotes", link: "/pixels" },
   { name: "Kawaii Emotes", link: "/kawaii" },
   { name: "Object Emotes", link: "/objects" },
-  { name: "Cute Bold Line Emotes", link: "/cuteboldline" },
+  { name: "Cute Bold Line Emotes", link: "/cuteboldlines" },
   { name: "Text Based Emotes", link: "/textbased" },
   { name: "3D Based Emotes", link: "/3d" },
   { name: "Pepe Based Emotes", link: "/pepethefrog" },
@@ -122,7 +122,7 @@ const emoteTypes = [
 ];
 
 const tools = [
-  // { name: "Remove Background", link: "/" },
+  { name: "Remove Background", link: "/remove-background" },
   { name: "Image to Prompt", link: "/imagetoprompt" },
 ];
 
@@ -171,7 +171,7 @@ return (
                   <a>Tools</a>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="mt-0 flex">
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px]">
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {tools.map((type) => (
                       <ListItem
                         key={type.name}

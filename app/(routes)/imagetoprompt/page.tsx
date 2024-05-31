@@ -28,8 +28,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-u
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { UploadButton } from "@/utils/uploadthing";
 import { FileUpload } from "@/components/FileUpload";
-import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";
+import ImageToPrompt from "./_components/imagetoprompt";
 
 const demophotos = [
   {
@@ -61,9 +61,10 @@ const PhotoPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prompt: "",
-      amount: "1",
-      resolution: "512x512",
+      // prompt: "",
+      // amount: "1",
+      // resolution: "512x512",
+      imageUrl: ""
       // templates: "prompt" // Default to the first template
     }
   });
@@ -91,33 +92,34 @@ const PhotoPage = () => {
   }
 
   return ( 
-    <div className="flex flex-col items-center mt-12">
-      <div className="text-center px-3 md:px-6 flex items-center gap-x-3 mb-8">
+    <div className="flex flex-col items-center">
+      <div className="text-center px-3 md:px-6 flex items-center gap-x-3">
         {/* <div className="p-2 w-fit rounded-md bg-pink-700/10">
           <ImageIcon className="w-10 h-10 text-pink-700" />
         </div> */}
-        <div>
+        {/* <div>
           <h2 className="text-5xl font-bold mb-2">
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
             Turn a picture of yourself into a prompt that you can use to generate emotes.
           </p>
-        </div>
+        </div> */}
       </div>
-      <div className="mx-auto max-w-screen-lg">
+      <div className="mx-auto">
       {/* <FileUpload 
             endpoint="imageUploader"
             onChange={(url) =>{
-              // if (url) {
-              //   onSubmit({
-              //     imageUrl: url
-              //   })
-              // }
+              if (url) {
+                onSubmit({
+                  imageUrl: url
+                })
+              }
             }}
           /> */}
           {/* <ImageToPrompt /> */}
-          <ChatContainer />
+          <ImageToPrompt />
+          {/* <ChatContainer /> */}
         
       </div>
     </div>
