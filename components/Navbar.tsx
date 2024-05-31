@@ -189,6 +189,9 @@ return (
         <Button variant="ghost">
       <Link href="/showcase">Showcase</Link>
       </Button>
+      <Button variant="ghost">
+      <Link href="/credits">Get More Credits</Link>
+      </Button>
       </nav>
       <div className="flex items-center space-x-2">
         <SignedIn>
