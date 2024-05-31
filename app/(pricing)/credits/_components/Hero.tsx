@@ -28,7 +28,7 @@ export const CreditsHero = ({
 
     const [loading, setLoading] = useState(false);
 
-    const purchaseBasicCredits = async () => {
+    const purchaseSmallCredits = async () => {
       try {
           setLoading(true);
           const response = await axios.get(`/api/stripe/credits/small`);
@@ -40,6 +40,32 @@ export const CreditsHero = ({
           setLoading(false);
       }
   };
+
+    const purchaseMediumCredits = async () => {
+      try {
+          setLoading(true);
+          const response = await axios.get(`/api/stripe/credits/medium`);
+          window.location.href = response.data.url;
+      } catch (error) {
+          console.error(error);
+          toast.error("Something went wrong");
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  const purchaseLargeCredits = async () => {
+    try {
+        setLoading(true);
+        const response = await axios.get(`/api/stripe/credits/large`);
+        window.location.href = response.data.url;
+    } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+    } finally {
+        setLoading(false);
+    }
+};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -72,7 +98,7 @@ export const CreditsHero = ({
                                 <CardDescription>20 Credits | $2.40 | $0.12 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Button className="w-full" onClick={() => purchaseBasicCredits()}>Buy Now</Button>
+                                <Button className="w-full" onClick={() => purchaseSmallCredits()}>Buy Now</Button>
                             </CardContent>
                         </Card>
                         <Card>
@@ -81,7 +107,7 @@ export const CreditsHero = ({
                                 <CardDescription>50 Credits | $5.00 | $0.10 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {/* <Button className="w-full" onClick={() => purchaseCredits('medium')}>Buy Now</Button> */}
+                                <Button className="w-full" onClick={() => purchaseMediumCredits()}>Buy Now</Button>
                             </CardContent>
                         </Card>
                         <Card>
@@ -90,7 +116,7 @@ export const CreditsHero = ({
                                 <CardDescription>100 Credits | $8.00 | $0.08 per credit</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                {/* <Button className="w-full" onClick={() => purchaseCredits('large')}>Buy Now</Button> */}
+                                <Button className="w-full" onClick={() => purchaseLargeCredits()}>Buy Now</Button>
                             </CardContent>
                         </Card>
                     </div>
