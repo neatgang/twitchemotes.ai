@@ -1,23 +1,130 @@
+// "use client"
+
+
+// import Link from "next/link";
+// // import { signIn, signOut, useSession } from "next-auth/react";
+// // import { useBuyCredits } from "~/hooks/useBuyCredits";
+// // import { api } from "~/utils/api";
+// // import { Button } from "./Button";
+// // import { PrimaryLink } from "./PrimaryLink";
+
+
+// // import { PrimaryLink } from "./PrimaryLink";
+// import { Button } from "./ui/button";
+// import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+// import { FreeCounter } from "./FreeCounter";
+// import { SubscriptionButton } from "./SubscriptionButton";
+// import { Avatar, AvatarImage } from "./ui/avatar";
+// import { LandingMobileNavbar } from "./LandingMobileNav";
+// import { UserAccountNav } from "./UserAccountNav";
+// import { CreditsDisplay } from "./CreditsDisplay";
+
+// export const Navbar = ({
+//   apiLimitCount = 0,
+//   isPro = false,
+//   credits = 0
+// }: {
+//   apiLimitCount: number;
+//   isPro: boolean;
+//   credits: number;
+// }) => {
+// //   const session = useSession();
+// //   const { buyCredits } = useBuyCredits();
+
+// //   const isLoggedIn = !!session.data;
+
+// //   const credits = api.user.getCredits.useQuery(undefined, {
+// //     enabled: isLoggedIn,
+// //   });
+
+// return (
+//   <header className="dark:bg-gray-900">
+//     <div className="container mx-auto flex h-16 items-center justify-between px-4">
+//       <nav className="flex items-center justify-center">
+//         <LandingMobileNavbar />
+//         {/* <div className="sm:hidden"> */}
+//         <Button variant="link">
+//           <Avatar className="mr-2">
+//             <AvatarImage src="/peepopainter.jpg"/>
+//           </Avatar>
+//           <Link href="/">EmoteMaker.ai</Link>
+//         </Button>
+//         <div className="md:block hidden">
+//         <Button variant="ghost">
+//           <Link href="/emotes">Create Emotes</Link>
+//         </Button>
+//         <Button variant="ghost">
+//           <Link href="/imagetoprompt">Generate Prompts</Link>
+//         </Button>
+//         <Button variant="ghost">
+//           <Link href="/showcase">Showcase</Link>
+//         </Button>
+//         {/* <Button variant="ghost">
+//           <Link href="https://shop.emotemaker.ai">Shop</Link>
+//         </Button> */}
+//         </div>
+//       </nav>
+//       <div className="flex items-center space-x-2">
+//         <SignedIn>
+//         <CreditsDisplay credits={credits} />
+//           {/* <FreeCounter 
+//             apiLimitCount={apiLimitCount} 
+//             isPro={isPro}
+//           /> */}
+//           {/* <UserButton 
+//             afterSignOutUrl="/"
+
+//           /> */}
+//           <UserAccountNav isPro={isPro}/>
+//         </SignedIn>
+//         <SignedOut>
+//           <Button variant="ghost">
+//             <Link href="/sign-in">Login</Link>
+//           </Button>
+//         </SignedOut>
+//       </div>
+//     </div>
+//   </header>
+// );
+// }
+
+// export default Navbar;
+
 "use client"
 
-
 import Link from "next/link";
-// import { signIn, signOut, useSession } from "next-auth/react";
-// import { useBuyCredits } from "~/hooks/useBuyCredits";
-// import { api } from "~/utils/api";
-// import { Button } from "./Button";
-// import { PrimaryLink } from "./PrimaryLink";
-
-
-// import { PrimaryLink } from "./PrimaryLink";
 import { Button } from "./ui/button";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { FreeCounter } from "./FreeCounter";
-import { SubscriptionButton } from "./SubscriptionButton";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { LandingMobileNavbar } from "./LandingMobileNav";
 import { UserAccountNav } from "./UserAccountNav";
 import { CreditsDisplay } from "./CreditsDisplay";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+const emoteTypes = [
+  { name: "Pixel Emotes", link: "/pixels" },
+  { name: "Kawaii Emotes", link: "/kawaii" },
+  { name: "Object Emotes", link: "/objects" },
+  { name: "Cute Bold Line Emotes", link: "/cuteboldline" },
+  { name: "Text Based Emotes", link: "/textbased" },
+  { name: "3D Based Emotes", link: "/3d" },
+  { name: "Pepe Based Emotes", link: "/pepethefrog" },
+  { name: "Sticker Based Emotes", link: "/stickers" },
+  { name: "Chibi Emotes", link: "/chibi" },
+  { name: "Meme Emotes", link: "/meme" }
+];
+
+const tools = [
+  // { name: "Remove Background", link: "/" },
+  { name: "Image to Prompt", link: "/imagetoprompt" },
+];
 
 export const Navbar = ({
   apiLimitCount = 0,
@@ -28,53 +135,64 @@ export const Navbar = ({
   isPro: boolean;
   credits: number;
 }) => {
-//   const session = useSession();
-//   const { buyCredits } = useBuyCredits();
-
-//   const isLoggedIn = !!session.data;
-
-//   const credits = api.user.getCredits.useQuery(undefined, {
-//     enabled: isLoggedIn,
-//   });
-
 return (
   <header className="dark:bg-gray-900">
     <div className="container mx-auto flex h-16 items-center justify-between px-4">
       <nav className="flex items-center justify-center">
         <LandingMobileNavbar />
-        {/* <div className="sm:hidden"> */}
-        <Button variant="link">
-          <Avatar className="mr-2">
-            <AvatarImage src="/peepopainter.jpg"/>
-          </Avatar>
-          <Link href="/">EmoteMaker.ai</Link>
-        </Button>
-        <div className="md:block hidden">
+        <NavigationMenu>
+                <Button variant="link">
+                  <Avatar className="mr-2">
+                    <AvatarImage src="/peepopainter.jpg"/>
+                  </Avatar>
+                  EmoteMaker.ai
+                </Button>
+            <NavigationMenuList>
+            <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <a>Create Emotes</a>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {emoteTypes.map((type) => (
+                      <ListItem
+                        key={type.name}
+                        title={type.name}
+                        href={type.link}
+                      >
+                        {/* {type?.description} Ensure descriptions are available or adjust accordingly */}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            <NavigationMenuItem>
+                <NavigationMenuTrigger>
+                  <a>Tools</a>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px]">
+                    {tools.map((type) => (
+                      <ListItem
+                        key={type.name}
+                        title={type.name}
+                        href={type.link}
+                      >
+                        {/* {type?.description} Ensure descriptions are available or adjust accordingly */}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         <Button variant="ghost">
-          <Link href="/emotes">Create Emotes</Link>
-        </Button>
-        <Button variant="ghost">
-          <Link href="/imagetoprompt">Generate Prompts</Link>
-        </Button>
-        <Button variant="ghost">
-          <Link href="/showcase">Showcase</Link>
-        </Button>
-        {/* <Button variant="ghost">
-          <Link href="https://shop.emotemaker.ai">Shop</Link>
-        </Button> */}
-        </div>
+      <Link href="/showcase">Showcase</Link>
+      </Button>
       </nav>
       <div className="flex items-center space-x-2">
         <SignedIn>
-        <CreditsDisplay credits={credits} />
-          {/* <FreeCounter 
-            apiLimitCount={apiLimitCount} 
-            isPro={isPro}
-          /> */}
-          {/* <UserButton 
-            afterSignOutUrl="/"
-
-          /> */}
+          <CreditsDisplay credits={credits} />
           <UserAccountNav isPro={isPro}/>
         </SignedIn>
         <SignedOut>
@@ -89,3 +207,32 @@ return (
 }
 
 export default Navbar;
+
+import * as React from "react";
+import { cn } from "@/lib/utils"; // Ensure you have a utility function to handle classnames
+
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+});
+ListItem.displayName = "ListItem";
