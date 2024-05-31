@@ -31,7 +31,7 @@ export const CreditsHero = ({
     const purchaseCredits = async (packageType: string) => {
       try {
           setLoading(true);
-          const response = await axios.get(`/api/stripe/credits?package=${packageType}`);
+          const response = await axios.get(`/api/stripe/credits`);
           window.location.href = response.data.url;
       } catch (error) {
           console.error(error);
