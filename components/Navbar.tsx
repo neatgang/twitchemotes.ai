@@ -148,11 +148,11 @@ return (
                   EmoteMaker.ai
                 </Button>
             <NavigationMenuList>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="hidden sm:block">
                 <NavigationMenuTrigger>
                   <a>Create Emotes</a>
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="mt-0 flex">
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {emoteTypes.map((type) => (
                       <ListItem
@@ -166,11 +166,11 @@ return (
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="hidden sm:block">
                 <NavigationMenuTrigger>
                   <a>Tools</a>
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuContent className="mt-0 flex">
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[600px]">
                     {tools.map((type) => (
                       <ListItem
@@ -186,11 +186,11 @@ return (
               </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <Button variant="ghost">
+        <Button variant="ghost" className="hidden sm:block">
       <Link href="/showcase">Showcase</Link>
       </Button>
-      <Button variant="ghost">
-      <Link href="/credits">Get More Credits</Link>
+      <Button variant="ghost" className="hidden sm:block">
+      <Link href="/credits">Credits</Link>
       </Button>
       </nav>
       <div className="flex items-center space-x-2">
