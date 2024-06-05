@@ -122,8 +122,8 @@ const emoteTypes = [
 ];
 
 const tools = [
-  { name: "Remove Background", link: "/remove-background" },
-  { name: "Image to Prompt", link: "/imagetoprompt" },
+  // { name: "Remove Background", link: "/remove-background" },
+  // { name: "Image to Prompt", link: "/imagetoprompt" },
   { name: "Whiteboard", link: "/whiteboard" },
 ];
 
