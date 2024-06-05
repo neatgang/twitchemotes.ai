@@ -1,6 +1,6 @@
 {
 "functions": {
-    "api/replicate/bg-remove.js": {
+    "api/replicate/bg-remove/route.ts": {
       "maxDuration": 60
     }
   }
