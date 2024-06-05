@@ -79,6 +79,7 @@ model User {
 model Emote {
   id           String        @id @default(cuid())
   prompt       String?
+  style        String?
   imageUrl     String?       @db.Text
   user         User?         @relation(fields: [userId], references: [id])
   userId       String?
