@@ -1,7 +1,0 @@
-{
-"functions": {
-    "api/replicate/bg-remove/route.ts": {
-      "maxDuration": 60
-    }
-  }
-}

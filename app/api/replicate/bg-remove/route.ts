@@ -1,8 +1,13 @@
+
 import Replicate from 'replicate';
 import { NextResponse } from "next/server";
 
 // Assuming you might need authentication or other environment variables
 // import { auth } from "@clerk/nextjs";
+
+export const maxDuration = 60
+
+export const dynamic = 'force-dynamic';
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
