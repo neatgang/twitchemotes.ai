@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 // Assuming you might need authentication or other environment variables
 // import { auth } from "@clerk/nextjs";
 
-export const maxDuration = 600
+export const maxDuration = 300
 
 export const dynamic = 'force-dynamic';
 
