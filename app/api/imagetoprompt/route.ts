@@ -10,6 +10,8 @@ import { NextResponse } from "next/server";
 //   runtime: 'edge',
 // }
 
+export const maxDuration = 300;
+
 interface ReplicateResponse {
   output: string;
   // Include other properties as needed

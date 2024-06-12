@@ -6,6 +6,8 @@ import { env } from "@/env.mjs";
 import { v4 as uuidv4 } from "uuid"
 import axios from "axios";
 
+export const maxDuration = 300;
+
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {

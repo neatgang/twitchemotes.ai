@@ -10,6 +10,8 @@ import { NextResponse } from "next/server";
 //   runtime: 'edge',
 // }
 
+export const maxDuration = 300;
+
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
 });

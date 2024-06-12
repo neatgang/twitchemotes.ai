@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+export const maxDuration = 300;
+
 export async function POST(req: Request) {
     const body = await req.json();
     const { emoteId } = body;

@@ -7,7 +7,7 @@ import { stripe } from "@/lib/stripe";
 
 const settingsUrl = absoluteUrl("/");
 
-export const runtime = 'edge';
+export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {

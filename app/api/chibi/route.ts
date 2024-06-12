@@ -6,12 +6,12 @@ import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 import { db } from "@/lib/db";
 
+export const maxDuration = 300;
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const runtime = "edge"
 
 export async function POST(
   req: Request
