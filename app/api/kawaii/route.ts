@@ -1,3 +1,4 @@
+
 import { checkSubscription } from "@/lib/subscription";
 import { checkApiLimit, getApiLimitCount, incrementApiLimit } from "@/lib/api-limit";
 
@@ -6,6 +7,7 @@ import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 import { db } from "@/lib/db";
 
+export const maxDuration = 300;
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
