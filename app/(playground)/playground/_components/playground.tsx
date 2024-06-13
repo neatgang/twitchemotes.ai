@@ -23,20 +23,20 @@ export function Playground() {
 
     return (
       <div className="grid w-full pl-[56px]">
-        <Sidebar />
+        {/* <Sidebar /> */}
         <div className="flex flex-col">
-          <Header />
+          {/* <Header /> */}
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-2">
           {/* <SettingsForm setPhotos={setPhotos} /> */}
             {/* <MessageForm /> */}
-            {/* <EmoteGeneration
+            <EmoteGeneration
             photos={photos}
             removeBackground={removeBackground}
             isRemovingBackground={false}
             handleSave={handleSave}
-            form={form}
+            // form={form}
             userId={userId}
-        /> */}
+        />
           </main>
         </div>
       </div>

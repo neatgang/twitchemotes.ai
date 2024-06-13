@@ -1,32 +1,15 @@
+"use client"
+
 import {
-    Bird,
-    Book,
-    Bot,
-    Code2,
-    CornerDownLeft,
-    LifeBuoy,
-    Mic,
-    Paperclip,
-    Rabbit,
-    Settings,
-    Settings2,
-    Share,
-    TerminalIcon,
-    Triangle,
-    Turtle,
-    User,
+  Download,
+  Loader,
+  Paintbrush2,
+  SaveAll,
+    Wand2,
   } from "lucide-react"
   
   import { Badge } from "@/components/ui/badge"
   import { Button } from "@/components/ui/button"
-  import {
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-  } from "@/components/ui/drawer"
   import { Input } from "@/components/ui/input"
   import { Label } from "@/components/ui/label"
   import {
@@ -36,421 +19,154 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-  import { Textarea } from "@/components/ui/textarea"
-  import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-  } from "@/components/ui/tooltip"
+import { emoteTypes, formSchema } from "@/types/types"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import toast from "react-hot-toast"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import axios from "axios"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import Empty from "@/components/Empty"
+import { Card, CardFooter } from "@/components/ui/card"
+import Image from "next/image"
   
-  export function Playground() {
-    return (
-      <div className="grid h-screen w-full pl-[56px]">
-        <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
-          <div className="border-b p-2">
-            <Button variant="outline" size="icon" aria-label="Home">
-              <Triangle className="size-5 fill-foreground" />
-            </Button>
-          </div>
-          <nav className="grid gap-1 p-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg bg-muted"
-                  aria-label="Playground"
-                >
-                  <TerminalIcon className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Playground
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Models"
-                >
-                  <Bot className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Models
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="API"
-                >
-                  <Code2 className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                API
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Documentation"
-                >
-                  <Book className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Documentation
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Settings"
-                >
-                  <Settings2 className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Settings
-              </TooltipContent>
-            </Tooltip>
-          </nav>
-          <nav className="mt-auto grid gap-1 p-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mt-auto rounded-lg"
-                  aria-label="Help"
-                >
-                  <LifeBuoy className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Help
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mt-auto rounded-lg"
-                  aria-label="Account"
-                >
-                  <User className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Account
-              </TooltipContent>
-            </Tooltip>
-          </nav>
-        </aside>
-        <div className="flex flex-col">
-          <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
-            <h1 className="text-xl font-semibold">Playground</h1>
-            <Drawer>
-              <DrawerTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Settings className="size-4" />
-                  <span className="sr-only">Settings</span>
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent className="max-h-[80vh]">
-                <DrawerHeader>
-                  <DrawerTitle>Configuration</DrawerTitle>
-                  <DrawerDescription>
-                    Configure the settings for the model and messages.
-                  </DrawerDescription>
-                </DrawerHeader>
-                <form className="grid w-full items-start gap-6 overflow-auto p-4 pt-0">
-                  <fieldset className="grid gap-6 rounded-lg border p-4">
-                    <legend className="-ml-1 px-1 text-sm font-medium">
-                      Settings
-                    </legend>
-                    <div className="grid gap-3">
-                      <Label htmlFor="model">Model</Label>
-                      <Select>
-                        <SelectTrigger
-                          id="model"
-                          className="items-start [&_[data-description]]:hidden"
-                        >
-                          <SelectValue placeholder="Select a model" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="genesis">
-                            <div className="flex items-start gap-3 text-muted-foreground">
-                              <Rabbit className="size-5" />
-                              <div className="grid gap-0.5">
-                                <p>
-                                  Neural{" "}
-                                  <span className="font-medium text-foreground">
-                                    Genesis
-                                  </span>
-                                </p>
-                                <p className="text-xs" data-description>
-                                  Our fastest model for general use cases.
-                                </p>
-                              </div>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="explorer">
-                            <div className="flex items-start gap-3 text-muted-foreground">
-                              <Bird className="size-5" />
-                              <div className="grid gap-0.5">
-                                <p>
-                                  Neural{" "}
-                                  <span className="font-medium text-foreground">
-                                    Explorer
-                                  </span>
-                                </p>
-                                <p className="text-xs" data-description>
-                                  Performance and speed for efficiency.
-                                </p>
-                              </div>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="quantum">
-                            <div className="flex items-start gap-3 text-muted-foreground">
-                              <Turtle className="size-5" />
-                              <div className="grid gap-0.5">
-                                <p>
-                                  Neural{" "}
-                                  <span className="font-medium text-foreground">
-                                    Quantum
-                                  </span>
-                                </p>
-                                <p className="text-xs" data-description>
-                                  The most powerful model for complex
-                                  computations.
-                                </p>
-                              </div>
-                            </div>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="temperature">Temperature</Label>
-                      <Input id="temperature" type="number" placeholder="0.4" />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="top-p">Top P</Label>
-                      <Input id="top-p" type="number" placeholder="0.7" />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="top-k">Top K</Label>
-                      <Input id="top-k" type="number" placeholder="0.0" />
-                    </div>
-                  </fieldset>
-                  <fieldset className="grid gap-6 rounded-lg border p-4">
-                    <legend className="-ml-1 px-1 text-sm font-medium">
-                      Messages
-                    </legend>
-                    <div className="grid gap-3">
-                      <Label htmlFor="role">Role</Label>
-                      <Select defaultValue="system">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="system">System</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
-                          <SelectItem value="assistant">Assistant</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="content">Content</Label>
-                      <Textarea id="content" placeholder="You are a..." />
-                    </div>
-                  </fieldset>
-                </form>
-              </DrawerContent>
-            </Drawer>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto gap-1.5 text-sm"
-            >
-              <Share className="size-3.5" />
-              Share
-            </Button>
-          </header>
-          <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
-            <div
-              className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0"
-            >
-              <form className="grid w-full items-start gap-6">
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                  <legend className="-ml-1 px-1 text-sm font-medium">
-                    Settings
-                  </legend>
+export function OldPlayground() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+
+      description: "",
+    }
+  });
+
+  const { control, handleSubmit, watch } = form;
+  const emoteType = watch("emoteType");
+
+  useEffect(() => {
+    console.log("Emote Type changed to:", emoteType);
+  }, [emoteType]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    setPhotos([]);
+    try {
+      const response = await axios.post('/api/generate', values);
+      const urls = response.data.map((image: { url: string }) => image.url);
+      setPhotos(urls);
+      toast.success('Emote generated successfully!');
+    } catch (error) {
+      toast.error('Failed to generate emote. Please try again.');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="grid w-full">
+      <div className="flex flex-col">
+        <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="relative hidden flex-col items-start gap-8 md:flex">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-start gap-6">
+                <div className="grid gap-6 rounded-lg border p-4">
+                  <p className="-ml-1 px-1 text-sm font-medium">Settings</p>
                   <div className="grid gap-3">
-                    <Label htmlFor="model">Model</Label>
-                    <Select>
-                      <SelectTrigger
-                        id="model"
-                        className="items-start [&_[data-description]]:hidden"
-                      >
-                        <SelectValue placeholder="Select a model" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="genesis">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Rabbit className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Genesis
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                Our fastest model for general use cases.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="explorer">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Bird className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Explorer
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                Performance and speed for efficiency.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="quantum">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Turtle className="size-5" />
-                            <div className="grid gap-0.5">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Quantum
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                The most powerful model for complex computations.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="temperature">Temperature</Label>
-                    <Input id="temperature" type="number" placeholder="0.4" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="grid gap-3">
-                      <Label htmlFor="top-p">Top P</Label>
-                      <Input id="top-p" type="number" placeholder="0.7" />
-                    </div>
-                    <div className="grid gap-3">
-                      <Label htmlFor="top-k">Top K</Label>
-                      <Input id="top-k" type="number" placeholder="0.0" />
-                    </div>
-                  </div>
-                </fieldset>
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                  <legend className="-ml-1 px-1 text-sm font-medium">
-                    Messages
-                  </legend>
-                  <div className="grid gap-3">
-                    <Label htmlFor="role">Role</Label>
-                    <Select defaultValue="system">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="system">System</SelectItem>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="assistant">Assistant</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="content">Content</Label>
-                    <Textarea
-                      id="content"
-                      placeholder="You are a..."
-                      className="min-h-[9.5rem]"
-                    />
-                  </div>
-                </fieldset>
-              </form>
-            </div>
-            <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-              <Badge variant="outline" className="absolute right-3 top-3">
-                Output
-              </Badge>
-              <div className="flex-1" />
-              <form
-                className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring" x-chunk="dashboard-03-chunk-1"
-              >
-                <Label htmlFor="message" className="sr-only">
-                  Message
-                </Label>
-                <Textarea
-                  id="message"
-                  placeholder="Type your message here..."
-                  className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-                />
-                <div className="flex items-center p-3 pt-0">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Paperclip className="size-4" />
-                        <span className="sr-only">Attach file</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">Attach File</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Mic className="size-4" />
-                        <span className="sr-only">Use Microphone</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top">Use Microphone</TooltipContent>
-                  </Tooltip>
-                  <Button type="submit" size="sm" className="ml-auto gap-1.5">
-                    Send Message
-                    <CornerDownLeft className="size-3.5" />
+  <Label htmlFor="prompt">Emote Type</Label>
+  <FormField 
+    control={form.control} 
+    name="emoteType"           
+    render={({ field }) => (
+      <Select {...field}>
+        <SelectTrigger id="emoteType">
+          <SelectValue placeholder="Select an emote type" />
+        </SelectTrigger>
+        <SelectContent>
+          {emoteTypes.map((type) => (
+            <SelectItem key={type.finalPrompt} value={type.finalPrompt}>
+              <div className="flex items-start gap-3 text-muted-foreground">
+                <p className="font-medium text-foreground">{type.name}</p>
+              </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    )}
+  />
+</div>
+                  <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input placeholder="Describe the emote..." {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+                  <Button className="w-full flex justify-center" type="submit" disabled={isLoading} size="icon">
+                    <p className="mr-2">Generate</p>
+                    <Wand2 />
                   </Button>
                 </div>
               </form>
-            </div>
-          </main>
+            </Form>
+          </div>
+          <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+            <Badge variant="outline" className="absolute right-3 top-3">Output</Badge>
+            <div className="flex-1" />
+            {isLoading && (
+          <div className="p-20">
+            <Loader />
+          </div>
+        )}
+        {photos.length === 0 && !isLoading && (
+                        <Empty label="No images generated." />
+        )}
+        <div className="gap-4 mt-8 mb-8">
+        {/* grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 */}
+        {photos.map((src, index) => (
+            <Card key={src} className="rounded-lg overflow-hidden">
+              <div className="relative aspect-square">
+              <Image
+  fill
+  alt="Generated"
+  // src={src && src.startsWith('data:image') ? src : `data:image/jpeg;base64,${src}`}
+  src={src}
+/>
+              </div>
+              <CardFooter className="p-2 flex flex-col gap-2">
+              {/* <Button onClick={() => removeBackground(src, index)} disabled={isRemovingBackground} className="w-full flex">
+  {isRemovingBackground ? (
+    <Loader /> // Replace with your actual loading spinner component
+  ) : (
+    <>
+      <Paintbrush2 className="h-4 w-4 mr-2" />
+      Remove Background
+    </>
+  )}
+</Button> */}
+                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+                {/* <Button onClick={() => handleSave(src, form.getValues().prompt, userId || '')} variant="secondary" className="w-full">
+  <SaveAll className="h-4 w-4 mr-2" />
+  Save
+</Button> */}
+              </CardFooter>
+            </Card>
+          ))}
         </div>
+          </div>
+        </main>
       </div>
-    )
-  }
+    </div>
+  );
+}
   

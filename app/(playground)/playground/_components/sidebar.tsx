@@ -26,11 +26,11 @@ import Image from "next/image"
 export function Sidebar() {
     return (
         <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
-          <div className="border-b p-2">
+          {/* <div className="border-b p-2">
             <Button variant="outline" size="icon" aria-label="Home">
               <Image className="size-5 fill-foreground" src="/peepopainter.jpg" width={40} height={40} alt="EmoteMaker.ai" />
             </Button>
-          </div>
+          </div> */}
           <nav className="grid gap-1 p-2">
             {/* Tooltip components for each navigation button */}
             {/* Playground Tooltip */}

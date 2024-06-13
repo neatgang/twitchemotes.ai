@@ -138,7 +138,7 @@ export const Navbar = ({
 }) => {
 return (
   <header className="dark:bg-gray-900">
-    <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <div className="container mx-auto flex h-16 items-center justify-between">
       <nav className="flex items-center justify-center">
         <LandingMobileNavbar />
         <NavigationMenu>

@@ -3,7 +3,8 @@
 import { BoardList } from "@/components/canvas/boardlist";
 import { EmptyOrg } from "@/components/canvas/empty-org";
 import { useOrganization } from "@clerk/nextjs"
-import { Playground } from "./_components/playground";
+import { OldPlayground } from "../playground/_components/oldplayground";
+
 
 
 interface DashboardPageProps {
@@ -17,11 +18,10 @@ const PlaygroundPage = ({
     searchParams,
 }: DashboardPageProps) => {
 
-    const { organization } = useOrganization();
 
     return (
      <div>
-        <Playground />
+        <OldPlayground />
      </div>
     )
 }
