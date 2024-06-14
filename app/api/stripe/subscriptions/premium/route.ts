@@ -72,16 +72,16 @@ export async function GET(req: Request) {
 
     const userName = user.firstName || '' + user.lastName || ''
 
-    await db.user.update({
-      where: { id: userId },
-      data: {
-          credits: {
-              increment: 300 // Increment by 50 credits or based on the specific plan
-          },
-          name: userName,
-          email: user.emailAddresses[0].emailAddress
-      }
-  });
+  //   await db.user.update({
+  //     where: { id: userId },
+  //     data: {
+  //         credits: {
+  //             increment: 300 // Increment by 50 credits or based on the specific plan
+  //         },
+  //         name: userName,
+  //         email: user.emailAddresses[0].emailAddress
+  //     }
+  // });
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
