@@ -11,11 +11,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { checkSubscription } from "../lib/subscription";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Landing from "@/components/Landing";
+
 import { auth } from "@clerk/nextjs/server";
 import { useUser } from '@clerk/nextjs'
 import { db } from "@/lib/db";
 import { getUser } from "@/actions/get-user";
+import Landing from "@/components/Landing";
 
 // const demophotos = [
 //   {

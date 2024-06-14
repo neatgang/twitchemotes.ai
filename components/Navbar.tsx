@@ -190,9 +190,9 @@ return (
         <Button variant="ghost" className="hidden sm:block">
       <Link href="/showcase">Showcase</Link>
       </Button>
-      <Button variant="ghost" className="hidden sm:block">
+      {/* <Button variant="ghost" className="hidden sm:block">
       <Link href="/credits">Credits</Link>
-      </Button>
+      </Button> */}
       </nav>
       <div className="flex items-center space-x-2">
         <SignedIn>
