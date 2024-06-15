@@ -47,7 +47,7 @@ export async function GET(req: Request) {
         },
       ],
       metadata: {
-        userId,
+        userId: userId
       },
     });
 
