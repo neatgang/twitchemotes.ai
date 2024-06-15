@@ -49,6 +49,14 @@ export async function GET(req: Request) {
       metadata: {
         userId: userId
       },
+      invoice_creation: {
+        enabled: true, // Enable invoice creation
+        invoice_data: {
+          metadata: {
+            userId: userId
+          }
+        }
+      }
     });
 
     const userName = user.firstName || '' + user.lastName || ''

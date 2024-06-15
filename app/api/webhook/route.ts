@@ -66,14 +66,14 @@ export async function POST(req: Request) {
       return new NextResponse(`Error retrieving subscription: ${error.message}`, { status: 500 });
     }
 
-    if (!subscription.metadata || !subscription.metadata.userId) {
-      console.error("User id is missing in subscription metadata");
-      return new NextResponse("User id is required in subscription metadata", { status: 400 });
+    if (!invoice.metadata || !invoice.metadata.userId) {
+      console.error("User id is missing in invoice metadata");
+      return new NextResponse("User id is required in invoice metadata", { status: 400 });
     }
 
-    console.log("User ID from subscription metadata:", subscription.metadata.userId);
+    console.log("User ID from invoice metadata:", invoice.metadata.userId);
 
-    const userId = subscription.metadata.userId;
+    const userId = invoice.metadata.userId;
     const priceId = subscription.items.data[0].price.id;
 
     // Determine the number of credits based on the subscription plan
