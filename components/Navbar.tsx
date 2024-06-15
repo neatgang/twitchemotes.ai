@@ -122,9 +122,9 @@ const emoteTypes = [
 ];
 
 const tools = [
-  { name: "Remove Background", link: "/remove-background" },
-  { name: "Image to Prompt", link: "/imagetoprompt" },
-  { name: "Whiteboard", link: "/whiteboard" },
+  { name: "Remove Background", link: "/tools/remove-background" },
+  { name: "Image to Prompt", link: "/tools/imagetoprompt" },
+  { name: "Whiteboard", link: "/tools/whiteboard" },
 ];
 
 export const Navbar = ({
