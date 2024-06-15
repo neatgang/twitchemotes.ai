@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     //   return new NextResponse("Some other field is required", { status: 400 });
     // }
 
-    const output = await replicate.run("smoretalk/rembg-enhance:4067ee2a58f6c161d434a9c077cfa012820b8e076efa2772aa171e26557da919", { input: { image } });
+    const output = await replicate.run("lucataco/remove-bg:95fcc2a26d3899cd6c2691c900465aaeff466285a65c14638cc5f36f34befaf1", { input: { image } });
     console.log(output);
 
     // Optionally, you could save the request or response to a database here
