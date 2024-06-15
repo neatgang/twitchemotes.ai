@@ -1,32 +1,33 @@
-import Stripe from "stripe"
-import { headers } from "next/headers"
-import { NextResponse } from "next/server"
+import Stripe from "stripe";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
-import { stripe } from "@/lib/stripe"
-import { db } from "@/lib/db"
+import { stripe } from "@/lib/stripe";
+import { db } from "@/lib/db";
 
 export async function POST(req: Request) {
-  const body = await req.text()
-  const signature = headers().get("Stripe-Signature") as string
+  const body = await req.text();
+  const signature = headers().get("Stripe-Signature") as string;
 
-  let event: Stripe.Event
+  let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
-    )
+    );
   } catch (error: any) {
-    return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 })
+    console.error("Webhook Error:", error.message);
+    return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
   }
 
-  const session = event.data.object as Stripe.Checkout.Session
+  const session = event.data.object as Stripe.Checkout.Session;
 
   if (event.type === "checkout.session.completed") {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
-    )
+    );
 
     if (!session?.metadata?.userId) {
       return new NextResponse("User id is required", { status: 400 });
@@ -42,14 +43,26 @@ export async function POST(req: Request) {
           subscription.current_period_end * 1000
         ),
       },
-    })
+    });
   }
 
   if (event.type === "invoice.payment_succeeded") {
     const invoice = event.data.object as Stripe.Invoice;
-    const subscription = await stripe.subscriptions.retrieve(
-      invoice.subscription as string
-    )
+    let subscription;
+
+    try {
+      subscription = await stripe.subscriptions.retrieve(
+        invoice.subscription as string
+      );
+    } catch (error: any) {
+      console.error("Error retrieving subscription:", error.message);
+      return new NextResponse(`Error retrieving subscription: ${error.message}`, { status: 500 });
+    }
+
+    if (!subscription.metadata || !subscription.metadata.userId) {
+      console.error("User id is missing in subscription metadata");
+      return new NextResponse("User id is required in subscription metadata", { status: 400 });
+    }
 
     const userId = subscription.metadata.userId;
     const priceId = subscription.items.data[0].price.id;
@@ -72,25 +85,30 @@ export async function POST(req: Request) {
     }
 
     // Update the user's credits in your database
-    await db.user.update({
-      where: { id: userId },
-      data: {
-        credits: {
-          increment: creditsToAdd,
+    try {
+      await db.user.update({
+        where: { id: userId },
+        data: {
+          credits: {
+            increment: creditsToAdd,
+          },
         },
-      },
-    });
+      });
 
-    await db.userSubscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
-      },
-    });
+      await db.userSubscription.update({
+        where: {
+          stripeSubscriptionId: subscription.id,
+        },
+        data: {
+          stripePriceId: subscription.items.data[0].price.id,
+          stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        },
+      });
+    } catch (error: any) {
+      console.error("Error updating user or subscription:", error.message);
+      return new NextResponse(`Error updating user or subscription: ${error.message}`, { status: 500 });
+    }
   }
 
-  return new NextResponse(null, { status: 200 })
-};
+  return new NextResponse(null, { status: 200 });
+}
