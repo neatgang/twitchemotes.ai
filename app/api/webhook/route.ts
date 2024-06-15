@@ -79,16 +79,16 @@ export async function POST(req: Request) {
       },
     })
 
-    const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
+    // const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
 
-    await db.user.update({
-      where: { id: session?.metadata?.userId },
-      data: {
-        credits: {
-          increment: creditsToAdd,
-        },
-      },
-    });
+    // await db.user.update({
+    //   where: { id: session?.metadata?.userId },
+    //   data: {
+    //     credits: {
+    //       increment: creditsToAdd,
+    //     },
+    //   },
+    // });
   }
 
   return new NextResponse(null, { status: 200 })
