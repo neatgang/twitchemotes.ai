@@ -46,9 +46,40 @@ export async function POST(req: Request) {
   }
 
   if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data.object as Stripe.Invoice;
     const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
+      invoice.subscription as string
     )
+
+    const userId = subscription.metadata.userId;
+    const priceId = subscription.items.data[0].price.id;
+
+    // Determine the number of credits based on the subscription plan
+    let creditsToAdd;
+    switch (priceId) {
+      case "price_basic_plan_id":
+        creditsToAdd = 50;
+        break;
+      case "price_premium_plan_id":
+        creditsToAdd = 100;
+        break;
+      case "price_standard_plan_id":
+        creditsToAdd = 75;
+        break;
+      // Add more cases for other plans
+      default:
+        creditsToAdd = 0;
+    }
+
+    // Update the user's credits in your database
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        credits: {
+          increment: creditsToAdd,
+        },
+      },
+    });
 
     await db.userSubscription.update({
       where: {
@@ -56,12 +87,9 @@ export async function POST(req: Request) {
       },
       data: {
         stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-
+        stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
       },
-    })
+    });
   }
 
   return new NextResponse(null, { status: 200 })
