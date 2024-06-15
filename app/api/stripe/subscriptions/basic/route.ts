@@ -42,24 +42,33 @@ export async function GET(req: Request) {
       customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
-          price_data: {
-            currency: "USD",
-            product_data: {
-              name: "EmoteMaker.ai Pro",
-              description: "Generate Emotes using a single prompt."
-            },
-            unit_amount: 1500,
-            recurring: {
-              interval: "month"
-            }
-          },
+          price: "price_1PHJN1IlERZTJMCmqIRQ1Szy", // Replace with actual price ID for Basic Plan
           quantity: 1,
         },
       ],
       metadata: {
-        userId: userId, // Ensure userId is included here
+        userId,
       },
-    })
+    });
+
+    const userName = user.firstName || '' + user.lastName || ''
+
+    // await db.userApiLimit.upsert({
+    //   where: { userId: userId },
+    //   update: { count: 50 },
+    //   create: { userId: userId, count: 50 },
+    // });
+
+  //   await db.user.update({
+  //     where: { id: userId },
+  //     data: {
+  //         credits: {
+  //             increment: 50 // Increment by 50 credits or based on the specific plan
+  //         },
+  //         name: userName,
+  //         email: user.emailAddresses[0].emailAddress
+  //     }
+  // });
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
