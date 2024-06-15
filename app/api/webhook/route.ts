@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     // Determine the number of credits based on the subscription plan
     let creditsToAdd;
     switch (priceId) {
-      case "price_basic_plan_id":
+      case "price_1PHJN1IlERZTJMCmqIRQ1Szy":
         creditsToAdd = 50;
         break;
       case "price_premium_plan_id":
