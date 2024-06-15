@@ -33,9 +33,16 @@ export async function POST(req: Request) {
       return new NextResponse("User id is required", { status: 400 });
     }
 
+    // Update the subscription with metadata
+    await stripe.subscriptions.update(subscription.id, {
+      metadata: {
+        userId: session.metadata.userId,
+      },
+    });
+
     await db.userSubscription.create({
       data: {
-        userId: session?.metadata?.userId,
+        userId: session.metadata.userId,
         stripeSubscriptionId: subscription.id,
         stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
@@ -63,6 +70,8 @@ export async function POST(req: Request) {
       console.error("User id is missing in subscription metadata");
       return new NextResponse("User id is required in subscription metadata", { status: 400 });
     }
+
+    console.log("User ID from subscription metadata:", subscription.metadata.userId);
 
     const userId = subscription.metadata.userId;
     const priceId = subscription.items.data[0].price.id;
