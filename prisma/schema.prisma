@@ -147,6 +147,7 @@ model UserSubscription {
   updatedAt              DateTime? @updatedAt
   name                   String?
   email                  String?
+  credits                Int       @default(0) // New credits field
   user                   User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
