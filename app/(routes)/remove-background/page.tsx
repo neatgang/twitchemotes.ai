@@ -47,7 +47,7 @@ export default function ImageToBgRemove() {
             EmoteMaker.ai
           </h2>
           <p className="text-sm text-muted-foreground">
-            Turn a picture of yourself into a prompt that you can use to generate emotes.
+            Quickly remove the background of your generated emote.
           </p>
         </div>
       </div>

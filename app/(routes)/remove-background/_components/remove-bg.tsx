@@ -22,10 +22,11 @@ function RemoveBGContainer() {
         try {
           setIsProcessing(true);
           const response = await axios.post('/api/replicate/bg-remove', { image: reader.result });
-          if (response.data && response.data.url) {  // Assuming the server returns an object with a 'url' property
+          console.log('API Response:', response.data); // Log the response
+          if (response.data && response.data) {  // Assuming the server returns an object with a 'url' property
             setImageData({
               original: URL.createObjectURL(file),
-              processed: response.data.url
+              processed: response.data
             });
             toast.success("Background removed successfully!");
           } else {
@@ -42,31 +43,32 @@ function RemoveBGContainer() {
     }
   };
 
-  const removeBackground = async () => {
-    if (imageData && imageData.original) {
-      setIsProcessing(true);
-      try {
-        const response = await axios.post('/api/replicate/bg-remove', { image: imageData.original });
-        if (response.data && response.data.url) {  // Adjusted to check for 'url' in response
-          setImageData(prev => {
-            if (prev === null) return null;
-            return {
-              ...prev,
-              processed: response.data.url  // Update to use 'url' from response
-            };
-          });
-          toast.success("Background updated successfully!");
-        } else {
-          toast.error("Failed to update background.");
-        }
-      } catch (error) {
-        console.error('Error updating background:', error);
-        toast.error("Error updating background.");
-      } finally {
-        setIsProcessing(false);
-      }
-    }
-  };
+  // const removeBackground = async () => {
+  //   if (imageData && imageData.original) {
+  //     setIsProcessing(true);
+  //     try {
+  //       const response = await axios.post('/api/replicate/bg-remove', { image: imageData.original });
+  //       console.log('API Response:', response.data); // Log the response
+  //       if (response.data && response.data.url) {  // Adjusted to check for 'url' in response
+  //         setImageData(prev => {
+  //           if (prev === null) return null;
+  //           return {
+  //             ...prev,
+  //             processed: response.data.url  // Update to use 'url' from response
+  //           };
+  //         });
+  //         toast.success("Background updated successfully!");
+  //       } else {
+  //         toast.error("Failed to update background.");
+  //       }
+  //     } catch (error) {
+  //       console.error('Error updating background:', error);
+  //       toast.error("Error updating background.");
+  //     } finally {
+  //       setIsProcessing(false);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -86,9 +88,9 @@ function RemoveBGContainer() {
           <div>
             <h5>Processed</h5>
             <Image src={imageData.processed} alt="Processed Image" width={250} height={250} />
-            <button onClick={removeBackground} disabled={isProcessing}>
+            {/* <button onClick={removeBackground} disabled={isProcessing}>
               Update Background
-            </button>
+            </button> */}
           </div>
         </div>
       )}
