@@ -118,8 +118,8 @@ const PhotoPage = () => {
             }}
           /> */}
           {/* <ImageToPrompt /> */}
-          <ImageToPrompt />
-          {/* <ChatContainer /> */}
+          {/* <ImageToPrompt /> */}
+          <ChatContainer />
         
       </div>
     </div>
