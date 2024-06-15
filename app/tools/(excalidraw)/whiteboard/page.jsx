@@ -127,9 +127,11 @@ export default function Home() {
       <Excalidraw
         excalidrawAPI={(api) => setExcalidrawAPI(api)}
         onChange={handleChange}
-        initialData={{
-          libraryItems: [JSON.parse(bubbleLibrary)],
-        }}
+        initialData={
+          {
+            // libraryItems: [JSON.parse(bubbleLibrary)],
+          }
+        }
       />
     </div>
   );
