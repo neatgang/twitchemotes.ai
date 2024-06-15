@@ -50,22 +50,29 @@ export async function POST(req: Request) {
       },
     })
 
-    // const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
+    const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
 
-    // await db.user.update({
-    //   where: { id: session?.metadata?.userId },
-    //   data: {
-    //     credits: {
-    //       increment: creditsToAdd,
-    //     },
-    //   },
-    // });
+    await db.user.update({
+      where: { id: session?.metadata?.userId },
+      data: {
+        credits: {
+          increment: creditsToAdd,
+        },
+      },
+    });
   }
 
   if (event.type === "invoice.payment_succeeded") {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     )
+
+    const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
+
+    // Retrieve the userSubscription record to get the userId
+    const userSubscription = await db.userSubscription.findUnique({
+      where: { stripeSubscriptionId: subscription.id },
+    });
 
     await db.userSubscription.update({
       where: {
@@ -78,13 +85,6 @@ export async function POST(req: Request) {
         ),
       },
     })
-
-    const creditsToAdd = priceIdToCredits[subscription.items.data[0].price.id] || 0;
-
-    // Retrieve the userSubscription record to get the userId
-    const userSubscription = await db.userSubscription.findUnique({
-      where: { stripeSubscriptionId: subscription.id },
-    });
 
     if (userSubscription) {
       await db.user.update({
