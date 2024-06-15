@@ -33,16 +33,9 @@ export async function POST(req: Request) {
       return new NextResponse("User id is required", { status: 400 });
     }
 
-    // Update the subscription with metadata
-    await stripe.subscriptions.update(subscription.id, {
-      metadata: {
-        userId: session.metadata.userId,
-      },
-    });
-
     await db.userSubscription.create({
       data: {
-        userId: session.metadata.userId,
+        userId: session?.metadata?.userId,
         stripeSubscriptionId: subscription.id,
         stripeCustomerId: subscription.customer as string,
         stripePriceId: subscription.items.data[0].price.id,
@@ -66,14 +59,19 @@ export async function POST(req: Request) {
       return new NextResponse(`Error retrieving subscription: ${error.message}`, { status: 500 });
     }
 
-    if (!invoice.metadata || !invoice.metadata.userId) {
-      console.error("User id is missing in invoice metadata");
-      return new NextResponse("User id is required in invoice metadata", { status: 400 });
+    // Find the user subscription by stripeCustomerId
+    const userSubscription = await db.userSubscription.findUnique({
+      where: {
+        stripeCustomerId: invoice.customer as string,
+      },
+    });
+
+    if (!userSubscription) {
+      console.error("User subscription not found for customer:", invoice.customer);
+      return new NextResponse("User subscription not found", { status: 404 });
     }
 
-    console.log("User ID from invoice metadata:", invoice.metadata.userId);
-
-    const userId = invoice.metadata.userId;
+    const userId = userSubscription.userId;
     const priceId = subscription.items.data[0].price.id;
 
     // Determine the number of credits based on the subscription plan
