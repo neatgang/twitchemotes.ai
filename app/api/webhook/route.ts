@@ -9,6 +9,9 @@ const priceIdToCredits: { [priceId: string]: number } = {
   'price_1PHJN1IlERZTJMCmqIRQ1Szy': 50, // Basic plan
   'price_1PHJNQIlERZTJMCmwVYr5wol': 150, // Standard plan
   'price_1PHJOOIlERZTJMCmBCw2uSBY': 300, // Basic plan
+  'price_1PTXsjIlERZTJMCmk9e50tI7': 20, // Small Pack
+  'price_1PTXt2IlERZTJMCmQYmhHVQV': 50, // Mediuum Pack
+  'price_1PTXtHIlERZTJMCmVgzahz20': 100, // Large Pack
 };
 
 export async function POST(req: Request) {
