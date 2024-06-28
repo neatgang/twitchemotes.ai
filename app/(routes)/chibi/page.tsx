@@ -113,30 +113,29 @@ const PhotoPage = () => {
 
   const [isRemovingBackground, setIsRemovingBackground] = useState(false);
 
-const removeBackground = async (src: string, index: number) => {
-  try {
-    setIsRemovingBackground(true); // Start loading
-    // const response = await axios.post('/api/replicate/bg-remove', { image: src });
-    const response = await axios.post('/api/fal/birefnet-bg-remove', { image: src });
-    const newImageUrl = response.data; // Assuming the server returns a plain URL string
+  const removeBackground = async (src: string, index: number) => {
+    try {
+      setIsRemovingBackground(true);
+      const response = await axios.post('/api/fal/birefnet-bg-remove', { image: src });
+      const newImageUrl = response.data.image.url; // Update to use the URL from the response
 
-    if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
-      setPhotos((currentPhotos) => {
-        const updatedPhotos = [...currentPhotos];
-        updatedPhotos[index] = newImageUrl;
-        return updatedPhotos;
-      });
-      toast.success('Background removed successfully!');
-    } else {
-      toast.error('Unexpected response from server. Please try again.');
+      if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {
+        setPhotos((currentPhotos) => {
+          const updatedPhotos = [...currentPhotos];
+          updatedPhotos[index] = newImageUrl;
+          return updatedPhotos;
+        });
+        toast.success('Background removed successfully!');
+      } else {
+        toast.error('Unexpected response from server. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to remove background:', error);
+      toast.error('Failed to remove background. Please try again.');
+    } finally {
+      setIsRemovingBackground(false);
     }
-  } catch (error) {
-    console.error('Failed to remove background:', error);
-    toast.error('Failed to remove background. Please try again.');
-  } finally {
-    setIsRemovingBackground(false); // End loading
-  }
-};
+  };
 
 // const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
 //   try {
