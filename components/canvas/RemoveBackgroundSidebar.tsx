@@ -64,7 +64,7 @@ export default function RemoveBackgroundSidebar({ emotes }: RemoveBackgroundSide
                 <DialogHeader>
                   <h2 className="text-lg font-medium">Select an Emote</h2>
                 </DialogHeader>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-4">
                   {emotes.map((emote) => (
                     <Card key={emote.id} className="group">
                       <CardContent className="flex flex-col items-center justify-center p-6 aspect-square">
@@ -82,9 +82,9 @@ export default function RemoveBackgroundSidebar({ emotes }: RemoveBackgroundSide
                       </CardContent>
                       <CardFooter className="pt-4">
                         <div className="flex flex-col items-start">
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <h2 className="text-xs text-gray-500 dark:text-gray-400">
                             Prompt: {emote.prompt}
-                          </p>
+                          </h2>
                           <Button onClick={() => setUploadedImage(emote.imageUrl || '')} variant="secondary" className="w-full mt-2">
                             Select
                           </Button>

@@ -619,7 +619,7 @@ export const Canvas = ({
 camera={camera}
 setLastUsedColor={setLastUsedColor}
 />
-<div className="relative w-[500px] h-[500px] shadow-md flex-shrink-0 m-24"
+<div className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24"
           // {...getRootProps()} 
           // className={`relative w-[500px] h-[500px] shadow-md flex-shrink-0 ${
           //   isDragActive ? 'border-2 border-dashed border-blue-500' : ''
