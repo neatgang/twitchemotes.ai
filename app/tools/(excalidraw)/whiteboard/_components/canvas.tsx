@@ -57,6 +57,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Emote, EmoteForSale } from "@prisma/client";
 
+import html2canvas from 'html2canvas';
+
 const MAX_LAYERS = 100;
 
 interface CanvasProps {
@@ -554,6 +556,19 @@ export const Canvas = ({
     }
   }, [deleteLayers, history]);
 
+  const handleDownload = async () => {
+    const className = '.relative.w-\\[500px\\].h-\\[500px\\].shadow-lg.flex-shrink-0.m-24';
+    const element = document.querySelector(className) as HTMLElement;
+    if (element) {
+      const canvas = await html2canvas(element);
+      const imgData = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = 'canvas_image.png';
+      link.click();
+    }
+  };
+
   // const onDrop = useCallback((acceptedFiles: File[]) => {
   //   // Only process the drop if there's no uploadedImage or resultImage
   //   if (!uploadedImage && !resultImage && !layer) {
@@ -616,6 +631,7 @@ export const Canvas = ({
           undo={history.undo}
           redo={history.redo}
           deleteLayers={deleteLayers} 
+          handleDownload={handleDownload}
         />
                           {/* <SelectionTools
 camera={camera}

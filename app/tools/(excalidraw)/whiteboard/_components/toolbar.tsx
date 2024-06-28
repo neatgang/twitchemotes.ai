@@ -7,7 +7,8 @@ import {
   StickyNote, 
   Type,
   Undo2,
-  Trash2Icon
+  Trash2Icon,
+  DownloadIcon
 } from "lucide-react";
 
 import { CanvasMode, CanvasState, LayerType } from "@/types/canvas";
@@ -22,6 +23,7 @@ interface ToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   deleteLayers?: () => void; // Correctly type deleteLayers as a function
+    handleDownload?: () => void; 
 };
 
 export const Toolbar = ({
@@ -32,6 +34,7 @@ export const Toolbar = ({
   canUndo,
   canRedo,
   deleteLayers = () => {}, // Provide a default no-op function
+  handleDownload = () => {}, 
 }: ToolbarProps) => {
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
@@ -115,6 +118,11 @@ export const Toolbar = ({
           icon={Trash2Icon}
           onClick={deleteLayers} // Use deleteLayers function
         />
+      <ToolButton
+          label="Download"
+          icon={DownloadIcon}
+          onClick={handleDownload} // Use deleteLayers function
+        />
       </div>
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
         <ToolButton
@@ -135,7 +143,7 @@ export const Toolbar = ({
 };
 
 export const ToolbarSkeleton = () => {
-  return (
+return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4 bg-white h-[360px] w-[52px] shadow-md rounded-md" />
   );
 };
