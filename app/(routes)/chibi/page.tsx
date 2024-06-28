@@ -116,7 +116,8 @@ const PhotoPage = () => {
 const removeBackground = async (src: string, index: number) => {
   try {
     setIsRemovingBackground(true); // Start loading
-    const response = await axios.post('/api/replicate/bg-remove', { image: src });
+    // const response = await axios.post('/api/replicate/bg-remove', { image: src });
+    const response = await axios.post('/api/fal/birefnet-bg-remove', { image: src });
     const newImageUrl = response.data; // Assuming the server returns a plain URL string
 
     if (typeof newImageUrl === 'string' && newImageUrl.startsWith('http')) {

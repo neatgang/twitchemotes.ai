@@ -560,7 +560,7 @@ export const Canvas = ({
     const className = '.relative.w-\\[500px\\].h-\\[500px\\].shadow-lg.flex-shrink-0.m-24';
     const element = document.querySelector(className) as HTMLElement;
     if (element) {
-      const canvas = await html2canvas(element);
+      const canvas = await html2canvas(element, { scale: 2 }); // Increase the scale to improve quality
       const imgData = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = imgData;
