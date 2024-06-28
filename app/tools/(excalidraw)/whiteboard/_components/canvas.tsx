@@ -71,6 +71,7 @@ export const Canvas = ({
   const { uploadedImage, setUploadedImage, resultImage, setResultImage } = useContext(ImageContext);
   const layerIds = useStorage((root) => root.layerIds);
 
+
   const pencilDraft = useSelf((me) => me.presence.pencilDraft);
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
@@ -607,18 +608,19 @@ export const Canvas = ({
       <OrgSidebar />
       <RemoveBackgroundSidebar emotes={emotes} /> 
       <main className="flex-1 relative bg-neutral-100 touch-none flex items-center justify-center">
-        {/* <Toolbar
+        <Toolbar
           canvasState={canvasState}
           setCanvasState={setCanvasState}
           canRedo={canRedo}
           canUndo={canUndo}
           undo={history.undo}
           redo={history.redo}
-        /> */}
-                          <SelectionTools
+          deleteLayers={deleteLayers} 
+        />
+                          {/* <SelectionTools
 camera={camera}
 setLastUsedColor={setLastUsedColor}
-/>
+/> */}
 <div className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24"
           // {...getRootProps()} 
           // className={`relative w-[500px] h-[500px] shadow-md flex-shrink-0 ${

@@ -6,7 +6,8 @@ import {
   Square, 
   StickyNote, 
   Type,
-  Undo2
+  Undo2,
+  Trash2Icon
 } from "lucide-react";
 
 import { CanvasMode, CanvasState, LayerType } from "@/types/canvas";
@@ -20,6 +21,7 @@ interface ToolbarProps {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  deleteLayers?: () => void; // Correctly type deleteLayers as a function
 };
 
 export const Toolbar = ({
@@ -29,10 +31,11 @@ export const Toolbar = ({
   redo,
   canUndo,
   canRedo,
+  deleteLayers = () => {}, // Provide a default no-op function
 }: ToolbarProps) => {
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
-      <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
+      {/* <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
         <ToolButton
           label="Select"
           icon={MousePointer2}
@@ -104,6 +107,13 @@ export const Toolbar = ({
           isActive={
             canvasState.mode === CanvasMode.Pencil
           }
+        />
+      </div> */}
+      <div className="bg-white rounded-md p-1.5 flex gap-y-1 flex-col items-center shadow-md">
+      <ToolButton
+          label="Trash"
+          icon={Trash2Icon}
+          onClick={deleteLayers} // Use deleteLayers function
         />
       </div>
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
