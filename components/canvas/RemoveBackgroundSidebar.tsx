@@ -10,6 +10,7 @@ import { ImageContext } from "@/providers/canvas/ImageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "../ui/dialog";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Emote, EmoteForSale } from "@prisma/client";
+import { ScrollArea } from "../ui/scroll-area";
 
 
 interface RemoveBackgroundSidebarProps {
@@ -60,6 +61,7 @@ export default function RemoveBackgroundSidebar({ emotes }: RemoveBackgroundSide
                   Select from Library
                 </Button>
               </DialogTrigger>
+              <ScrollArea>
               <DialogContent>
                 <DialogHeader>
                   <h2 className="text-lg font-medium">Select an Emote</h2>
@@ -94,7 +96,9 @@ export default function RemoveBackgroundSidebar({ emotes }: RemoveBackgroundSide
                   ))}
                 </div>
               </DialogContent>
+              </ScrollArea>
             </Dialog>
+  
 
             {!resultImage ? (
               <div 
