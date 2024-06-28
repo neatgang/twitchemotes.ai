@@ -72,6 +72,7 @@ model User {
   isActiveSubscriber Boolean           @default(false) // New field to indicate active subscription status
   subscriptionType   SubscriptionType? // New field for subscription type
   EmoteForSale       EmoteForSale[]
+  boards             Board[] // New relation field for boards
 
   @@index([userSubscriptionId])
 }
@@ -162,3 +163,50 @@ model Purchase {
 
   @@index([emoteForSaleId])
 }
+
+// Existing datasource and generator configurations remain unchanged
+
+// Add the following models based on the Convex schema
+
+model Board {
+  id         String   @id @default(cuid())
+  title      String
+  orgId      String?
+  authorId   String?
+  authorName String?
+  imageUrl   String?
+  createdAt  DateTime @default(now())
+  userId     String // Ensure this field is not nullable
+  user       User     @relation(fields: [userId], references: [id]) // Ensure this relation is not nullable
+
+  favorites UserFavorite[]
+
+  @@index([orgId])
+  @@index([userId])
+}
+
+model UserFavorite {
+  id      String @id @default(cuid())
+  userId  String
+  boardId String
+  orgId   String
+
+  board Board @relation(fields: [boardId], references: [id])
+
+  @@unique([userId, boardId])
+  @@index([userId, orgId])
+  @@index([boardId])
+}
+
+model OrgSubscription {
+  id                     String   @id @default(cuid())
+  orgId                  String   @unique
+  stripeCustomerId       String
+  stripeSubscriptionId   String   @unique
+  stripePriceId          String
+  stripeCurrentPeriodEnd DateTime
+
+  @@index([orgId])
+}
+
+// Existing models (User, Profile, Emote, etc.) remain unchanged

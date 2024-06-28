@@ -1,43 +1,36 @@
-import { Button } from "@/components/ui/button"
-import { api } from "@/convex/_generated/api"
-import { useApiMutation } from "@/hooks/canvas/use-api.mutation"
+"use client"
 
-import { useOrganization } from "@clerk/nextjs"
-import { useMutation } from "convex/react"
+import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { toast } from "sonner"
+import { useState } from "react"
+import { useAuth } from "@clerk/nextjs" // Import useAuth to get the authenticated user
+import { createBoard } from "@/actions/create-board" // Import the server action
 
 export const EmptyBoards = () => {
+    const [pending, setPending] = useState(false)
 
-    const { organization } = useOrganization()
-    const { mutate, pending }= useApiMutation(api.board.create)
-
-    const onClick = () => {
-
-        if (!organization) {
-            return
-        }
-
-        mutate({
-            orgId: organization.id,
-            title: "Untitled"
-        })
-        .then((id) => {
+    const onClick = async () => {
+        setPending(true)
+        try {
+            const board = await createBoard("");
             toast.success("Board created")
-        })
-        .catch((error) => {
+        } catch (error) {
+            console.error(error) // Log the error for debugging
             toast.error("Failed to create a board")
-        })
+        } finally {
+            setPending(false)
+        }
     }
 
     return (
         <div className="h-full flex flex-col items-center justify-center">
-            <Image 
+            {/* <Image 
                 src="/neat.svg"
                 alt="Neat Logo"
                 height={200}
                 width={200}
-            />
+            /> */}
             <h2 className="text-2xl font-semibold mt-6">
                 Create your first board
             </h2>
@@ -51,4 +44,4 @@ export const EmptyBoards = () => {
             </div>
         </div>
     )
-}   
+}

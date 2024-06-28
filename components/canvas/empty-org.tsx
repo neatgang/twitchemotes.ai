@@ -13,12 +13,13 @@ export const EmptyOrg = () => {
                 width={200}
             /> */}
             <h2 className="text-2xl font-semibold mt-6">
-                Welcome to the EmoteMaker.ai Canvas
+                Welcome to Emoteboard
             </h2>
             <p className="text-muted-foreground text-sm mt-2">
                 Create an organization to get started
             </p>
-            <div className="mt-6">
+            <CreateOrganization />
+            {/* <div className="mt-6">
                 <Dialog>
                     <DialogTrigger>
                         <Button size="lg">
@@ -26,10 +27,9 @@ export const EmptyOrg = () => {
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="p-0 bg-transparent border-none max-w-[480px]">
-                        <CreateOrganization />
                     </DialogContent>
                 </Dialog>
-            </div>
+            </div> */}
         </div>
     )
 }

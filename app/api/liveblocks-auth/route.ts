@@ -1,47 +1,40 @@
-import { ConvexHttpClient } from "convex/browser";
-
-import { api } from "@/convex/_generated/api";
-
 import { Liveblocks } from "@liveblocks/node";
 import { auth, currentUser } from "@clerk/nextjs/server";
-
-const convex = new ConvexHttpClient(
-    process.env.NEXT_PUBLIC_CONVEX_URL!
-    
-);
+import { db } from "@/lib/db"; // Import the Prisma client
 
 const liveblocks = new Liveblocks({
-    secret: "sk_dev_-KV54Q8OZWzHRn69mVbdddm6btTzFaYk0JjjEqHxqn0yPfydb6SMVBot7uYtyOQ6",
-})
+    secret: "sk_dev_-KV54Q8OZWzHRn69mVbdddm6btTzFaYk0JjjEqHxqn0yPfydb6SMVBot7uYtyOQ6", // Replace with your actual secret key
+});
 
 export async function POST(request: Request) {
-    const authorization = await auth()
-    const user = await currentUser()
+    const { userId } = auth();
+    const user = await currentUser();
 
     console.log("AUTH_INFO", {
-        authorization,
+        userId,
         user,
-    })
+    });
 
-    if (!authorization || !user) {
-        return new Response("Unauthorized", { status: 403 })
+    if (!userId || !user) {
+        return new Response("Unauthorized", { status: 403 });
     }
 
-    const { room } = await request.json()
+    const { room } = await request.json();
 
-    const board = await convex.query(api.board.get, {
-        id: room
+    // Use Prisma to query the board
+    const board = await db.board.findUnique({
+        where: { id: room },
     });
 
     console.log("AUTH_INFO", {
         room,
         board,
-        boardOrgId: board?.orgId,
-        userOrgId: authorization.orgId,
-    })
+        boardAuthorId: board?.authorId,
+        userId: user.id,
+    });
 
-    if (board?.orgId !== authorization.orgId) {
-        return new Response("Unauthorized", { status: 403 })
+    if (board?.authorId !== user.id) {
+        return new Response("Unauthorized", { status: 403 });
     }
 
     const userInfo = {
@@ -64,5 +57,5 @@ export async function POST(request: Request) {
 
     console.log({ status, body }, "ALLOWED");
 
-    return new Response(body, { status })
+    return new Response(body, { status });
 }

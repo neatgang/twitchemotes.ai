@@ -17,6 +17,8 @@ import Script from 'next/script'
 import { getUserCredits } from '@/actions/get-user-credits'
 import { db } from '@/lib/db'
 import { getUser } from '@/actions/get-user'
+import { ConvexProvider } from 'convex/react'
+import { ConvexProviderWithClerk } from 'convex/react-clerk'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -70,6 +72,6 @@ export default async function RootLayout({
           </div>
         </body>
       </html>
-    </ClerkProvider>
+      </ClerkProvider>
   )
 }

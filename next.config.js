@@ -9,6 +9,7 @@ const nextConfig = {
       "utfs.io",
       "pprcanvas.s3.amazonaws.com",
       "img.clerk.com",
+      "storage.googleapis.com",
     ],
     remotePatterns: [
       {

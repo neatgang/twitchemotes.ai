@@ -21,13 +21,13 @@ const DashboardPage = ({
     return (
         <div className="flex h-[calc(100%-80px)] p-6 items-center justify-center">
             {!organization ? (
-        <EmptyOrg />
+            <EmptyOrg />
             ) : (
             <div>
-                <BoardList
+                {/* <BoardList
                     orgId={organization.id}
                     query={searchParams}
-                />
+                /> */}
             </div>
             )}
         </div>

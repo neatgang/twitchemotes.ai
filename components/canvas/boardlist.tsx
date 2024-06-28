@@ -1,82 +1,69 @@
 "use client"
 
-import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
-import { EmptySearch } from "./empty-search";
-import { EmptyFavorites } from "./empty-favorites";
 import { EmptyBoards } from "./empty-boards";
 import { BoardCard } from "./board-card";
-
+import { PlusCircle } from "lucide-react";
+import { useState } from "react";
+import { createBoard } from "@/actions/create-board";
+import toast from "react-hot-toast";
+import { Button } from "../Button";
+import { redirect } from "next/navigation";
 
 interface BoardListProps {
-    orgId: string;
-    query: {
-        search?: string;
-        favorites?: string
-    }
+    boards: Board[];
 }
 
-export const BoardList = ({
-    orgId,
-    query,
-}: BoardListProps) => {
+interface Board {
+    id: string;
+    title: string;
+    orgId: string | null;
+    authorId: string | null;
+    authorName: string | null;
+    imageUrl: string | null;
+    createdAt: Date;
+    userId: string;
+}
 
-    const data = useQuery(api.boards.get, {
-        orgId,
-    });
+export const BoardList = ({ boards }: BoardListProps) => {
+    const [isLoading, setIsLoading] = useState(false);
 
-    if (data === undefined) {
-        return (
-            <div>
-                Loading...
-            </div>
-        )
-    }
+    const handleClick = async () => {
+        setIsLoading(true);
+        try {
+            await createBoard("New Board1");
+            toast.success("Board created");
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to create a board");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    if (!data?.length && query.search) {
-        return (
-            <div>
-                <EmptySearch />
-            </div>
-        )
-    }
-
-    if (!data.length && query.favorites) {
-        return (
-            <div>
-                <EmptyFavorites />
-            </div>
-        )
-    }
-
-    if (!data?.length) {
-        return (
-            <div>
-                <EmptyBoards />
-            </div>
-        )
+    if (!boards.length) {
+        return <EmptyBoards />;
     }
 
     return (
-        <div>
-          <h2 className="text-3xl">
-            {query.favorites ? "Favorite boards" : "Team boards"}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-10">
-            {data?.map((board) => (
-              <BoardCard
-                key={board._id}
-                id={board._id}
-                title={board.title}
-                imageUrl={board.imageUrl}
-                authorId={board.authorId}
-                authorName={board.authorName}
-                createdAt={board._creationTime}
-                orgId={board.orgId}
-                // isFavorite={board.isFavorite}
-              />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-6">
+          {boards.map((board) => (
+                board && <BoardCard
+                    key={board.id}
+                    {...board}
+                />
             ))}
-          </div>
+            <div className="aspect-[100/127] border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+            <Button 
+            onClick={handleClick} 
+            disabled={isLoading}
+            className="flex items-center gap-2"
+        >
+                <div className="flex flex-col items-center gap-2">
+                    <PlusCircle size={24} />
+                    <span>Add New Whiteboard</span>
+                </div>
+                </Button>
+            </div>
         </div>
-      );
-    };
+    );
+};

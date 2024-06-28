@@ -1,7 +1,7 @@
+"use client"
+
 export const Overlay = () => {
-    return (
-      <div
-        className="opacity-0 group-hover:opacity-50 transition-opacity h-full w-full bg-black"
-      />
-    );
-  };
+  return (
+    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity" />
+  );
+};

@@ -8,7 +8,9 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 //   publicRoutes: ["/api/uploadthing", "/api/:path*", "/", "/emote/:path*"]
 // });
 
-export default clerkMiddleware();
+export default clerkMiddleware({
+  // publicRoutes: ["/tools/emoteboard(.*)"] // Ensure this route is public
+});
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],

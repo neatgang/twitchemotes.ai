@@ -15,6 +15,7 @@ export type Color = {
     Path,
     Text,
     Note,
+    Image,
   };
   
   export type RectangleLayer = {
@@ -65,7 +66,17 @@ export type Color = {
     height: number;
     width: number;
     fill: Color;
-    value?: string;
+    value: string; // Ensure this line is present
+  };
+
+  export type ImageLayer = {
+    type: LayerType.Image;
+    x: number;
+    y: number;
+    height: number;
+    width: number;
+    src: string;
+    fill?: never; // Explicitly state that fill is not a property of ImageLayer
   };
   
   export type Point = {
@@ -141,4 +152,10 @@ export type Color = {
     Background,
   };
   
-  export type Layer = RectangleLayer | EllipseLayer | PathLayer | TextLayer | NoteLayer;
+  export type Layer = 
+  | RectangleLayer 
+  | EllipseLayer 
+  | PathLayer 
+  | TextLayer 
+  | NoteLayer 
+  | (ImageLayer & { fill?: never }); 

@@ -22,7 +22,8 @@ function RemoveBGContainer() {
       reader.onload = async () => {
         try {
           setIsProcessing(true);
-          const response = await axios.post('/api/replicate/bg-remove', { image: reader.result });
+          // const response = await axios.post('/api/replicate/bg-remove', { image: reader.result });
+          const response = await axios.post('/api/fal/birefnet-bg-remove', { image: reader.result });
           if (response.data && response.data) {
             setImageData({
               original: URL.createObjectURL(file),

@@ -1,8 +1,7 @@
 "use client"
 
 import { Loading } from "@/components/canvas/auth/loading";
-// import { Loading } from "@/components/auth/loading";
-import { ClerkProvider, useAuth } from "@clerk/nextjs"
+import { useAuth } from "@clerk/nextjs";
 import { AuthLoading, Authenticated, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 
@@ -16,15 +15,13 @@ const convex = new ConvexReactClient(convexUrl);
 
 export const ConvexClientProvider = ({ children }: ConvexClientProviderProps) => {
     return (
-        <ClerkProvider>
-            <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-                <Authenticated>
+        <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+            {/* <Authenticated> */}
                 {children}
-                </Authenticated>
-                <AuthLoading>
-                    <Loading />
-                </AuthLoading>
-            </ConvexProviderWithClerk>
-        </ClerkProvider>
+            {/* </Authenticated> */}
+            {/* <AuthLoading>
+                <Loading />
+            </AuthLoading> */}
+        </ConvexProviderWithClerk>
     );
 }
