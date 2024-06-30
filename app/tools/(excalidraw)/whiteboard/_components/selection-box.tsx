@@ -11,7 +11,7 @@ interface SelectionBoxProps {
   onResizeHandlePointerDown: (corner: Side, initialBounds: XYWH) => void;
 };
 
-const HANDLE_WIDTH = 8;
+const HANDLE_WIDTH = 4;
 
 export const SelectionBox = memo(({
   onResizeHandlePointerDown,

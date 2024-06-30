@@ -12,7 +12,7 @@ export const Image = ({
   id,
   layer,
   onPointerDown,
-  selectionColor,
+  // selectionColor,
 }: ImageProps) => {
   const { x, y, width, height, src } = layer;
 
@@ -29,7 +29,7 @@ export const Image = ({
       height={height}
       href={src}
       strokeWidth={1}
-      stroke={selectionColor || "transparent"}
+      stroke={"transparent"}
     />
   );
 };

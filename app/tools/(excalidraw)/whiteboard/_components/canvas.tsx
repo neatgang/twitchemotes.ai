@@ -57,11 +57,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Emote, EmoteForSale } from "@prisma/client";
 
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 
-import  saveAs  from 'file-saver';
+// import  saveAs  from 'file-saver';
 
-import { jsPDF } from "jspdf"
+// import { jsPDF } from "jspdf"
+
 
 const MAX_LAYERS = 5;
 
@@ -77,22 +78,18 @@ export const Canvas = ({
   const { uploadedImage, setUploadedImage, resultImage, setResultImage } = useContext(ImageContext);
   const layerIds = useStorage((root) => root.layerIds);
 
-
   const pencilDraft = useSelf((me) => me.presence.pencilDraft);
-  const [canvasState, setCanvasState] = useState<CanvasState>({ mode: CanvasMode.None,
-  });
+const [canvasState, setCanvasState] = useState<CanvasState>({
+  mode: CanvasMode.None,
+  origin: { x: 0, y: 0 },
+});
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
-  const [lastUsedColor, setLastUsedColor] = useState<Color>({
-    r: 0,
-    g: 0,
-    b: 0,
-  });
+  const [lastUsedColor, setLastUsedColor] = useState<Color>({ r: 0, g: 0, b: 0 });
 
   useDisableScrollBounce();
   const history = useHistory();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
-
  const insertLayer = useMutation((
     { storage, setMyPresence },
     layerType: LayerType,
@@ -180,7 +177,11 @@ export const Canvas = ({
     liveLayers.set(layerId, layer);
   
     setMyPresence({ selection: [layerId] }, { addToHistory: true });
-    setCanvasState({ mode: CanvasMode.None });
+    setCanvasState({
+      mode: CanvasMode.None,
+      origin: { x: 0, y: 0 } // Include origin
+  });
+  history.resume();
   }, [setCanvasState, lastUsedColor]);
 
   useEffect(() => {
@@ -463,7 +464,9 @@ export const Canvas = ({
       unselectLayers();
       setCanvasState({
         mode: CanvasMode.None,
-      });
+        origin: { x: 0, y: 0 } // Include origin
+    });
+    history.resume();
     } else if (canvasState.mode === CanvasMode.Pencil) {
       insertPath();
     } else if (canvasState.mode === CanvasMode.Inserting) {
@@ -471,7 +474,9 @@ export const Canvas = ({
     } else {
       setCanvasState({
         mode: CanvasMode.None,
-      });
+        origin: { x: 0, y: 0 } // Include origin
+    });
+    history.resume();
     }
 
     history.resume();
@@ -591,47 +596,142 @@ export const Canvas = ({
   //   }
   // };
 
-  const handleDownloadPng = async () => {
-    const div = divRef.current;
+  const clearSelection = () => {
+    setCanvasState((prevState) => ({
+      ...prevState,
+      mode: CanvasMode.None,
+      current: null,
+      origin: { x: 0, y: 0 } // Include origin
+    }));
+  }
+  
+  // const handleDownloadPng = async () => {
+  //   clearSelection();
+  
+  //   const svgElement = document.querySelector('#canvas-svg');
+  //   if (!svgElement) {
+  //     console.error("SVG element not found!");
+  //     return;
+  //   }
+  
+  //   // Clone the SVG to ensure styles and elements are intact
+  //   const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+  //   svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  
+  //   // Remove unnecessary elements like selection boxes and cursors
+  //   const unnecessaryElements = svgClone.querySelectorAll('.selection-box, .cursors-presence, rect');
+  //   unnecessaryElements.forEach(el => el.remove());
+  
+  //   // Reset the transform attribute on the main image
+  //   const imageElement = svgClone.querySelector('image');
+  //   if (imageElement) {
+  //     imageElement.removeAttribute('style');
+  //     imageElement.removeAttribute('transform');
+  //     imageElement.setAttribute('x', '0');
+  //     imageElement.setAttribute('y', '0');
+  //     imageElement.setAttribute('width', '500');
+  //     imageElement.setAttribute('height', '500');
+  //   }
+  
+  //   // Serialize the SVG to a string
+  //   const svgData = new XMLSerializer().serializeToString(svgClone);
+  //   console.log(svgData); // Log the SVG data to verify its content
+  //   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  //   const url = URL.createObjectURL(svgBlob);
+  
+  //   const img = new window.Image();
+  //   img.onload = async () => {
+  //     // Create a canvas and set its dimensions
+  //     const canvas = document.createElement('canvas');
+  //     canvas.width = 500;
+  //     canvas.height = 500;
+  
+  //     // Draw the SVG image onto the canvas
+  //     const ctx = canvas.getContext('2d');
+  //     if (ctx) {
+  //       ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //       ctx.drawImage(img, 0, 0, 500, 500);
+  
+  //       // Convert the canvas to a PNG Blob and save it
+  //       canvas.toBlob((blob) => {
+  //         if (blob) {
+  //           saveAs(blob, 'canvas.png');
+  //         }
+  //       });
+  //     }
+  
+  //     // Revoke the object URL to free up memory
+  //     URL.revokeObjectURL(url);
+  //   };
+  //   img.onerror = (error) => {
+  //     console.error('Error loading SVG:', error);
+  //     URL.revokeObjectURL(url);
+  //   };
+  //   img.src = url;
+  // };
+//     const handleDownloadPng = async () => {
 
-    if (!div) return;
+//    clearSelection();
 
-    try {
-      const canvas = await html2canvas(div, {
-        width: div.offsetWidth,
-        height: div.offsetHeight,
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-      });
-
-      canvas.toBlob((blob) => {
-        if (blob) {
-          saveAs(blob, 'canvas.png');
-        } else {
-          console.error("Failed to create blob from canvas");
-        }
-      });
-    } catch (error) {
-      console.error("Error capturing canvas:", error);
-    }
-  };
-
+//   toImg('#canvas-svg', 'canvas', {
+//     scale: 3,
+//     format: 'png',
+//     download: true,
+//     ignore: '.selection-box, .cursors-presence, rect'
+//   }).then(() => {
+//     console.log('SVG converted and downloaded successfully');
+//   }).catch((error: any) => {
+//     console.error('Error converting SVG:', error);
+//   });
+// };
+  
+  
   const handleDownloadSvg = () => {
+    clearSelection();
+   
     const svgElement = document.querySelector('#canvas-svg');
-    if (!svgElement) return;
-
-    const svgData = new XMLSerializer().serializeToString(svgElement);
+    if (!svgElement) {
+      console.error("SVG element not found!");
+      return;
+    }
+   
+    // Hide selection and cursor indicators
+    const selectionBox = document.querySelector('.selection-box') as HTMLElement;
+    const cursorsPresence = document.querySelector('.cursors-presence') as HTMLElement;
+     
+    if (selectionBox) selectionBox.style.display = 'none';
+    if (cursorsPresence) cursorsPresence.style.display = 'none';
+   
+    // Ensure the viewBox is set to 500x500
+    svgElement.setAttribute('viewBox', '0 0 500 500');
+    svgElement.setAttribute('width', '500px');
+    svgElement.setAttribute('height', '500px');
+   
+    // Clone the SVG to ensure styles and elements are intact
+    const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+     
+    // Serialize the SVG
+    const svgData = new XMLSerializer().serializeToString(svgClone);
+    console.log(svgData); // Log the SVG data to verify its content
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
-
+   
+    // Create download link and trigger download
     const a = document.createElement('a');
     a.setAttribute('download', 'canvas.svg');
     a.setAttribute('href', url);
     a.click();
-
+   
     URL.revokeObjectURL(url);
+   
+    // Restore visibility of selection and cursor indicators
+    if (selectionBox) selectionBox.style.display = 'block';
+    if (cursorsPresence) cursorsPresence.style.display = 'block';
   };
+
+  
+   
+  
   
 
   // const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -697,89 +797,50 @@ export const Canvas = ({
           redo={history.redo}
           deleteLayers={deleteLayers} 
           handleDownloadSvg={handleDownloadSvg}
-          handleDownloadPng={handleDownloadPng}
+          // handleDownloadPng={handleDownloadPng}
         />
-                          {/* <SelectionTools
-camera={camera}
-setLastUsedColor={setLastUsedColor}
-/> */}
-<div ref={divRef} className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24"
-          // {...getRootProps()} 
-          // className={`relative w-[500px] h-[500px] shadow-md flex-shrink-0 ${
-          //   isDragActive ? 'border-2 border-dashed border-blue-500' : ''
-          // }`}
-        >
-          {/* <input {...getInputProps()} /> */}
-          {/* {isDragActive && (
-            <div className="absolute inset-0 bg-blue-100 bg-opacity-50 flex items-center justify-center">
-              <p>Drop the image here ...</p>
-            </div>
-          )} */}
-          {/* {uploadedImage && (
-            <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-contain" />
-          )} */}
-  <svg
-              id="canvas-svg"
-  className="w-full h-full"
-  onWheel={onWheel}
-  onPointerMove={onPointerMove}
-    onPointerLeave={onPointerLeave}
-    onPointerDown={onPointerDown}
-    onPointerUp={onPointerUp}
-  >
-    <g
-      style={{
-        transform: `translate(${camera.x}px, ${camera.y}px)`
-      }}
-    >
-       {/* {resultImage && (
-            <Image
-              src={resultImage}
-              alt="Result Image"
-              layout="fill"
-              objectFit="contain"
-            />
-          )} */}
-      {layerIds.map((layerId) => (
-        <LayerPreview
-          key={layerId}
-          id={layerId}
-          onLayerPointerDown={onLayerPointerDown}
-          selectionColor={layerIdsToColorSelection[layerId]}
-        />
-      ))}
-      <SelectionBox
-        onResizeHandlePointerDown={onResizeHandlePointerDown}
-      />
-      {canvasState.mode === CanvasMode.SelectionNet && canvasState.current != null && (
-        <rect
-          className="fill-blue-500/5 stroke-blue-500 stroke-1"
-          x={Math.min(canvasState.origin.x, canvasState.current.x)}
-          y={Math.min(canvasState.origin.y, canvasState.current.y)}
-          width={Math.abs(canvasState.origin.x - canvasState.current.x)}
-          height={Math.abs(canvasState.origin.y - canvasState.current.y)}
-        />
-      )}
-      <CursorsPresence />
-      {pencilDraft != null && pencilDraft.length > 0 && (
-        <Path
-          points={pencilDraft}
-          fill={colorToCss(lastUsedColor)}
-          x={0}
-          y={0}
-        />
-      )}
-    </g>
-  </svg>
-</div>
-{/* <Button 
-        // className="absolute bottom-4 right-4" 
-        onClick={handleDownload}
-        variant="default"
-      >
-        Download Image
-      </Button> */}
-</main>
-</div>
-);
-}
+        <div ref={divRef} className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24">
+          <svg
+            id="canvas-svg"
+            className="w-[500px] h-[500px]"
+            onWheel={onWheel}
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
+            onPointerDown={onPointerDown}
+            onPointerUp={onPointerUp}
+          >
+            <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
+              {layerIds.map((layerId) => (
+                <LayerPreview
+                  key={layerId}
+                  id={layerId}
+                  onLayerPointerDown={onLayerPointerDown}
+                  selectionColor={layerIdsToColorSelection[layerId]}
+                />
+              ))}
+              <SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown} />
+              {canvasState.mode === CanvasMode.SelectionNet && canvasState.current != null && (
+                <rect
+                  className="fill-blue-500/5 stroke-blue-500 stroke-1"
+                  x={Math.min(canvasState.origin.x, canvasState.current.x)}
+                  y={Math.min(canvasState.origin.y, canvasState.current.y)}
+                  width={Math.abs(canvasState.origin.x - canvasState.current.x)}
+                  height={Math.abs(canvasState.origin.y - canvasState.current.y)}
+                />
+              )}
+              <CursorsPresence />
+              {pencilDraft != null && pencilDraft.length > 0 && (
+                <Path
+                  points={pencilDraft}
+                  fill={colorToCss(lastUsedColor)}
+                  x={0}
+                  y={0}
+                />
+              )}
+            </g>
+          </svg>
+        </div>
+      </main>
+    </div>
+  );
+  }

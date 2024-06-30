@@ -23,9 +23,9 @@ interface ToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   deleteLayers?: () => void; // Correctly type deleteLayers as a function
-    handleDownload?: () => void; 
-    handleDownloadSvg?: () => void; 
-    handleDownloadPng?: () => void; 
+  handleDownload?: () => void; 
+  handleDownloadSvg?: () => void; 
+  handleDownloadPng?: () => void; 
 };
 
 export const Toolbar = ({
@@ -122,11 +122,11 @@ export const Toolbar = ({
           icon={Trash2Icon}
           onClick={deleteLayers} // Use deleteLayers function
         />
-      {/* <ToolButton
+      <ToolButton
           label="Download Png"
           icon={DownloadIcon}
           onClick={handleDownloadPng} // Use deleteLayers function
-        /> */}
+        />
       <ToolButton
           label="Download"
           icon={DownloadIcon}

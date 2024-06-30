@@ -95,6 +95,7 @@
     "react-hot-toast": "^2.4.1",
     "react-konva": "^18.2.10",
     "react-resizable-panels": "^2.0.16",
+    "react-svg-to-image": "^3.0.0",
     "replicate": "^0.9.3",
     "sonner": "^1.4.41",
     "stripe": "^12.13.0",
