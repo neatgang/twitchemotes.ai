@@ -8,6 +8,7 @@ import { createBoard } from "@/actions/create-board";
 import toast from "react-hot-toast";
 import { Button } from "../Button";
 import { redirect } from "next/navigation";
+import { deleteBoard } from "@/actions/delete-board";
 
 interface BoardListProps {
     boards: Board[];
@@ -40,28 +41,42 @@ export const BoardList = ({ boards }: BoardListProps) => {
         }
     };
 
+
+    const handleDelete = async (boardId: string) => {
+        setIsLoading(true);
+        try {
+            await deleteBoard(boardId);
+            toast.success("Board deleted");
+            // Optionally, you can re-fetch the boards or update the state to reflect the deletion
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to delete the board");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     if (!boards.length) {
         return <EmptyBoards />;
     }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-6 gap-6">
-          {boards.map((board) => (
+         {boards.map((board) => (
                 board && <BoardCard
                     key={board.id}
                     {...board}
+                    onDelete={() => handleDelete(board.id)} // Pass handleDelete to BoardCard
                 />
             ))}
             <div className="aspect-[100/127] border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
             <Button 
             onClick={handleClick} 
             disabled={isLoading}
-            className="flex items-center gap-2"
+            className="flex items-center"
         >
-                <div className="flex flex-col items-center gap-2">
-                    <PlusCircle size={24} />
-                    <span>Add New Whiteboard</span>
-                </div>
+                    {/* <PlusCircle size={24} /> */}
+                    <p>Add New Whiteboard</p>
                 </Button>
             </div>
         </div>

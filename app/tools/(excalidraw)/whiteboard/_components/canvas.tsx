@@ -729,11 +729,6 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     if (cursorsPresence) cursorsPresence.style.display = 'block';
   };
 
-  
-   
-  
-  
-
   // const onDrop = useCallback((acceptedFiles: File[]) => {
   //   // Only process the drop if there's no uploadedImage or resultImage
   //   if (!uploadedImage && !resultImage && !layer) {
@@ -821,7 +816,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
               <SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown} />
               {canvasState.mode === CanvasMode.SelectionNet && canvasState.current != null && (
                 <rect
-                  className="fill-blue-500/5 stroke-blue-500 stroke-1"
+                  className=" stroke-blue-500 stroke-1"
                   x={Math.min(canvasState.origin.x, canvasState.current.x)}
                   y={Math.min(canvasState.origin.y, canvasState.current.y)}
                   width={Math.abs(canvasState.origin.x - canvasState.current.x)}

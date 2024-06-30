@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { deleteBoard } from "@/actions/delete-board";
 
 const DashboardPage = async () => {
     const { userId } = auth();
@@ -28,14 +29,23 @@ const DashboardPage = async () => {
         }
     });
 
+    const handleDelete = async (boardId: string) => {
+        try {
+            await deleteBoard(boardId);
+            // Optionally, you can re-fetch the boards or update the state to reflect the deletion
+        } catch (error) {
+            console.error("Failed to delete board:", error);
+        }
+    };
+
     return (
         <div className="flex flex-col h-[calc(100%-80px)] p-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold">Your Whiteboards</h1>
-                <Button className="flex items-center gap-2">
+                {/* <Button className="flex items-center gap-2">
                     <PlusCircle size={20} />
                     Create New Whiteboard
-                </Button>
+                </Button> */}
             </div>
             <BoardList boards={boards} />
         </div>

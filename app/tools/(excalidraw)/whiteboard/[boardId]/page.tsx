@@ -28,6 +28,7 @@ const BoardIdPage = async ({
           createdAt: "desc",
         }
       });
+      
     return (
         <div className="flex h-full">
             <Room roomId={params.boardId} fallback={<Loading />}>
