@@ -1,7 +1,7 @@
 "use client";
 
 import { nanoid } from "nanoid";
-import { useCallback, useMemo, useState, useEffect, useContext } from "react";
+import { useCallback, useMemo, useState, useEffect, useContext, useRef } from "react";
 import { LiveObject } from "@liveblocks/client";
 import { 
   useHistory, 
@@ -59,7 +59,11 @@ import { Emote, EmoteForSale } from "@prisma/client";
 
 import html2canvas from 'html2canvas';
 
-const MAX_LAYERS = 100;
+import  saveAs  from 'file-saver';
+
+import { jsPDF } from "jspdf"
+
+const MAX_LAYERS = 5;
 
 interface CanvasProps {
   boardId: string;
@@ -75,8 +79,7 @@ export const Canvas = ({
 
 
   const pencilDraft = useSelf((me) => me.presence.pencilDraft);
-  const [canvasState, setCanvasState] = useState<CanvasState>({
-    mode: CanvasMode.None,
+  const [canvasState, setCanvasState] = useState<CanvasState>({ mode: CanvasMode.None,
   });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
@@ -531,6 +534,10 @@ export const Canvas = ({
   const deleteLayers = useDeleteLayers();
 
   useEffect(() => {
+    console.log("divRef.current in useEffect:", divRef.current);
+  }, []);
+
+  useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       switch (e.key) {
         case "Backspace":
@@ -556,18 +563,76 @@ export const Canvas = ({
     }
   }, [deleteLayers, history]);
 
-  const handleDownload = async () => {
-    const className = '.relative.w-\\[500px\\].h-\\[500px\\].shadow-lg.flex-shrink-0.m-24';
-    const element = document.querySelector(className) as HTMLElement;
-    if (element) {
-      const canvas = await html2canvas(element, { scale: 2 }); // Increase the scale to improve quality
-      const imgData = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = 'canvas_image.png';
-      link.click();
+  const divRef = useRef<HTMLDivElement>(null);
+
+  // const handleDownload = async () => {
+  //   if (divRef.current) {
+  //     try {
+  //       const canvas = await html2canvas(divRef.current, {
+  //         width: divRef.current.offsetWidth,
+  //         height: divRef.current.offsetHeight,
+  //         scale: 2, // Increase scale for better quality
+  //         useCORS: true,
+  //         backgroundColor: null, // Ensure the background is transparent
+  //       });
+  
+  //       canvas.toBlob((blob) => {
+  //         if (blob) { // Ensure blob is not null
+  //           saveAs(blob, 'canvas.png');
+  //         } else {
+  //           console.error("Failed to create blob from canvas");
+  //         }
+  //       });
+  //     } catch (error) {
+  //       console.error("Error capturing canvas:", error);
+  //     }
+  //   } else {
+  //     console.log("divRef.current is null");
+  //   }
+  // };
+
+  const handleDownloadPng = async () => {
+    const div = divRef.current;
+
+    if (!div) return;
+
+    try {
+      const canvas = await html2canvas(div, {
+        width: div.offsetWidth,
+        height: div.offsetHeight,
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          saveAs(blob, 'canvas.png');
+        } else {
+          console.error("Failed to create blob from canvas");
+        }
+      });
+    } catch (error) {
+      console.error("Error capturing canvas:", error);
     }
   };
+
+  const handleDownloadSvg = () => {
+    const svgElement = document.querySelector('#canvas-svg');
+    if (!svgElement) return;
+
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    const a = document.createElement('a');
+    a.setAttribute('download', 'canvas.svg');
+    a.setAttribute('href', url);
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+  
 
   // const onDrop = useCallback((acceptedFiles: File[]) => {
   //   // Only process the drop if there's no uploadedImage or resultImage
@@ -631,13 +696,14 @@ export const Canvas = ({
           undo={history.undo}
           redo={history.redo}
           deleteLayers={deleteLayers} 
-          handleDownload={handleDownload}
+          handleDownloadSvg={handleDownloadSvg}
+          handleDownloadPng={handleDownloadPng}
         />
                           {/* <SelectionTools
 camera={camera}
 setLastUsedColor={setLastUsedColor}
 /> */}
-<div className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24"
+<div ref={divRef} className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24"
           // {...getRootProps()} 
           // className={`relative w-[500px] h-[500px] shadow-md flex-shrink-0 ${
           //   isDragActive ? 'border-2 border-dashed border-blue-500' : ''
@@ -652,8 +718,9 @@ setLastUsedColor={setLastUsedColor}
           {/* {uploadedImage && (
             <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-contain" />
           )} */}
-<svg
-  className="absolute top-0 left-0 w-full h-full"
+  <svg
+              id="canvas-svg"
+  className="w-full h-full"
   onWheel={onWheel}
   onPointerMove={onPointerMove}
     onPointerLeave={onPointerLeave}

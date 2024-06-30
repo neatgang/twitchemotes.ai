@@ -24,6 +24,8 @@ interface ToolbarProps {
   canRedo: boolean;
   deleteLayers?: () => void; // Correctly type deleteLayers as a function
     handleDownload?: () => void; 
+    handleDownloadSvg?: () => void; 
+    handleDownloadPng?: () => void; 
 };
 
 export const Toolbar = ({
@@ -35,6 +37,8 @@ export const Toolbar = ({
   canRedo,
   deleteLayers = () => {}, // Provide a default no-op function
   handleDownload = () => {}, 
+  handleDownloadSvg = () => {}, 
+  handleDownloadPng = () => {}, 
 }: ToolbarProps) => {
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
@@ -118,10 +122,15 @@ export const Toolbar = ({
           icon={Trash2Icon}
           onClick={deleteLayers} // Use deleteLayers function
         />
+      {/* <ToolButton
+          label="Download Png"
+          icon={DownloadIcon}
+          onClick={handleDownloadPng} // Use deleteLayers function
+        /> */}
       <ToolButton
           label="Download"
           icon={DownloadIcon}
-          onClick={handleDownload} // Use deleteLayers function
+          onClick={handleDownloadSvg} // Use deleteLayers function
         />
       </div>
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
