@@ -11,9 +11,9 @@ interface DashboardPageProps {
     setCanvasState: (state: any) => void; // Replace 'any' with the actual type if known
     layers: any[]; // Replace 'any' with the actual type if known
     setLayers: (layers: any[]) => void; // Replace 'any' with the actual type if known
-  }
-  
-  const DashboardPage = async ({ canvasState, setCanvasState, layers, setLayers }: DashboardPageProps) => {
+}
+
+const DashboardPage = async ({ canvasState, setCanvasState, layers, setLayers }: DashboardPageProps) => {
   const { userId } = auth();
   
   if (!userId) {
@@ -56,4 +56,5 @@ interface DashboardPageProps {
     </div>
   )
 }
-export default DashboardPage
+
+export default DashboardPage;
