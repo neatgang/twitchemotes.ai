@@ -118,7 +118,7 @@ export type CanvasState =
   | {
       mode: CanvasMode.None;
       origin: Point;
-      current: Point; // Add current property here
+      current: Point; // Ensure current is always a Point
     }
   | {
       mode: CanvasMode.SelectionNet;

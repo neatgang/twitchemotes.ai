@@ -83,6 +83,7 @@ export const Canvas = ({
 const [canvasState, setCanvasState] = useState<CanvasState>({
   mode: CanvasMode.None,
   origin: { x: 0, y: 0 },
+  current: { x: 0, y: 0}
 });
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
   const [lastUsedColor, setLastUsedColor] = useState<Color>({ r: 0, g: 0, b: 0 });
@@ -180,8 +181,9 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     setMyPresence({ selection: [layerId] }, { addToHistory: true });
     setCanvasState({
       mode: CanvasMode.None,
-      origin: { x: 0, y: 0 } // Include origin
-  });
+      origin: { x: 0, y: 0 }, // Include origin
+      current: { x: 0, y: 0 } // Ensure current is always a Point
+    });
   history.resume();
   }, [setCanvasState, lastUsedColor]);
 
@@ -465,8 +467,9 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
       unselectLayers();
       setCanvasState({
         mode: CanvasMode.None,
-        origin: { x: 0, y: 0 } // Include origin
-    });
+        origin: { x: 0, y: 0 }, // Include origin
+        current: { x: 0, y: 0 } // Ensure current is always a Point
+      });
     history.resume();
     } else if (canvasState.mode === CanvasMode.Pencil) {
       insertPath();
@@ -475,8 +478,9 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     } else {
       setCanvasState({
         mode: CanvasMode.None,
-        origin: { x: 0, y: 0 } // Include origin
-    });
+        origin: { x: 0, y: 0 }, // Include origin
+        current: { x: 0, y: 0 } // Ensure current is always a Point
+      });
     history.resume();
     }
 
@@ -575,10 +579,10 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     setCanvasState((prevState) => ({
       ...prevState,
       mode: CanvasMode.None,
-      current: null,
+      current: { x: 0, y: 0 }, // Ensure current is always a Point
       origin: { x: 0, y: 0 } // Include origin
     }));
-  }
+  };
 
   const handleDownloadPng = async () => {
     clearSelection();
