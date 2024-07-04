@@ -122,11 +122,11 @@ export const Toolbar = ({
           icon={Trash2Icon}
           onClick={deleteLayers} // Use deleteLayers function
         />
-      {/* <ToolButton
+      <ToolButton
           label="Download Png"
           icon={DownloadIcon}
           onClick={handleDownloadPng} // Use deleteLayers function
-        /> */}
+        />
       <ToolButton
           label="Download"
           icon={DownloadIcon}

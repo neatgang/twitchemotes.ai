@@ -55,9 +55,9 @@ export const BoardCard = ({
                         >
                             <Trash size={16} />
                         </button>
-                        <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
+                        {/* <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-100">
                             <Share2 size={16} />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 {/* <Footer 

@@ -1,11 +1,9 @@
 "use client";
 
 import { memo } from "react";
-
 import { colorToCss } from "@/lib/utils";
 import { LayerType } from "@/types/canvas";
 import { useStorage } from "@/liveblocks.config";
-
 import { Text } from "./text";
 import { Ellipse } from "./ellipse";
 import { Rectangle } from "./rectangle";
@@ -79,15 +77,15 @@ export const LayerPreview = memo(({
           selectionColor={selectionColor}
         />
       );
-      case LayerType.Image:
-  return (
-    <Image
-      id={id}
-      layer={layer}
-      onPointerDown={onLayerPointerDown}
-      selectionColor={selectionColor}
-    />
-  );
+    case LayerType.Image:
+      return (
+        <Image
+          id={id}
+          layer={layer}
+          onPointerDown={onLayerPointerDown}
+          selectionColor={selectionColor}
+        />
+      );
     default:
       console.warn("Unknown layer type");
       return null;

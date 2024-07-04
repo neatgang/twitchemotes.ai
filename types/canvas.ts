@@ -103,10 +103,22 @@ export type BackgroundLayer = {
   value: string; // This can be a color or an image URL
 };
 
+export enum CanvasMode {
+  None,
+  Pressing,
+  SelectionNet,
+  Translating,
+  Inserting,
+  Resizing,
+  Pencil,
+  Background,
+};
+
 export type CanvasState = 
   | {
       mode: CanvasMode.None;
       origin: Point;
+      current: Point; // Add current property here
     }
   | {
       mode: CanvasMode.SelectionNet;
@@ -136,17 +148,6 @@ export type CanvasState =
   | {
       mode: CanvasMode.Background;
     };
-
-export enum CanvasMode {
-  None,
-  Pressing,
-  SelectionNet,
-  Translating,
-  Inserting,
-  Resizing,
-  Pencil,
-  Background,
-};
 
 export type Layer = 
   | RectangleLayer 

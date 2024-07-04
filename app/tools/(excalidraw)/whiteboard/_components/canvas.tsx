@@ -56,8 +56,9 @@ import { ImageContext } from "@/providers/canvas/ImageContext";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Emote, EmoteForSale } from "@prisma/client";
+import { saveAs } from "file-saver";
 
-// import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas';
 
 // import  saveAs  from 'file-saver';
 
@@ -570,32 +571,6 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  // const handleDownload = async () => {
-  //   if (divRef.current) {
-  //     try {
-  //       const canvas = await html2canvas(divRef.current, {
-  //         width: divRef.current.offsetWidth,
-  //         height: divRef.current.offsetHeight,
-  //         scale: 2, // Increase scale for better quality
-  //         useCORS: true,
-  //         backgroundColor: null, // Ensure the background is transparent
-  //       });
-  
-  //       canvas.toBlob((blob) => {
-  //         if (blob) { // Ensure blob is not null
-  //           saveAs(blob, 'canvas.png');
-  //         } else {
-  //           console.error("Failed to create blob from canvas");
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error capturing canvas:", error);
-  //     }
-  //   } else {
-  //     console.log("divRef.current is null");
-  //   }
-  // };
-
   const clearSelection = () => {
     setCanvasState((prevState) => ({
       ...prevState,
@@ -604,179 +579,105 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
       origin: { x: 0, y: 0 } // Include origin
     }));
   }
-  
-  // const handleDownloadPng = async () => {
-  //   clearSelection();
-  
-  //   const svgElement = document.querySelector('#canvas-svg');
-  //   if (!svgElement) {
-  //     console.error("SVG element not found!");
-  //     return;
-  //   }
-  
-  //   // Clone the SVG to ensure styles and elements are intact
-  //   const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
-  //   svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  
-  //   // Remove unnecessary elements like selection boxes and cursors
-  //   const unnecessaryElements = svgClone.querySelectorAll('.selection-box, .cursors-presence, rect');
-  //   unnecessaryElements.forEach(el => el.remove());
-  
-  //   // Reset the transform attribute on the main image
-  //   const imageElement = svgClone.querySelector('image');
-  //   if (imageElement) {
-  //     imageElement.removeAttribute('style');
-  //     imageElement.removeAttribute('transform');
-  //     imageElement.setAttribute('x', '0');
-  //     imageElement.setAttribute('y', '0');
-  //     imageElement.setAttribute('width', '500');
-  //     imageElement.setAttribute('height', '500');
-  //   }
-  
-  //   // Serialize the SVG to a string
-  //   const svgData = new XMLSerializer().serializeToString(svgClone);
-  //   console.log(svgData); // Log the SVG data to verify its content
-  //   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-  //   const url = URL.createObjectURL(svgBlob);
-  
-  //   const img = new window.Image();
-  //   img.onload = async () => {
-  //     // Create a canvas and set its dimensions
-  //     const canvas = document.createElement('canvas');
-  //     canvas.width = 500;
-  //     canvas.height = 500;
-  
-  //     // Draw the SVG image onto the canvas
-  //     const ctx = canvas.getContext('2d');
-  //     if (ctx) {
-  //       ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //       ctx.drawImage(img, 0, 0, 500, 500);
-  
-  //       // Convert the canvas to a PNG Blob and save it
-  //       canvas.toBlob((blob) => {
-  //         if (blob) {
-  //           saveAs(blob, 'canvas.png');
-  //         }
-  //       });
-  //     }
-  
-  //     // Revoke the object URL to free up memory
-  //     URL.revokeObjectURL(url);
-  //   };
-  //   img.onerror = (error) => {
-  //     console.error('Error loading SVG:', error);
-  //     URL.revokeObjectURL(url);
-  //   };
-  //   img.src = url;
-  // };
-//     const handleDownloadPng = async () => {
 
-//    clearSelection();
-
-//   toImg('#canvas-svg', 'canvas', {
-//     scale: 3,
-//     format: 'png',
-//     download: true,
-//     ignore: '.selection-box, .cursors-presence, rect'
-//   }).then(() => {
-//     console.log('SVG converted and downloaded successfully');
-//   }).catch((error: any) => {
-//     console.error('Error converting SVG:', error);
-//   });
-// };
-  
-  
-  const handleDownloadSvg = () => {
+  const handleDownloadPng = async () => {
     clearSelection();
-   
+  
     const svgElement = document.querySelector('#canvas-svg');
     if (!svgElement) {
       console.error("SVG element not found!");
       return;
     }
-   
-    // Hide selection and cursor indicators
-    const selectionBox = document.querySelector('.selection-box') as HTMLElement;
-    const cursorsPresence = document.querySelector('.cursors-presence') as HTMLElement;
-     
-    if (selectionBox) selectionBox.style.display = 'none';
-    if (cursorsPresence) cursorsPresence.style.display = 'none';
-   
-    // Ensure the viewBox is set to 500x500
+  
     svgElement.setAttribute('viewBox', '0 0 500 500');
     svgElement.setAttribute('width', '500px');
     svgElement.setAttribute('height', '500px');
-   
-    // Clone the SVG to ensure styles and elements are intact
+  
     const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
-     
-    // Serialize the SVG
+    svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  
+    const unnecessaryElements = svgClone.querySelectorAll('.selection-box, .cursors-presence, rect');
+    unnecessaryElements.forEach(el => el.remove());
+  
+    const imageElement = svgClone.querySelector('image');
+    if (imageElement) {
+      const imageUrl = imageElement.getAttribute('href');
+      if (!imageUrl) {
+        console.error("Image element does not have an href attribute");
+        return;
+      }
+  
+      const img = new window.Image();
+      img.crossOrigin = 'Anonymous';
+  
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 500;
+        canvas.height = 500;
+  
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, 500, 500);
+  
+          canvas.toBlob((blob) => {
+            if (blob) {
+              saveAs(blob, 'canvas.png');
+            } else {
+              console.error('Failed to create Blob from canvas.');
+            }
+          });
+        } else {
+          console.error('Failed to get canvas context.');
+        }
+      };
+  
+      img.onerror = (error) => {
+        console.error('Error loading image:', error);
+      };
+  
+      img.src = imageUrl;
+    } else {
+      console.error("Image element not found in SVG");
+    }
+  };
+  
+  const handleDownloadSvg = () => {
+    clearSelection();
+  
+    const svgElement = document.querySelector('#canvas-svg');
+    if (!svgElement) {
+      console.error("SVG element not found!");
+      return;
+    }
+  
+    const selectionBox = document.querySelector('.selection-box') as HTMLElement;
+    const cursorsPresence = document.querySelector('.cursors-presence') as HTMLElement;
+  
+    if (selectionBox) selectionBox.style.display = 'none';
+    if (cursorsPresence) cursorsPresence.style.display = 'none';
+  
+    svgElement.setAttribute('viewBox', '0 0 500 500');
+    svgElement.setAttribute('width', '500px');
+    svgElement.setAttribute('height', '500px');
+  
+    const svgClone = svgElement.cloneNode(true) as SVGSVGElement;
+  
     const svgData = new XMLSerializer().serializeToString(svgClone);
-    console.log(svgData); // Log the SVG data to verify its content
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
-   
-    // Create download link and trigger download
+  
     const a = document.createElement('a');
     a.setAttribute('download', 'canvas.svg');
     a.setAttribute('href', url);
     a.click();
-   
+  
     URL.revokeObjectURL(url);
-   
-    // Restore visibility of selection and cursor indicators
+  
     if (selectionBox) selectionBox.style.display = 'block';
     if (cursorsPresence) cursorsPresence.style.display = 'block';
   };
-
-  // const onDrop = useCallback((acceptedFiles: File[]) => {
-  //   // Only process the drop if there's no uploadedImage or resultImage
-  //   if (!uploadedImage && !resultImage && !layer) {
-  //     acceptedFiles.forEach((file) => {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => {
-  //         setUploadedImage(e.target?.result as string);
-  //       };
-  //       reader.readAsDataURL(file);
-  //     });
-  //   }
-  // }, [uploadedImage, resultImage, setUploadedImage]);
-
-  // const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
-  //   onDrop,
-  //   disabled: !!uploadedImage || !!resultImage, // Disable dropzone if image exists
-  //   accept: {'image/*': []}
-  // });
-
-  // const handleDownload = useCallback(() => {
-  //   const svgElement = document.querySelector('svg');
-  //   if (!svgElement) return;
-    
-  //   const svgData = new XMLSerializer().serializeToString(svgElement);
-  //   const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-  //   const url = URL.createObjectURL(svgBlob);
   
-  //   const img = new Image();
-  //   img.onload = () => {
-  //     const canvas = document.createElement('canvas');
-  //     canvas.width = svgElement.width.baseVal.value;
-  //     canvas.height = svgElement.height.baseVal.value;
-  //     const ctx = canvas.getContext('2d');
-  //     ctx.drawImage(img, 0, 0);
-  //     URL.revokeObjectURL(url);
-  
-  //     const imgURI = canvas
-  //       .toDataURL('image/png')
-  //       .replace('image/png', 'image/octet-stream');
-  
-  //     const a = document.createElement('a');
-  //     a.setAttribute('download', 'canvas_image.png');
-  //     a.setAttribute('href', imgURI); 
-  //     a.click();
-  //   };
-  //   img.src = url;
-  // }, []);
-
 
   return (
     <div className="flex h-full w-full">
@@ -792,7 +693,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
           redo={history.redo}
           deleteLayers={deleteLayers} 
           handleDownloadSvg={handleDownloadSvg}
-          // handleDownloadPng={handleDownloadPng}
+          handleDownloadPng={handleDownloadPng}
         />
         <div ref={divRef} className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24">
           <svg
@@ -803,6 +704,9 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
             onPointerLeave={onPointerLeave}
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
+            viewBox="0 0 500 500"
+            width="500"
+            height="500"
           >
             <g style={{ transform: `translate(${camera.x}px, ${camera.y}px)` }}>
               {layerIds.map((layerId) => (
@@ -838,4 +742,4 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
       </main>
     </div>
   );
-  }
+};
