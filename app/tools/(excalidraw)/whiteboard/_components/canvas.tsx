@@ -64,6 +64,8 @@ import html2canvas from 'html2canvas';
 
 // import { jsPDF } from "jspdf"
 
+import axios from "axios";
+
 
 const MAX_LAYERS = 5;
 
@@ -681,14 +683,40 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     if (selectionBox) selectionBox.style.display = 'block';
     if (cursorsPresence) cursorsPresence.style.display = 'block';
   };
+
+  const handleSmartCrop = async () => {
+    if (!uploadedImage) {
+      console.error('No uploaded image found');
+      return;
+    }
   
+    try {
+      const response = await axios.post('/api/upload', {
+        imageUrl: uploadedImage,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      const data = response.data;
+      if (data.url) {
+        setResultImage(data.url);
+        console.log('Transformed URL:', data.url);
+      } else {
+        console.error('Failed to get transformed URL:', data.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div className="flex h-full w-full">
       <OrgSidebar />
       <RemoveBackgroundSidebar emotes={emotes} /> 
       <main className="flex-1 relative bg-neutral-100 touch-none flex items-center justify-center">
-        <Toolbar
+      <Toolbar
           canvasState={canvasState}
           setCanvasState={setCanvasState}
           canRedo={canRedo}
@@ -698,6 +726,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
           deleteLayers={deleteLayers} 
           handleDownloadSvg={handleDownloadSvg}
           handleDownloadPng={handleDownloadPng}
+          handleSmartCrop={handleSmartCrop} // Pass handleSmartCrop to Toolbar
         />
         <div ref={divRef} className="relative w-[500px] h-[500px] shadow-lg flex-shrink-0 m-24">
           <svg

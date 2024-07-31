@@ -9,7 +9,7 @@ import { Ellipse } from "./ellipse";
 import { Rectangle } from "./rectangle";
 import { Note } from "./note";
 import { Path } from "./path";
-import { Image } from "./image";
+import { Image } from "./image"; // Ensure Image is imported
 
 interface LayerPreviewProps {
   id: string;

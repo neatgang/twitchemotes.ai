@@ -17,6 +17,7 @@ import { useUser } from '@clerk/nextjs'
 import { db } from "@/lib/db";
 import { getUser } from "@/actions/get-user";
 import Landing from "@/components/Landing";
+import Navbar from "@/components/Navbar";
 
 // const demophotos = [
 //   {
@@ -346,7 +347,10 @@ export default function LandingPage() {
 // {/* <EmoteShowcase /> */}
 //       </div>
 //     </section>
+
+
 <section>
+
   <Landing />
 </section>
   )

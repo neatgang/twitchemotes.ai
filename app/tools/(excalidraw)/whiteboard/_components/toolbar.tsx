@@ -8,7 +8,8 @@ import {
   Type,
   Undo2,
   Trash2Icon,
-  DownloadIcon
+  DownloadIcon,
+  FrameIcon
 } from "lucide-react";
 
 import { CanvasMode, CanvasState, LayerType } from "@/types/canvas";
@@ -26,6 +27,7 @@ interface ToolbarProps {
   handleDownload?: () => void; 
   handleDownloadSvg?: () => void; 
   handleDownloadPng?: () => void; 
+  handleSmartCrop: () => void;
 };
 
 export const Toolbar = ({
@@ -39,6 +41,8 @@ export const Toolbar = ({
   handleDownload = () => {}, 
   handleDownloadSvg = () => {}, 
   handleDownloadPng = () => {}, 
+  handleSmartCrop = () => {}, 
+  ...props
 }: ToolbarProps) => {
   return (
     <div className="absolute top-[50%] -translate-y-[50%] left-2 flex flex-col gap-y-4">
@@ -131,6 +135,11 @@ export const Toolbar = ({
           label="Download"
           icon={DownloadIcon}
           onClick={handleDownloadSvg} // Use deleteLayers function
+        />
+                <ToolButton
+          label="Smart Crop"
+          icon={FrameIcon} // Use CloudIcon for the new button
+          onClick={handleSmartCrop} // Add the new button handler
         />
       </div>
       <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">

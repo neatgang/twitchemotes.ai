@@ -34,15 +34,6 @@ const DashboardPage = async () => {
     }
   });
 
-  const handleDelete = async (boardId: string) => {
-    try {
-      await deleteBoard(boardId);
-      // Optionally, you can re-fetch the boards or update the state to reflect the deletion
-    } catch (error) {
-      console.error("Failed to delete board:", error);
-    }
-  };
-
   return (
     <div className="flex flex-col h-[calc(100%-80px)] p-6">
       <div className="flex justify-between items-center mb-6">

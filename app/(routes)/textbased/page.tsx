@@ -153,6 +153,7 @@ const removeBackground = async (src: string, index: number) => {
     setIsRemovingBackground(false);
   }
 };
+
   return ( 
     <div className="flex flex-col items-center mt-12">
       <div className="text-center px-3 md:px-6 flex items-center gap-x-3 mb-8">
