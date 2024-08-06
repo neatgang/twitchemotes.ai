@@ -7,6 +7,8 @@ import { Hint } from "@/components/hint";
 import { cn } from "@/lib/utils";
 import { PaintBucket } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BsBorderWidth } from "react-icons/bs";
+
 
 interface ToolbarProps {
     editor: Editor | undefined;
@@ -16,22 +18,16 @@ interface ToolbarProps {
 
 export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
 
-    const selectedObject = editor?.canvas.getActiveObject();
+    const fillColor = editor?.getActiveFillColor()
+    const strokeColor = editor?.getActiveStrokeColor()   
+    const strokeWidth = editor?.getActiveStrokeWidth()
 
-    const getProperty = (property: any) => {
-        if (!selectedObject) 
-            return null;
-
-        return selectedObject.get(property);
+    if (editor?.selectedObjects.length === 0) {
+        return (
+            <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2" />
+        )
     }
 
-    const fillColor = getProperty("fill")
-    const fillColor2 = editor?.fillColor
-
-    const [properties, setProperties] = useState({
-        fillColor,
-    })
-    
     return (
         <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
             <div className="flex items-center h-full justify-center">
@@ -42,7 +38,31 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                         variant="ghost"
                         className={cn(activeTool === "fill" && "bg-gray-100")}
                     >
-                        <div className="w-10 h-10 border rounded-md" style={{ backgroundColor: typeof fillColor === "string" ? fillColor : "black" }} />
+                        <div className="w-10 h-10 border rounded-md" style={{ backgroundColor: fillColor || "transparent" }} />
+                    </Button>
+                </Hint>
+                </div>
+                <div className="flex items-center h-full justify-center">
+                <Hint label="Stroke color" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => onChangeActiveTool("stroke-color")}
+                        size="icon"
+                        variant="ghost"
+                        className={cn(activeTool === "stroke-color" && "bg-gray-100")}
+                    >
+                        <div className="w-10 h-10 border rounded-md" style={{ borderColor: strokeColor || "transparent" }} />
+                    </Button>
+                </Hint>
+            </div>
+                <div className="flex items-center h-full justify-center">
+                <Hint label="Stroke width" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => onChangeActiveTool("stroke-width")}
+                        size="icon"
+                        variant="ghost"
+                        className={cn(activeTool === "stroke-width" && "bg-gray-100")}
+                    >
+                        <BsBorderWidth />
                     </Button>
                 </Hint>
             </div>

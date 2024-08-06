@@ -8,16 +8,17 @@ import { Navbar } from "./navbar"
 import { Sidebar } from "./sidebar"
 import { Toolbar } from "./toolbar"
 import { Footer } from "./footer"
-import { ActiveTool } from "../types"
+import { ActiveTool, EditorHookProps, selectionDependentTools } from "../types"
 import { ShapeSidebar } from "./shape-sidebar"
-import { ImageSidebar } from "./image-sidebar"
 import { Emote, EmoteForSale } from "@prisma/client"
+import { FillColorSidebar } from "./fill-color-sidebar"
+import { StrokeColorSidebar } from "./stroke-color-sidebar"
+import { StrokeWidthSidebar } from "./stroke-width-sidebar"
 
-interface EditorProps {
-    emotes: (Emote & { emoteForSale?: EmoteForSale | null })[];
-  }
 
-export const Editor = ({ emotes }: EditorProps) => {
+
+export const Editor = ({
+}) => {
 
     const [activeTool, setActiveTool] = useState<ActiveTool>("select")
 
@@ -46,8 +47,15 @@ export const Editor = ({ emotes }: EditorProps) => {
         setActiveTool(tool); 
     }, [activeTool])
 
+    const onClearSelection = useCallback(() => {
+        if (selectionDependentTools.includes(activeTool)) {
+            setActiveTool("select")
+        }
+    }, [activeTool])
 
-    const { init, editor } = useEditor()
+    const { init, editor } = useEditor({
+        clearSelectionCallback: onClearSelection
+    })
 
     const canvasRef = useRef(null)
 
@@ -72,15 +80,6 @@ export const Editor = ({ emotes }: EditorProps) => {
         }
     }, [init])
 
-    const handleImageUpload = useCallback((image: string) => {
-        if (editor) {
-            fabric.Image.fromURL(image, (img) => {
-                editor.canvas.add(img);
-                editor.canvas.renderAll();
-            });
-        }
-    }, [editor]);
-
   return (
     <div className="h-full flex flex-col">
         <Navbar 
@@ -92,15 +91,22 @@ export const Editor = ({ emotes }: EditorProps) => {
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}
             />
-            <ImageSidebar 
+            <ShapeSidebar 
+                editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}
-                editor={editor}
-                onImageUpload={handleImageUpload}
-                emotes={emotes}
-                // emotesForSale={emotesForSale}
             />
-            <ShapeSidebar 
+            <FillColorSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <StrokeColorSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <StrokeWidthSidebar 
                 editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}

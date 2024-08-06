@@ -80,3 +80,14 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.circle-picker {
+  width: full !important;
+}
+
+.chrome-picker {
+  width: full !important;
+  box-shadow: none !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}

@@ -52,14 +52,12 @@ export default async function RootLayout({
           />
         </head>
         <body className={`${inter.className} h-full`}>
-          <div className="h-full">
-            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
+            {/* <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} /> */}
             <ToasterProvider />
             <TooltipProvider>
               <ModalProvider />
               {children}
             </TooltipProvider>
-          </div>
         </body>
       </html>
     </ClerkProvider>
