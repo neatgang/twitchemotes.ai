@@ -136,22 +136,22 @@ export const Navbar = ({
   isPro: boolean;
   credits: number;
 }) => {
-return (
-  <header className="dark:bg-gray-900 w-full flex items-center p-4 h-[68px] gap-x-8 border-b">
-  <div className="mx-auto flex h-16 items-center justify-between w-full">
-    <nav className="flex items-center">
-      <LandingMobileNavbar />
-      <NavigationMenu className="flex items-center">
-        <Button variant="link" className="flex items-center">
-          <Link href="/" className="flex items-center">
-            <Avatar className="mr-2">
-              <AvatarImage src="/peepopainter.jpg" />
-            </Avatar>
-            <span className="text-lg font-semibold">EmoteMaker.ai</span>
-          </Link>
-        </Button>
-            <NavigationMenuList>
-            <NavigationMenuItem className="hidden sm:block">
+  return (
+    <header className="dark:bg-gray-900 w-full flex items-center p-4 h-[68px] gap-x-8 border-b z-50 relative">
+      <div className="mx-auto flex h-16 items-center justify-between w-full">
+        <nav className="flex items-center">
+          <LandingMobileNavbar />
+          <NavigationMenu className="flex items-center">
+            <Button variant="link" className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <Avatar className="mr-2">
+                  <AvatarImage src="/peepopainter.jpg" />
+                </Avatar>
+                <span className="text-lg font-semibold">EmoteMaker.ai</span>
+              </Link>
+            </Button>
+            <NavigationMenuList className="hidden sm:flex">
+              <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Create Emotes</a>
                 </NavigationMenuTrigger>
@@ -169,7 +169,7 @@ return (
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-            <NavigationMenuItem className="hidden sm:block">
+              <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Tools</a>
                 </NavigationMenuTrigger>
@@ -187,30 +187,27 @@ return (
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-        <Button variant="ghost" className="hidden sm:block">
-      <Link href="/showcase">Showcase</Link>
-      </Button>
-      {/* <Button variant="ghost" className="hidden sm:block">
-      <Link href="/credits">Credits</Link>
-      </Button> */}
-      </nav>
-      <div className="flex items-center space-x-2">
-        <SignedIn>
-          <CreditsDisplay credits={credits} />
-          <UserAccountNav isPro={isPro}/>
-        </SignedIn>
-        <SignedOut>
-          <Button variant="ghost">
-            <Link href="/sign-in">Login</Link>
-          </Button>
-        </SignedOut>
+            </NavigationMenuList>
+            <Button variant="ghost" className="hidden sm:block">
+              <Link href="/showcase">Showcase</Link>
+            </Button>
+          </NavigationMenu>
+        </nav>
+        <div className="flex items-center space-x-2">
+          <SignedIn>
+            <CreditsDisplay credits={credits} />
+            <UserAccountNav isPro={isPro} />
+          </SignedIn>
+          <SignedOut>
+            <Button variant="ghost">
+              <Link href="/sign-in">Login</Link>
+            </Button>
+          </SignedOut>
+        </div>
       </div>
-    </div>
-  </header>
-);
-}
+    </header>
+  );
+};
 
 export default Navbar;
 
