@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 
 import images from './images'
 
-export const runetime = 'nodejs'
+// export const runetime = 'nodejs'
 
 const app = new Hono().basePath('/api')
 
