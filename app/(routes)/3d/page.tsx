@@ -26,7 +26,7 @@ import { Loader } from "@/components/Loader";
 import Empty from "@/components/Empty";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { UploadButton } from "@/utils/uploadthing";
+import { UploadButton } from "@/lib/utils/uploadthing";
 import { FileUpload } from "@/components/FileUpload";
 import ImageToPrompt from "@/components/ImageToPrompt";
 import ChatContainer from "@/components/ChatContainer";

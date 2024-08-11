@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { CheckCircle, ChevronDown, DownloadCloud, File, FileBox, FileIcon, MousePointerClick, Redo2, Undo2, Undo2Icon } from "lucide-react"
 import { ActiveTool } from "../types"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface NavbarProps {
   activeTool: ActiveTool
@@ -16,14 +17,16 @@ interface NavbarProps {
 
 export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
   return (
-    <nav className='w-full flex items-center p-4 h-[68px] gap-x-8 border-b'>
-      <Button variant="link">
+    <nav className='w-full flex items-center p-4 h-[68px] gap-x-8 border-b '>
+      {/* <Button variant="link">
+        <Link href="/" className="flex items-center">
         <Avatar className="mr-2">
           <AvatarImage src="/peepopainter.jpg"/>
         </Avatar> 
         EmoteMaker.ai
-      </Button>
-      <div className="w-full flex items-center gap-x-1 h-full">
+        </Link>
+      </Button> */}
+      <div className="w-full flex items-center gap-x-1 h-ful">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button size="sm" variant="ghost">

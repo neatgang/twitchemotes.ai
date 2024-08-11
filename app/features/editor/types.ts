@@ -1,6 +1,28 @@
 import { fabric } from "fabric"
+import { ITextOptions } from "fabric/fabric-impl";
 
 import * as material from "material-colors"
+
+export const fonts = [
+    "Arial",
+    "Arial Black",
+    "Verdana",
+    "Helvetica",
+    "Tahoma",
+    "Trebuchet MS",
+    "Times New Roman",
+    "Georgia",
+    "Garamond",
+    "Courier New",
+    "Brush Script MT",
+    "Palatino",
+    "Bookman",
+    "Comic Sans MS",
+    "Impact",
+    "Lucida Sans Unicode",
+    "Geneva",
+    "Lucida Console",
+]
 
 export const selectionDependentTools = [
     "fill",
@@ -38,8 +60,10 @@ export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fil
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
-export const STROKE_WIDTH = 1;
+export const STROKE_WIDTH = 2;
 export const STROKE_DASH_ARRAY = []
+export const FONT_FAMILY = "Arial"
+export const FONT_SIZE = 32
 
 export const CIRCLE_OPTIONS = {
     radius: 50,
@@ -70,6 +94,15 @@ export const TRIANGLE_OPTIONS = {
     strokeWidth: STROKE_WIDTH,
 }
 
+export const TEXT_OPTIONS = {
+    type: "textbox",
+    left: 100,
+    top: 100,
+    fill: FILL_COLOR,
+    fontSize: FONT_SIZE,
+    fontFamily: FONT_FAMILY,
+}
+
 export interface EditorHookProps {
     clearSelectionCallback?: () => void;
 }
@@ -85,10 +118,16 @@ export type BuildEditorProps = {
     selectedObjects: fabric.Object[];
     strokeDashArray: number[];
     setStrokeDashArray: (value: number[]) => void;
-    
+    fontFamily: string;
+    setFontFamily: (value: string) => void;
 }
 
 export interface Editor {
+    addText: (value: string, options?: ITextOptions) => void;
+    getActiveOpacity: () => number;
+    changeOpacity: (value: number) => void;
+    bringForward: () => void;
+    sendBackwards: () => void;
     addCircle: () => void;
     addSoftRectangle: () => void;
     addRectangle: () => void;
@@ -105,5 +144,6 @@ export interface Editor {
     getActiveStrokeDashArray: () => number[];
     canvas: fabric.Canvas;
     selectedObjects: fabric.Object[];
-
+    changeFontFamily: (value: string) => void;
+    getActiveFontFamily: () => string;
 }

@@ -27,7 +27,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                     const formattedValue = rgbaObjectToString(color.rgb)
                     onChange(formattedValue)
                 }}
-                className="border rounded-lg"
+                // className="border rounded-lg"
             />
 
         </div>

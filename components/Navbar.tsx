@@ -137,17 +137,19 @@ export const Navbar = ({
   credits: number;
 }) => {
 return (
-  <header className="dark:bg-gray-900">
-    <div className="container  mx-auto flex h-16 items-center justify-between">
-      <nav className="flex items-center justify-center">
-        <LandingMobileNavbar />
-        <NavigationMenu>
-                <Button variant="link">
-                  <Avatar className="mr-2">
-                    <AvatarImage src="/peepopainter.jpg"/>
-                  </Avatar>
-                  EmoteMaker.ai
-                </Button>
+  <header className="dark:bg-gray-900 w-full flex items-center p-4 h-[68px] gap-x-8 border-b">
+  <div className="mx-auto flex h-16 items-center justify-between w-full">
+    <nav className="flex items-center">
+      <LandingMobileNavbar />
+      <NavigationMenu className="flex items-center">
+        <Button variant="link" className="flex items-center">
+          <Link href="/" className="flex items-center">
+            <Avatar className="mr-2">
+              <AvatarImage src="/peepopainter.jpg" />
+            </Avatar>
+            <span className="text-lg font-semibold">EmoteMaker.ai</span>
+          </Link>
+        </Button>
             <NavigationMenuList>
             <NavigationMenuItem className="hidden sm:block">
                 <NavigationMenuTrigger>

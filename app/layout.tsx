@@ -12,6 +12,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import Script from 'next/script'
 import { getUserCredits } from '@/actions/get-user-credits'
 import { getUser } from '@/actions/get-user'
+import { Providers } from '@/components/providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,6 +39,7 @@ export default async function RootLayout({
 
   return (
     <ClerkProvider>
+
       <html lang="en" className="h-full">
         <head>
           <Script async src="//cdn.trackdesk.com/tracking.js" />
@@ -52,14 +54,17 @@ export default async function RootLayout({
           />
         </head>
         <body className={`${inter.className} h-full`}>
-            {/* <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} /> */}
+            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
             <ToasterProvider />
             <TooltipProvider>
               <ModalProvider />
+              <Providers>
               {children}
+              </Providers>
             </TooltipProvider>
         </body>
       </html>
+
     </ClerkProvider>
   )
 }

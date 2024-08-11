@@ -2,9 +2,10 @@ import { useCallback, useState, useMemo } from "react"
 
 import { fabric } from "fabric"
 import { useAutoResize } from "./use-auto-resize";
-import { BuildEditorProps, CIRCLE_OPTIONS, Editor, EditorHookProps, FILL_COLOR, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH } from "../types";
+import { BuildEditorProps, CIRCLE_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS } from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
 import { isTextType } from "../utils";
+import { ITextOptions } from "fabric/fabric-impl";
 
 const buildEditor = ({ 
     canvas,
@@ -16,7 +17,9 @@ const buildEditor = ({
     setStrokeWidth,
     selectedObjects,
     strokeDashArray,
-    setStrokeDashArray
+    setStrokeDashArray,
+    fontFamily,
+    setFontFamily
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -43,6 +46,72 @@ const buildEditor = ({
     }
 
     return {
+
+        addText: (value: string, options?: ITextOptions) => {
+            const object = new fabric.Textbox(value, {
+                ...TEXT_OPTIONS,
+                fill: fillColor,
+                ...options
+            })
+
+            addToCanvas(object)
+        },
+
+        getActiveOpacity: () => {
+            const selectedObject = selectedObjects[0]
+
+            if (!selectedObject) {
+                return 1
+            }
+
+            const value = selectedObject.get("opacity") || 1
+
+            return value
+        },
+
+        changeOpacity: (value: number) => {
+            canvas.getActiveObjects().forEach((object) => {
+                object.set({ opacity: value })
+            })
+
+            canvas.renderAll()
+        },
+
+        bringForward: () => {
+            canvas.getActiveObjects().forEach((object) => {
+                canvas.bringForward(object)
+            })
+
+            canvas.renderAll()
+
+            const workspace = getWorkspace()
+            workspace?.sendToBack()
+        },
+
+        sendBackwards: () => {
+            canvas.getActiveObjects().forEach((object) => {
+                canvas.sendBackwards(object)
+            })
+
+            canvas.renderAll()
+
+            const workspace = getWorkspace()
+            workspace?.sendToBack()
+        },
+
+        changeFontFamily: (value: string) => {
+            setFontFamily(value)
+            canvas.getActiveObjects().forEach((object) => {
+                if (isTextType(object.type)) {
+                object.set({
+
+                    // @ts-ignore
+                        fontFamily: value
+                    })
+                }
+            })
+            canvas.renderAll()
+        },
 
         changeFillColor: (value: string) => {
             setFillColor(value)
@@ -97,11 +166,13 @@ const buildEditor = ({
                 ...CIRCLE_OPTIONS,
                 fill: fillColor,
                 stroke: strokeColor,
-                strokeWidth: strokeWidth
+                strokeWidth: strokeWidth,
+                strokeDashArray: strokeDashArray
             });
 
             addToCanvas(object) 
         },
+
         addSoftRectangle: () => {
             const object = new fabric.Rect({
                 ...RECTANGLE_OPTIONS,
@@ -109,31 +180,37 @@ const buildEditor = ({
                 ry: 10,
                 fill: fillColor,
                 stroke: strokeColor,
-                strokeWidth: strokeWidth
+                strokeWidth: strokeWidth,
+                strokeDashArray: strokeDashArray
             });
 
             addToCanvas(object) 
         },
+
         addRectangle: () => {
             const object = new fabric.Rect({
                 ...RECTANGLE_OPTIONS,
                 fill: fillColor,
                 stroke: strokeColor,
-                strokeWidth: strokeWidth
+                strokeWidth: strokeWidth,
+                strokeDashArray: strokeDashArray
             });
 
             addToCanvas(object) 
         },
+
         addTriangle: () => {
             const object = new fabric.Triangle({
                 ...RECTANGLE_OPTIONS,
                 fill: fillColor,
                 stroke: strokeColor,
-                strokeWidth: strokeWidth
+                strokeWidth: strokeWidth,
+                strokeDashArray: strokeDashArray
             });
 
             addToCanvas(object) 
         },
+
         addInverseTriangle: () => {
 
             const HEIGHT = 100;
@@ -149,12 +226,14 @@ const buildEditor = ({
                     ...RECTANGLE_OPTIONS,
                     fill: fillColor,
                     stroke: strokeColor,
-                    strokeWidth: strokeWidth
+                    strokeWidth: strokeWidth,
+                    strokeDashArray: strokeDashArray
                 }
             )
 
             addToCanvas(object) 
         },
+
         addDiamond: () => {
 
             const HEIGHT = 100;
@@ -171,13 +250,16 @@ const buildEditor = ({
                     ...RECTANGLE_OPTIONS,
                     fill: fillColor,
                     stroke: strokeColor,
-                    strokeWidth: strokeWidth
+                    strokeWidth: strokeWidth,
+                    strokeDashArray: strokeDashArray
                 }
             )
 
             addToCanvas(object) 
         },
+
         canvas,
+
         getActiveFillColor: () => {
             const selectedObject = selectedObjects[0]
 
@@ -189,6 +271,20 @@ const buildEditor = ({
 
             // currently gradients and patterns are not supported
             return value as string;
+        },
+
+        getActiveFontFamily: () => {
+            const selectedObject = selectedObjects[0]
+
+            if (!selectedObject) {
+                return fontFamily
+            }
+
+            // @ts-ignore
+            const value = selectedObject.get("fontFamily") || fontFamily
+
+            // currently gradients and patterns are not supported
+            return value
         },
 
         getActiveStrokeColor: () => {
@@ -229,6 +325,7 @@ const buildEditor = ({
             // currently gradients and patterns are not supported
             return value
         }, 
+
         selectedObjects
     }
 }
@@ -237,7 +334,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
-
+    const [fontFamily, setFontFamily] = useState(FONT_FAMILY)
     const [fillColor, setFillColor] = useState(FILL_COLOR)
     const [strokeColor, setStrokeColor] = useState(STROKE_COLOR)
     const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH)
@@ -266,7 +363,9 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
                 setStrokeWidth, 
                 selectedObjects,
                 strokeDashArray,
-                setStrokeDashArray
+                setStrokeDashArray,
+                fontFamily,
+                setFontFamily
             });
         }
 
@@ -277,7 +376,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         strokeColor, 
         strokeWidth, 
         selectedObjects, 
-        strokeDashArray
+        strokeDashArray,
+        fontFamily
     ]);
 
     const init = useCallback(({

@@ -14,6 +14,10 @@ import { Emote, EmoteForSale } from "@prisma/client"
 import { FillColorSidebar } from "./fill-color-sidebar"
 import { StrokeColorSidebar } from "./stroke-color-sidebar"
 import { StrokeWidthSidebar } from "./stroke-width-sidebar"
+import { OpacitySidebar } from "./opacity-sidebar"
+import { TextSidebar } from "./text-sidebar"
+import { FontSidebar } from "./font-sidebar"
+import { ImageSidebar } from "./image-sidebar"
 
 
 
@@ -67,7 +71,7 @@ export const Editor = ({
             canvasRef.current, 
             {
                 controlsAboveOverlay: true,
-                preserveObjectStacking:true,
+                preserveObjectStacking: true,
         })
 
         init({
@@ -86,7 +90,7 @@ export const Editor = ({
             activeTool={activeTool}
             onChangeActiveTool={onChangeActiveTool}
         />
-        <div className="absolute h-[calc(100%-68px)] w-full top-[68px] flex"> 
+        <div className="absolute h-[calc(100%-134px)] w-full top-[134px] flex"> 
             <Sidebar 
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}
@@ -107,6 +111,26 @@ export const Editor = ({
                 onChangeActiveTool={onChangeActiveTool}
             />
             <StrokeWidthSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <OpacitySidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <TextSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <FontSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <ImageSidebar 
                 editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}

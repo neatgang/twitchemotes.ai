@@ -1,21 +1,15 @@
-import { Hono } from "hono"
-import { handle } from "hono/vercel"
+import { handle } from 'hono/vercel';
+import { Hono } from 'hono';
 
-// revert to "edge" if planning on running on the edge
-export const runtime = "nodejs"
+import images from './images'
 
-const app = new Hono().basePath("/api")
+export const runetime = 'nodejs'
 
-app.get("/test", (c) => {
-    return c.json({ test: "hono test" })
-})
+const app = new Hono().basePath('/api')
 
-app.get("/user/:name", (c) => {
-
-    const name = c.req.param("name")
-
-    return c.json({ userName: name })
-})
+const routes = app.route('/images', images)
 
 export const GET = handle(app)
+
+export type AppType = typeof routes
 

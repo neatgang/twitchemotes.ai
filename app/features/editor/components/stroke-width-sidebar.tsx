@@ -55,7 +55,7 @@ export const StrokeWidthSidebar = ({ activeTool, onChangeActiveTool, editor }: S
                         onClick={() => onChangeStrokeType([5, 5])}
                         variant="secondary" size="lg"
                         className={cn(
-                            "w-full border-black rounded-full", JSON.stringify(typeValue) === `[5,5]` && "border-4 "
+                            "w-full border-black rounded-full", JSON.stringify(typeValue) === `[5,5]` && "border-4 border-blue-500"
                         )}
                         style={{ padding: "8px 16px" }}
                     >
