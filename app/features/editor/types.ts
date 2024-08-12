@@ -56,7 +56,7 @@ export const colors = [
     "transparent",
 ]
 
-export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fill" | "stroke-color" | "stroke-width" | "font" | "opacity" | "filter" | "settings" | "ai" | "remove-bg" | "templates";
+export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fill" | "stroke-color" | "stroke-width" | "font" | "opacity" | "filter" | "settings" | "ai" | "remove-bg" | "templates" | "emotes"
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -123,6 +123,9 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+    addEmote: (value: string) => void;
+    addImage: (value: string) => void;
+    delete: () => void;
     addText: (value: string, options?: ITextOptions) => void;
     getActiveOpacity: () => number;
     changeOpacity: (value: number) => void;

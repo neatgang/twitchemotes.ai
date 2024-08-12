@@ -16,8 +16,8 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
                 <SidebarItem 
                     icon={LayoutTemplate} 
                     label="My Emotes" 
-                    isActive={activeTool === "templates"} 
-                    onClick={() => onChangeActiveTool("templates")} 
+                    isActive={activeTool === "emotes"} 
+                    onClick={() => onChangeActiveTool("emotes")} 
                 />
                 <SidebarItem 
                     icon={ImageIcon} 

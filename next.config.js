@@ -10,6 +10,7 @@ const nextConfig = {
       "pprcanvas.s3.amazonaws.com",
       "img.clerk.com",
       "storage.googleapis.com",
+      "images.unsplash.com",
     ],
     remotePatterns: [
       {

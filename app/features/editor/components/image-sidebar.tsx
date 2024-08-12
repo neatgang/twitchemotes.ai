@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { useGetImages } from "../../images/api/use-get-images"
 import { AlertTriangle, Loader } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 
 interface ImageSidebarProps {
@@ -38,8 +40,32 @@ export const ImageSidebar = ({ activeTool, onChangeActiveTool, editor }: ImageSi
                 </div>
             )}
             <ScrollArea>
-                <div className="p-4 space-y-4 border-b">
-
+                <div className="p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                    {data && data.images.map((image) => {
+                        return (
+                            <button 
+                                key={image.id} 
+                                className="relative w-full h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflw-hidden border"
+                                onClick={() => editor?.addImage(image.urls.regular)}
+                            >
+                                <Image 
+                                    fill
+                                    src={image.urls.small} 
+                                    alt={image.alt_description || ""} 
+                                    className="object-cover"
+                                />
+                                <Link 
+                                    href={image.links.html}
+                                    target="_blank"
+                                    className="opacity-0 group-hover:opacity-100 absolute left-0 bottom-0 w-full text-[10px] truncate text-white hover:underline p-1 bg-black/50 text-left"
+                                >
+                                    {image.user.name}
+                                </Link>
+                            </button>
+                        )
+                    })}
+                    </div>
                 </div>
             </ScrollArea>
             <ToolSidebarClose onClick={onClose} />
