@@ -47,13 +47,19 @@ const buildEditor = ({
 
     return {
 
-        addEmote: (url: string) => {
-            fabric.Image.fromURL(url, (img) => {
-                img.scaleToWidth(100);
-                img.scaleToHeight(100);
-                canvas.add(img);
-                canvas.renderAll();
-            });
+        addEmote: (value: string) => {
+            fabric.Image.fromURL(value, (image) => {
+                const workspace = getWorkspace()
+
+                image.scaleToWidth(workspace?.width || 0)
+                image.scaleToHeight(workspace?.height || 0)
+
+                addToCanvas(image)
+            }, 
+            {
+                crossOrigin: "anonymous"
+            }
+            )
         },
 
         addImage: (value: string) => {

@@ -4,22 +4,27 @@ import { getEmotes } from "@/actions/get-emotes";
 import { useUser } from "@clerk/nextjs";
 import { Emote } from "@prisma/client";
 
-const useEmotes = () => {
-  const [emotes, setEmotes] = useState<Emote[]>([]);
-  const { user } = useUser(); // useUser hook from Clerk for client-side user management
+const useEmotes = (userId: string | null) => {
+  const [emotes, setEmotes] = useState<{ emotes: Emote[] }>({ emotes: [] });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchEmotes = async () => {
-      if (user?.id) { // Check if user and user.id exist
-        const userEmotes = await getEmotes({ userId: user.id });
-        // setEmotes(userEmotes);
+      try {
+        const data = await getEmotes({ userId });
+        setEmotes(data);
+      } catch (error) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchEmotes();
-  }, [user?.id]); // Depend on user.id
+  }, [userId]);
 
-  return emotes;
+  return { emotes, isLoading, isError };
 };
 
 export default useEmotes;

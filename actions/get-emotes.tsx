@@ -20,10 +20,31 @@
 //   }
 // }
 
+// import { db } from "@/lib/db";
+// import { Emote } from "@prisma/client";
+
+// export const getEmotes = async ({ userId }: { userId: string | null }) => {
+//   try {
+//     const emotes = await db.emote.findMany({
+//       where: {
+//         userId: userId,
+//       },
+//       orderBy: {
+//         createdAt: "asc",
+//       }
+//     });
+
+//     return { emotes }; // Return as an object with emotes key
+//   } catch (error) {
+//     console.log("[GET_EMOTES] Error:", error);
+//     return { emotes: [] }; // Return an empty array in case of error
+//   }
+// }
+
 import { db } from "@/lib/db";
 import { Emote } from "@prisma/client";
 
-export const getEmotes = async ({ userId }: { userId: string | null }) => {
+export const getEmotes = async ({ userId }: { userId: string }) => {
   try {
     const emotes = await db.emote.findMany({
       where: {
@@ -39,4 +60,4 @@ export const getEmotes = async ({ userId }: { userId: string | null }) => {
     console.log("[GET_EMOTES] Error:", error);
     return { emotes: [] }; // Return an empty array in case of error
   }
-}
+};

@@ -1,15 +1,24 @@
-"use client";
 
 
 import { Editor } from "@/app/features/editor/components/editor";
-import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
 
-const EditorProjectIdPage = () => {
+import { auth } from "@clerk/nextjs/server";
+import { getEmotes } from "../../../../../actions/get-emotes";
+import { redirect } from "next/navigation";
+import { fetchUserEmotes } from "@/actions/fetchUserEmotes.";
+
+const EditorProjectIdPage = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    redirect('/signin');
+  }
+
+  const emotes = await fetchUserEmotes(userId);
 
   return (
     <>
-      <Editor />
+      <Editor userId={userId} emotes={emotes} />
     </>
   );
 };
