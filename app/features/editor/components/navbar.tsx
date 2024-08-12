@@ -17,7 +17,7 @@ interface NavbarProps {
 
 export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
   return (
-    <nav className='w-full flex items-center p-4 h-[68px] gap-x-8 border-b '>
+    <nav className='w-full flex items-center h-[68px] gap-x-8'>
       {/* <Button variant="link">
         <Link href="/" className="flex items-center">
         <Avatar className="mr-2">
@@ -26,7 +26,7 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
         EmoteMaker.ai
         </Link>
       </Button> */}
-      <div className="w-full flex items-center gap-x-1 h-ful">
+      <div className="w-full flex items-center gap-x-1 h-full border-b border-gray-200">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button size="sm" variant="ghost">

@@ -45,7 +45,7 @@ export const TextSidebar = ({ activeTool, onChangeActiveTool, editor }: TextSide
                         </span>
                     </Button>
                     <Button className="w-full h-16" variant="secondary" onClick={() => editor?.addText("Paragraph", {
-                        fontSize: 32,
+                        fontSize: 18,
 
                     })}>
                         Paragraph

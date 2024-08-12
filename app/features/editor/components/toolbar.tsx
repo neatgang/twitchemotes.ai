@@ -30,12 +30,12 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
 
     if (editor?.selectedObjects.length === 0) {
         return (
-            <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2" />
+            <div className="shrink-0 h-[56px] border-b border-gray-300 bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2" />
         )
     }
 
     return (
-        <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
+        <div className="shrink-0 h-[62px] border-b border-gray-300 bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
             <div className="flex items-center h-full justify-center">
                 <Hint label="Color" side="bottom" sideOffset={5}>
                     <Button
