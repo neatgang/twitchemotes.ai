@@ -12,7 +12,7 @@ const useEmotes = () => {
     const fetchEmotes = async () => {
       if (user?.id) { // Check if user and user.id exist
         const userEmotes = await getEmotes({ userId: user.id });
-        setEmotes(userEmotes);
+        // setEmotes(userEmotes);
       }
     };
 

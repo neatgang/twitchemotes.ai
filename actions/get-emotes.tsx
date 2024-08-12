@@ -20,30 +20,23 @@
 //   }
 // }
 
-import { useState, useEffect } from "react";
-import { getEmotes } from "@/actions/get-emotes";
+import { db } from "@/lib/db";
+import { Emote } from "@prisma/client";
 
-const useEmotes = (userId: string | null) => {
-  const [emotes, setEmotes] = useState<{ emotes: Emote[] }>({ emotes: [] });
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    const fetchEmotes = async () => {
-      try {
-        const data = await getEmotes({ userId });
-        setEmotes(data);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
+export const getEmotes = async ({ userId }: { userId: string | null }) => {
+  try {
+    const emotes = await db.emote.findMany({
+      where: {
+        userId: userId,
+      },
+      orderBy: {
+        createdAt: "asc",
       }
-    };
+    });
 
-    fetchEmotes();
-  }, [userId]);
-
-  return { emotes, isLoading, isError };
-};
-
-export default useEmotes;
+    return { emotes }; // Return as an object with emotes key
+  } catch (error) {
+    console.log("[GET_EMOTES] Error:", error);
+    return { emotes: [] }; // Return an empty array in case of error
+  }
+}

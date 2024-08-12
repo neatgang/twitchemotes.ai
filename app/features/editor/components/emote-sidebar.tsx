@@ -17,7 +17,6 @@ interface EmoteSidebarProps {
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
     editor: Editor | undefined;
-    userId: string | null; // Add userId prop
 }
 
 const useEmotes = (userId: string | null) => {
@@ -43,9 +42,9 @@ const useEmotes = (userId: string | null) => {
     return { emotes, isLoading, isError };
 };
 
-export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, userId }: EmoteSidebarProps) => {
-    const { emotes, isLoading, isError } = useEmotes(userId);
+export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor }: EmoteSidebarProps) => {
     const { user } = useUser();
+    const { emotes, isLoading, isError } = useEmotes(user?.id || null);
 
     const onClose = () => {
         onChangeActiveTool("select");
