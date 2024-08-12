@@ -12,8 +12,12 @@ const useEmotes = (userId: string | null) => {
   useEffect(() => {
     const fetchEmotes = async () => {
       try {
-        const data = await getEmotes({ userId });
-        setEmotes(data);
+        if (userId) {
+          const data = await getEmotes({ userId });
+          setEmotes(data);
+        } else {
+          setEmotes({ emotes: [] });
+        }
       } catch (error) {
         setIsError(true);
       } finally {
