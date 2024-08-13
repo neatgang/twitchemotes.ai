@@ -44,7 +44,7 @@
 import { db } from "@/lib/db";
 import { Emote } from "@prisma/client";
 
-export const getEmotes = async ({ userId }: { userId: string }) => {
+export const getEmotes = async ({ userId }: { userId: string | null }) => {
   try {
     const emotes = await db.emote.findMany({
       where: {
