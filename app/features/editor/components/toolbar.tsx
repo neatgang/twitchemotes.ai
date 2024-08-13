@@ -5,7 +5,7 @@ import { ActiveTool, Editor } from "../types"
 import { Hint } from "@/components/hint";
 
 import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp, ChevronDown, PaintBucket } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, PaintBucket, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
@@ -124,6 +124,18 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                         className={cn(activeTool === "opacity" && "bg-gray-100")}
                     >
                         <RxTransparencyGrid className="size-4"/>
+                    </Button>
+                </Hint>
+            </div>
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Delete" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => editor?.delete()}
+                        size="icon"
+                        variant="ghost"
+                        className={cn(activeTool === "opacity" && "bg-gray-100")}
+                    >
+                        <Trash2 className="size-4"/>
                     </Button>
                 </Hint>
             </div>
