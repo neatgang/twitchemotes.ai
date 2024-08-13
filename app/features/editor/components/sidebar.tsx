@@ -1,6 +1,6 @@
 "use client"
 
-import { CloudCogIcon, ImageIcon, LayoutTemplate, Settings, Shapes, Sparkle, Type } from "lucide-react"
+import { CloudCogIcon, ImageIcon, LayoutTemplate, PaintBucket, Settings, Shapes, Sparkle, Type } from "lucide-react"
 import { SidebarItem } from "./sidebar-item"
 import { ActiveTool } from "../types";
 
@@ -18,6 +18,12 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
                     label="My Emotes" 
                     isActive={activeTool === "emotes"} 
                     onClick={() => onChangeActiveTool("emotes")} 
+                />
+                <SidebarItem 
+                    icon={PaintBucket} 
+                    label="Generate" 
+                    isActive={activeTool === "emote-generator"} 
+                    onClick={() => onChangeActiveTool("emote-generator")} 
                 />
                 <SidebarItem 
                     icon={ImageIcon} 

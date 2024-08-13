@@ -56,7 +56,7 @@ export const colors = [
     "transparent",
 ]
 
-export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fill" | "stroke-color" | "stroke-width" | "font" | "opacity" | "filter" | "settings" | "ai" | "remove-bg" | "templates" | "emotes"
+export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fill" | "stroke-color" | "stroke-width" | "font" | "opacity" | "filter" | "settings" | "ai" | "remove-bg" | "templates" | "emotes" | "emote-generator"
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -123,6 +123,7 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+    addGeneratedEmote: (value: string) => void;
     addEmote: (value: string) => void;
     addImage: (value: string) => void;
     delete: () => void;
