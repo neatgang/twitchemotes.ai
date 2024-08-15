@@ -70,7 +70,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
   };
 
   return (
-    <aside className="w-80 bg-white">
+    <aside className={cn("bg-white relative border-r z-[40] w-[300px] h-full flex flex-col", activeTool === "emote-generator" ? "visible" : "hidden")}>
       <ToolSidebarHeader title="Generate Emotes" description="Generate emotes from a prompt" />
       <ScrollArea className="p-4">
         <Form {...form}>
