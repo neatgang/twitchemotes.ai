@@ -21,6 +21,7 @@ import { ImageSidebar } from "./image-sidebar"
 import { EmoteSidebar } from "./emote-sidebar"
 import { useUser } from "@clerk/nextjs"
 import { EmoteGeneratorSidebar } from "./generate-sidebar"
+import { FilterSidebar } from "./filter-sidebar"
 
 interface EditorProps {
   userId: string;
@@ -136,6 +137,11 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
           emotes={emotes} // Pass emotes as props
         />
         <EmoteGeneratorSidebar 
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <FilterSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

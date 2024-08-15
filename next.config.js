@@ -11,6 +11,7 @@ const nextConfig = {
       "img.clerk.com",
       "storage.googleapis.com",
       "images.unsplash.com",
+      "fal.media",
     ],
     remotePatterns: [
       {

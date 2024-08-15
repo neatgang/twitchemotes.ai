@@ -5,11 +5,14 @@ import { ActiveTool, Editor } from "../types"
 import { Hint } from "@/components/hint";
 
 import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp, ChevronDown, PaintBucket, Trash2 } from "lucide-react";
+import { AlignRight, ArrowDown, ArrowUp, ChevronDown, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
+import { ColorPicker } from "./color-picker";
+import { TbColorFilter } from "react-icons/tb";
+
 
 
 interface ToolbarProps {
@@ -27,6 +30,8 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
     const selectedObjectType = editor?.selectedObjects[0]?.type
 
     const isText = isTextType(selectedObjectType)
+    const isImage = selectedObjectType === "image"
+    const isEmote = selectedObjectType === "emote"
 
     if (editor?.selectedObjects.length === 0) {
         return (
@@ -36,7 +41,9 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
 
     return (
         <div className="shrink-0 h-[62px] border-b border-gray-300 bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2" >
+                {!isImage && (
             <div className="flex items-center h-full justify-center">
+
                 <Hint label="Color" side="bottom" sideOffset={5}>
                     <Button
                         onClick={() => onChangeActiveTool("fill")}
@@ -48,6 +55,7 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                     </Button>
                 </Hint>
             </div>
+            )}
             {!isText && (
             <div className="flex items-center h-full justify-center">
                 <Hint label="Stroke color" side="bottom" sideOffset={5}>
@@ -139,6 +147,44 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                     </Button>
                 </Hint>
             </div>
+            {isImage && (
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Filter" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => onChangeActiveTool("filter")}
+                        size="icon"
+                        variant="ghost"
+                        className={cn(activeTool === "filter" && "bg-gray-100")}
+                    >
+                        <TbColorFilter className="size-4"/>
+                    </Button>
+                </Hint>
+            </div>
+            )}
+            {isImage && (
+                   <div className="flex items-center h-full justify-center">
+                   <Hint label="Remove Background" side="bottom" sideOffset={5}>
+                       <Button
+                           onClick={() => editor?.removeBackground()}
+                           size="icon"
+                           variant="ghost"
+                       >
+                           <Scissors className="size-4"/>
+                       </Button>
+                   </Hint>
+               </div>
+            )}
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Save Image" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => editor?.saveImage()}
+                        size="icon"
+                        variant="ghost"
+                    >
+                        <Save className="size-4"/>
+                    </Button>
+                </Hint>
+                </div>
         </div>
     )
 }

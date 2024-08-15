@@ -24,6 +24,31 @@ export const fonts = [
     "Lucida Console",
 ]
 
+
+export const filters = [
+    "polaroid",
+    "sepia",
+    "kodachrome",
+    "contrast",
+    "brightness",
+    "brownie",
+    "vintage",
+    "technicolor",
+    "pixelate",
+    "invert",
+    "blur",
+    "sharpen",
+    "emboss",
+    "removecolor",
+    "blacknwhite",
+    "vibrance",
+    "blendcolor",
+    "huerotate",
+    "resize",
+    "gamma",
+    "none",
+]
+
 export const selectionDependentTools = [
     "fill",
     "font",
@@ -123,6 +148,7 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+    changeImageFilter: (value: string) => void;
     addGeneratedEmote: (value: string) => void;
     addEmote: (value: string) => void;
     addImage: (value: string) => void;
@@ -150,4 +176,68 @@ export interface Editor {
     selectedObjects: fabric.Object[];
     changeFontFamily: (value: string) => void;
     getActiveFontFamily: () => string;
+    removeBackground: () => void;
+    saveImage: () => void;
 }
+
+export const generation = {
+    models: [
+        {
+            name: "DALL-E 3",
+            apiRoute: "/api/models/dalle",
+            description: "Generate emotes using DALL-E 3 model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of {subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of {subject}.",
+                },
+                {
+                    name: "cartoon",
+                    prompt: "Create a cartoon style emote of {subject}.",
+                },
+            ],
+        },
+        // {
+        //     name: "stableDiffusion",
+        //     apiRoute: "/api/models/stable-diffusion",
+        //     description: "Generate emotes using Stable Diffusion model.",
+        //     themes: [
+        //         {
+        //             name: "chibi",
+        //             prompt: "Create a chibi style emote of {subject}.",
+        //         },
+        //         {
+        //             name: "pixel",
+        //             prompt: "Create a pixel art style emote of {subject}.",
+        //         },
+        //         {
+        //             name: "realistic",
+        //             prompt: "Create a realistic style emote of {subject}.",
+        //         },
+        //     ],
+        // },
+        {
+            name: "FLUX.1 [dev]",
+            apiRoute: "/api/models/fal/flux-dev",
+            description: "Generate emotes using the Flux-Dev model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of ${subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of ${subject}.",
+                },
+                {
+                    name: "realistic",
+                    prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
+    ],
+};

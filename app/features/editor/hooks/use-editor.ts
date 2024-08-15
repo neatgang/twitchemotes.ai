@@ -4,8 +4,9 @@ import { fabric } from "fabric"
 import { useAutoResize } from "./use-auto-resize";
 import { BuildEditorProps, CIRCLE_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS } from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
-import { isTextType } from "../utils";
+import { createFilter, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
+import axios from "axios";
 
 const buildEditor = ({ 
     canvas,
@@ -46,6 +47,75 @@ const buildEditor = ({
     }
 
     return {
+
+        removeBackground: async () => {
+            const objects = canvas.getActiveObjects();
+            objects.forEach(async (object) => {
+                if (object.type === "image") {
+                    const imageObject = object as fabric.Image;
+                    const imageUrl = imageObject.getSrc();
+
+                    try {
+                        const response = await axios.post('/api/fal/birefnet-bg-remove', {
+                            image: imageUrl
+                        })
+
+                        if (response.status !== 200) {
+                            throw new Error('Failed to remove background');
+                        }
+
+                        const newImageUrl = response.data.image.url; // Accessing the correct property
+
+                        fabric.Image.fromURL(newImageUrl, (newImage) => {
+                            canvas.remove(imageObject);
+                            canvas.add(newImage);
+                            canvas.setActiveObject(newImage);
+                            canvas.renderAll();
+                        }, { crossOrigin: 'anonymous' });
+
+                    } catch (error) {
+                        console.error('Error removing background:', error);
+                    }
+                }
+            });
+        },
+
+        saveImage: () => {
+            // Ensure all images have crossOrigin set
+            canvas.getObjects('image').forEach((object) => {
+                const img = object as fabric.Image;
+                if (img.getSrc().indexOf('crossOrigin') === -1) {
+                    img.setSrc(img.getSrc(), () => {}, { crossOrigin: 'anonymous' });
+                }
+            });
+
+            // Wait for images to load before saving
+            setTimeout(() => {
+                const dataURL = canvas.toDataURL({
+                    format: 'png',
+                    quality: 1.0
+                });
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'canvas.png';
+                link.click();
+            }, 1000); // Adjust timeout as needed
+        },
+
+        changeImageFilter: (value: string) => {
+            const objects = canvas.getActiveObjects();
+            objects.forEach((object) => {
+              if (object.type === "image") {
+                const imageObject = object as fabric.Image;
+      
+                const effect = createFilter(value);
+      
+                imageObject.filters = effect ? [effect] : [];
+                imageObject.applyFilters();
+                canvas.renderAll();
+              }
+            });
+          },
 
         addEmote: (value: string) => {
             fabric.Image.fromURL(value, (image) => {
