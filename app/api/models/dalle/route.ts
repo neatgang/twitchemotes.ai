@@ -74,7 +74,6 @@ export async function POST(req: Request) {
       size: "1024x1024",
       quality: "standard",
     });
-    console.log('OpenAI Response:', response);
 
     // const images = response.data
     //   .filter((image): image is { url: string } => !!image.url) // Filter out images without a URL
