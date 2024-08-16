@@ -26,8 +26,8 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
         EmoteMaker.ai
         </Link>
       </Button> */}
-      <div className="w-full flex items-center gap-x-1 h-full border-b border-gray-200">
-        <DropdownMenu modal={false}>
+      <div className="w-full flex items-center gap-x-1 h-full border-b border-gray-200 px-2">
+        {/* <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button size="sm" variant="ghost">
               File
@@ -47,14 +47,14 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
-        <Separator orientation="vertical" className="mx-2"/>
+        </DropdownMenu> */}
+        {/* <Separator orientation="vertical" className="mx-2"/> */}
         <Hint label="Select" side="bottom" sideOffset={10}>
           <Button variant="ghost" size="icon" onClick={() => onChangeActiveTool("select")} className={cn(activeTool === "select" && "bg-gray-100")}>
             <MousePointerClick className="size-4"/>
           </Button>
         </Hint>
-        <Hint label="Undo" side="bottom" sideOffset={10}>
+        {/* <Hint label="Undo" side="bottom" sideOffset={10}>
           <Button variant="ghost" size="icon" onClick={() => {}} className="">
             <Undo2 className="size-4"/>
           </Button>
@@ -70,8 +70,8 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
           <div className="text-xs text-muted-foreground">
             Saved
           </div>
-        </div>
-        <div className="ml-auto flex items-center gap-x-4">
+        </div> */}
+        {/* <div className="ml-auto flex items-center gap-x-4">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="ghost">
@@ -112,7 +112,7 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </div> */}
       </div>
   </nav>
   )

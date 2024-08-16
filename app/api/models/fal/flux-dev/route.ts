@@ -1,4 +1,7 @@
+import { checkApiLimit, incrementApiLimit } from "@/lib/api-limit";
 import { db } from "@/lib/db";
+import { checkSubscription } from "@/lib/oldsubscription";
+import { auth } from "@clerk/nextjs/server";
 import * as fal from "@fal-ai/serverless-client";
 import { NextResponse } from "next/server";
 
@@ -15,10 +18,15 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { prompt, image_size, num_inference_steps, guidance_scale, num_images, enable_safety_checker } = body;
+    const { userId } = auth();
 
     // Validate input
     if (!prompt) {
       return new NextResponse("Prompt is required", { status: 400 });
+    }
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const result = await fal.subscribe("fal-ai/flux/dev", {
@@ -30,7 +38,7 @@ export async function POST(req: Request) {
         num_images: num_images || 1,
         enable_safety_checker: enable_safety_checker !== undefined ? enable_safety_checker : true
       },
-      logs: true,
+      // logs: true,
       onQueueUpdate: (update) => {
         if (update.status === "IN_PROGRESS") {
           update.logs?.map((log) => log.message).forEach(console.log);
@@ -38,15 +46,24 @@ export async function POST(req: Request) {
       },
     });
 
+    const userCredits = await db.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (userCredits && userCredits.credits > 0) {
+      await db.user.update({
+        where: { id: userId },
+        data: { credits: userCredits.credits - 1 },
+      });
+    }
+
+    if (userCredits?.credits === 0) {
+      return new NextResponse("You have run out of credits.")
+    }
+
     console.log(result);
 
-    // Optionally, you could save the request or response to a database here
-    // await db.someModel.create({
-    //   data: {
-    //     prompt,
-    //     result,
-    //   }
-    // });
+
 
     return NextResponse.json(result);
 

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Loader } from "lucide-react";
 import { ActiveTool, Editor, generation } from "../types";
 import Image from "next/image";
@@ -51,6 +51,48 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
     }
   });
 
+  // const onSubmit = async (data: z.infer<typeof formSchema>) => { // works with dalle 3
+  //   setIsLoading(true);
+  //   try {
+  //     const selectedModel = generation.models.find(model => model.name === data.model);
+  //     if (!selectedModel) {
+  //       throw new Error("Selected model not found");
+  //     }
+
+  //     const response = await axios.post(selectedModel.apiRoute, {
+  //       prompt: data.prompt,
+  //       amount: data.amount,
+  //       resolution: data.resolution,
+  //       emoteType: data.emoteType,
+  //     });
+
+  //     const imageUrls = response.data.images;
+  //     setPhotos(imageUrls);
+  //   } catch (error) {
+  //     console.error("Error generating images:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const onSubmit = async (data: z.infer<typeof formSchema>) => { // works with FAL model
+  //   setIsLoading(true);
+  //   try {
+  //     const selectedModel = generation.models.find(model => model.name === data.model);
+  //     if (!selectedModel) {
+  //       throw new Error("Selected model not found");
+  //     }
+
+  //     const response = await axios.post(selectedModel.apiRoute, data);
+  //     const photosArray = response.data.images; // Extract URLs from response
+  //     setPhotos(photosArray);
+  //   } catch (error) {
+  //     console.error('Error generating emotes:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
@@ -59,11 +101,46 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
         throw new Error("Selected model not found");
       }
 
-      const response = await axios.post(selectedModel.apiRoute, data);
-      const photosArray = response.data.images.map((image: { url: string }) => image.url); // Extract URLs from response
-      setPhotos(photosArray);
+      let response;
+      if (selectedModel.apiRoute.includes("fal")) {
+        response = await axios.post(selectedModel.apiRoute, {
+          prompt: data.prompt,
+          // image_size: data.resolution,
+          // num_images: parseInt(data.amount),
+          // emoteType: data.emoteType,
+        });
+      } else if (selectedModel.apiRoute.includes("dalle")) {
+        const finalPrompt = `Design a single, vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel. The emote should depict ${data.prompt}, ensuring expressiveness and visibility at a small scale. It should feature exaggerated facial features appropriate for the ${data.prompt}, conveying a specific emotion like excitement or surprise. The background should be transparent for seamless integration into various Twitch chat backgrounds, or have a solid white background if transparency is not available. The style should be playful and friendly, with a distinct, cohesive look that could easily be part of a larger set of emotes.`;
+        response = await axios.post(selectedModel.apiRoute, {
+          prompt: finalPrompt,
+          amount: parseInt(data.amount),
+          resolution: data.resolution,
+        });
+      }
+
+      console.log("response", response);
+
+      let imageUrls: string[] = [];
+      if (selectedModel.apiRoute.includes("fal")) {
+        // Handle FAL API response
+        if (response?.data?.images) {
+          imageUrls = response.data.images.map((image: { url: string }) => image.url);
+        }
+      } else if (selectedModel.apiRoute.includes("dalle")) {
+        // Handle DALL-E API response
+        if (response?.data?.data) {
+          imageUrls = response.data.data.map((image: { url: string }) => image.url);
+        }
+      }
+
+      if (imageUrls.length > 0) {
+        setPhotos(imageUrls);
+      } else {
+        throw new Error("No images found in the response");
+      }
     } catch (error) {
-      console.error('Error generating emotes:', error);
+      console.error("Error generating images:", error);
+      // You might want to set an error state here and display it to the user
     } finally {
       setIsLoading(false);
     }
@@ -72,9 +149,9 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
   return (
     <aside className={cn("bg-white relative border-r z-[40] w-[300px] h-full flex flex-col", activeTool === "emote-generator" ? "visible" : "hidden")}>
       <ToolSidebarHeader title="Generate Emotes" description="Generate emotes from a prompt" />
-      <ScrollArea className="p-4">
+      <ScrollArea className="p-2">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-2">
             <FormField
               control={form.control}
               name="prompt"
