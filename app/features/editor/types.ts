@@ -178,6 +178,8 @@ export interface Editor {
     getActiveFontFamily: () => string;
     removeBackground: () => void;
     saveImage: () => void;
+    enableDrawingMode: () => void;
+    disableDrawingMode: () => void;
 }
 
 export const generation = {

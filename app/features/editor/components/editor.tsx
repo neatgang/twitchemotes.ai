@@ -22,6 +22,7 @@ import { EmoteSidebar } from "./emote-sidebar"
 import { useUser } from "@clerk/nextjs"
 import { EmoteGeneratorSidebar } from "./generate-sidebar"
 import { FilterSidebar } from "./filter-sidebar"
+import { DrawSidebar } from "./draw-sidebar"
 
 interface EditorProps {
   userId: string;
@@ -30,22 +31,6 @@ interface EditorProps {
 
 export const Editor = ({ userId, emotes }: EditorProps) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select")
-
-  const onChangeActiveTool = useCallback((tool: ActiveTool) => {
-    if (tool === activeTool) {
-      return setActiveTool("select")
-    }
-
-    if (tool === "draw") {
-      // Enable Draw Mode
-    }
-
-    if (activeTool === "draw") {
-      // Disable draw mode
-    }
-
-    setActiveTool(tool); 
-  }, [activeTool])
 
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
@@ -56,6 +41,23 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
   const { init, editor } = useEditor({
     clearSelectionCallback: onClearSelection
   })
+
+  const onChangeActiveTool = useCallback((tool: ActiveTool) => {
+    
+    if (tool === "draw") {
+      editor?.enableDrawingMode()
+    }
+
+    if (activeTool === "draw") {
+      editor?.disableDrawingMode()
+    }
+    
+    if (tool === activeTool) {
+      return setActiveTool("select")
+    }
+
+    setActiveTool(tool); 
+  }, [activeTool, editor])
 
   const canvasRef = useRef(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -142,6 +144,11 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <FilterSidebar 
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <DrawSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

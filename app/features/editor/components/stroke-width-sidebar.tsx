@@ -36,7 +36,7 @@ export const StrokeWidthSidebar = ({ activeTool, onChangeActiveTool, editor }: S
             <ScrollArea>
                 <div className="p-4 space-y-4 border-b">
                     <Label className="text-sm">Stroke width</Label>
-                    <Slider value={[widthValue]} onValueChange={(value) => onChangeStrokeWidth(value[0])} min={1} max={10} step={1} />
+                    <Slider value={[widthValue]} onValueChange={(value) => onChangeStrokeWidth(value[0])} min={1} max={20} step={1} />
                 </div>
                 <div className="p-4 space-y-4 border-b">
                     <Label className="text-sm">Stroke type</Label>

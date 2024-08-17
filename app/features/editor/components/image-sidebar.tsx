@@ -10,6 +10,8 @@ import { useGetImages } from "../../images/api/use-get-images"
 import { AlertTriangle, Loader } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { UploadButton } from "@uploadthing/react"
+import { FileUpload } from "@/components/FileUpload"
 
 
 interface ImageSidebarProps {
@@ -39,6 +41,12 @@ export const ImageSidebar = ({ activeTool, onChangeActiveTool, editor }: ImageSi
                     <p className="text-muted-foreground text-xs">Failed to fetch images</p>
                 </div>
             )}
+            <div className="p-4 border-b border-muted">
+                <FileUpload 
+                    endpoint="imageUploader" 
+                    onChange={(res: any) => editor?.addImage(res[0].url)} 
+                />
+            </div>
             <ScrollArea>
                 <div className="p-4">
                     <div className="grid grid-cols-2 gap-4">

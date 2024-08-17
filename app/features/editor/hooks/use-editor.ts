@@ -8,7 +8,7 @@ import { createFilter, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
 import axios from "axios";
 
-const buildEditor = ({ 
+const buildEditor = ({
     canvas,
     fillColor,
     setFillColor,
@@ -35,7 +35,7 @@ const buildEditor = ({
         if (!center) {
             return;
         }
-    
+
         // @ts-ignore
         canvas._centerObject(object, center)
     };
@@ -47,6 +47,18 @@ const buildEditor = ({
     }
 
     return {
+
+        enableDrawingMode: () => {
+            canvas.discardActiveObject()
+            canvas.renderAll()
+            canvas.isDrawingMode = true
+            canvas.freeDrawingBrush.width = strokeWidth
+            canvas.freeDrawingBrush.color = strokeColor
+        },
+
+        disableDrawingMode: () => {
+            canvas.isDrawingMode = false
+        },
 
         removeBackground: async () => {
             const objects = canvas.getActiveObjects();
@@ -85,7 +97,7 @@ const buildEditor = ({
             canvas.getObjects('image').forEach((object) => {
                 const img = object as fabric.Image;
                 if (img.getSrc().indexOf('crossOrigin') === -1) {
-                    img.setSrc(img.getSrc(), () => {}, { crossOrigin: 'anonymous' });
+                    img.setSrc(img.getSrc(), () => { }, { crossOrigin: 'anonymous' });
                 }
             });
 
@@ -105,17 +117,17 @@ const buildEditor = ({
         changeImageFilter: (value: string) => {
             const objects = canvas.getActiveObjects();
             objects.forEach((object) => {
-              if (object.type === "image") {
-                const imageObject = object as fabric.Image;
-      
-                const effect = createFilter(value);
-      
-                imageObject.filters = effect ? [effect] : [];
-                imageObject.applyFilters();
-                canvas.renderAll();
-              }
+                if (object.type === "image") {
+                    const imageObject = object as fabric.Image;
+
+                    const effect = createFilter(value);
+
+                    imageObject.filters = effect ? [effect] : [];
+                    imageObject.applyFilters();
+                    canvas.renderAll();
+                }
             });
-          },
+        },
 
         addEmote: (value: string) => {
             fabric.Image.fromURL(value, (image) => {
@@ -125,10 +137,10 @@ const buildEditor = ({
                 image.scaleToHeight(workspace?.height || 0)
 
                 addToCanvas(image)
-            }, 
-            {
-                crossOrigin: "anonymous"
-            }
+            },
+                {
+                    crossOrigin: "anonymous"
+                }
             )
         },
 
@@ -140,7 +152,7 @@ const buildEditor = ({
                 image.scaleToHeight(workspace?.height || 0)
 
                 addToCanvas(image)
-            }, 
+            },
             )
         },
 
@@ -152,10 +164,10 @@ const buildEditor = ({
                 image.scaleToHeight(workspace?.height || 0)
 
                 addToCanvas(image)
-            }, 
-            {
-                crossOrigin: "anonymous"
-            }
+            },
+                {
+                    crossOrigin: "anonymous"
+                }
             )
         },
 
@@ -221,9 +233,9 @@ const buildEditor = ({
             setFontFamily(value)
             canvas.getActiveObjects().forEach((object) => {
                 if (isTextType(object.type)) {
-                object.set({
+                    object.set({
 
-                    // @ts-ignore
+                        // @ts-ignore
                         fontFamily: value
                     })
                 }
@@ -256,6 +268,7 @@ const buildEditor = ({
                     stroke: value
                 })
             })
+            canvas.freeDrawingBrush.color = value
             canvas.renderAll()
         },
 
@@ -266,6 +279,7 @@ const buildEditor = ({
                     strokeWidth: value
                 })
             })
+            canvas.freeDrawingBrush.width = value
             canvas.renderAll() // Add this line to re-render the canvas
         },
 
@@ -288,7 +302,7 @@ const buildEditor = ({
                 strokeDashArray: strokeDashArray
             });
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         addSoftRectangle: () => {
@@ -302,7 +316,7 @@ const buildEditor = ({
                 strokeDashArray: strokeDashArray
             });
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         addRectangle: () => {
@@ -314,7 +328,7 @@ const buildEditor = ({
                 strokeDashArray: strokeDashArray
             });
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         addTriangle: () => {
@@ -326,7 +340,7 @@ const buildEditor = ({
                 strokeDashArray: strokeDashArray
             });
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         addInverseTriangle: () => {
@@ -349,7 +363,7 @@ const buildEditor = ({
                 }
             )
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         addDiamond: () => {
@@ -360,9 +374,9 @@ const buildEditor = ({
             const object = new fabric.Polygon(
                 [
                     { x: WIDTH / 2, y: 0 },
-                    { x: WIDTH, y: HEIGHT / 2},
-                    { x: WIDTH / 2, y: HEIGHT},
-                    { x: 0, y: HEIGHT / 2}
+                    { x: WIDTH, y: HEIGHT / 2 },
+                    { x: WIDTH / 2, y: HEIGHT },
+                    { x: 0, y: HEIGHT / 2 }
                 ],
                 {
                     ...RECTANGLE_OPTIONS,
@@ -373,7 +387,7 @@ const buildEditor = ({
                 }
             )
 
-            addToCanvas(object) 
+            addToCanvas(object)
         },
 
         canvas,
@@ -429,7 +443,7 @@ const buildEditor = ({
 
             // currently gradients and patterns are not supported
             return value
-        }, 
+        },
 
         getActiveStrokeDashArray: () => {
             const selectedObject = selectedObjects[0]
@@ -442,12 +456,12 @@ const buildEditor = ({
 
             // currently gradients and patterns are not supported
             return value
-        }, 
+        },
 
         selectedObjects
     }
 }
-    
+
 export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -471,14 +485,14 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
     const editor = useMemo(() => {
         if (canvas) {
-            return buildEditor({ 
-                canvas, 
-                fillColor, 
-                setFillColor, 
-                strokeColor, 
-                setStrokeColor, 
-                strokeWidth, 
-                setStrokeWidth, 
+            return buildEditor({
+                canvas,
+                fillColor,
+                setFillColor,
+                strokeColor,
+                setStrokeColor,
+                strokeWidth,
+                setStrokeWidth,
                 selectedObjects,
                 strokeDashArray,
                 setStrokeDashArray,
@@ -489,11 +503,11 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
 
         return undefined;
     }, [
-        canvas, 
-        fillColor, 
-        strokeColor, 
-        strokeWidth, 
-        selectedObjects, 
+        canvas,
+        fillColor,
+        strokeColor,
+        strokeWidth,
+        selectedObjects,
         strokeDashArray,
         fontFamily
     ]);
