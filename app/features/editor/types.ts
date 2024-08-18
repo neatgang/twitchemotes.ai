@@ -148,6 +148,10 @@ export type BuildEditorProps = {
 }
 
 export interface Editor {
+    getActiveImageUrl: () => string;
+    updateImage: (url: string) => void;
+    generateMaskUrl: () => string;
+    inpaint: (prompt: string, maskUrl: string) => void;
     changeImageFilter: (value: string) => void;
     addGeneratedEmote: (value: string) => void;
     addEmote: (value: string) => void;
@@ -157,7 +161,7 @@ export interface Editor {
     getActiveOpacity: () => number;
     changeOpacity: (value: number) => void;
     bringForward: () => void;
-    sendBackwards: () => void;
+sendBackwards: () => void;
     addCircle: () => void;
     addSoftRectangle: () => void;
     addRectangle: () => void;

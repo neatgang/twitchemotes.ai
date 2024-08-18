@@ -46,6 +46,77 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
 
+    const getActiveImageUrl = (): string => {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === "image") {
+            return (activeObject as fabric.Image).getSrc();
+        }
+        throw new Error("No active image selected");
+    };
+
+    const updateImage = (url: string) => {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === "image") {
+            fabric.Image.fromURL(url, (newImage) => {
+                canvas.remove(activeObject);
+                canvas.add(newImage);
+                canvas.setActiveObject(newImage);
+                canvas.renderAll();
+            }, { crossOrigin: 'anonymous' });
+        } else {
+            throw new Error("No active image selected");
+        }
+    };
+
+    const inpaint = async (prompt: string, maskUrl: string) => {
+        const objects = canvas.getActiveObjects();
+        objects.forEach(async (object) => {
+          if (object.type === "image") {
+            const imageObject = object as fabric.Image;
+            const imageUrl = imageObject.getSrc();
+    
+            try {
+              const response = await axios.post('/api/inpaint', {
+                prompt,
+                image_url: imageUrl,
+                mask_url: maskUrl,
+              });
+    
+              if (response.status !== 200) {
+                throw new Error('Failed to inpaint image');
+              }
+    
+              const newImageUrl = response.data.image.url;
+    
+              fabric.Image.fromURL(newImageUrl, (newImage) => {
+                canvas.remove(imageObject);
+                canvas.add(newImage);
+                canvas.setActiveObject(newImage);
+                canvas.renderAll();
+              }, { crossOrigin: 'anonymous' });
+    
+            } catch (error) {
+              console.error('Error inpainting image:', error);
+            }
+          }
+        });
+      };
+
+      const generateMaskUrl = () => {
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = canvas.getWidth();
+        maskCanvas.height = canvas.getHeight();
+        const maskCtx = maskCanvas.getContext('2d');
+    
+        if (maskCtx) {
+          canvas.getObjects('path').forEach((path) => {
+            path.render(maskCtx);
+          });
+        }
+    
+        return maskCanvas.toDataURL('image/png');
+      };
+
     return {
 
         enableDrawingMode: () => {
@@ -391,6 +462,10 @@ const buildEditor = ({
         },
 
         canvas,
+        inpaint,
+        generateMaskUrl,
+        getActiveImageUrl,
+        updateImage,
 
         getActiveFillColor: () => {
             const selectedObject = selectedObjects[0]
