@@ -161,7 +161,7 @@ export interface Editor {
     getActiveOpacity: () => number;
     changeOpacity: (value: number) => void;
     bringForward: () => void;
-sendBackwards: () => void;
+    sendBackwards: () => void;
     addCircle: () => void;
     addSoftRectangle: () => void;
     addRectangle: () => void;

@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 import { db } from "@/lib/db";
+import { generateThemedEmotePrompt } from "@/app/features/editor/utils";
 
 export const maxDuration = 300;
 
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log('Request Body:', body);
 
-    const { prompt, amount = 1, resolution = "512x512" } = body;
+    const { prompt, amount = 1, resolution = "1024x1024" } = body;
     console.log('Parsed Body:', { prompt, amount, resolution });
 
     if (!userId) {
@@ -65,12 +66,12 @@ export async function POST(req: Request) {
       return new NextResponse("You have run out of credits.", { status: 403 });
     }
 
-    const finalPrompt = `Design a single, vibrant, cartoonish digital emote suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring expressiveness and visibility at a small scale. It should feature exaggerated facial features appropriate for the ${prompt}, conveying a specific emotion like excitement or surprise. The background should be transparent for seamless integration into various Twitch chat backgrounds, or have a solid white background if transparency is not available. The style should be playful and friendly, with a distinct, cohesive look that could easily be part of a larger set of emotes.`;
-    console.log('Final Prompt:', finalPrompt);
+    // const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Generate themed prompt
+    // console.log('Final Prompt:', finalPrompt);
 
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: finalPrompt,
+      prompt: prompt,
       size: "1024x1024",
       quality: "standard",
     });

@@ -150,6 +150,9 @@ export const Navbar = ({
                 <span className="text-lg font-semibold">EmoteMaker.ai</span>
               </Link>
             </Button>
+            <Button variant="ghost" className="hidden sm:block">
+              <Link href="/emoteboard/editor/1">Emoteboard</Link>
+            </Button>
             <NavigationMenuList className="hidden sm:flex">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>

@@ -111,3 +111,32 @@ export const createFilter = (value: string) => {
 
     return effect
 }
+
+export const generateThemedEmotePrompt = (prompt: string, theme: string): string => {
+    let styleDescription = '';
+    let additionalDetails = '';
+  
+    switch (theme.toLowerCase()) {
+      case 'chibi':
+        styleDescription = 'in a chibi style with an oversized head and small body';
+        additionalDetails = 'The character should have large, expressive eyes and a cute, simplified design.';
+        break;
+      case 'kawaii':
+        styleDescription = 'in an adorable kawaii style';
+        additionalDetails = 'The design should be ultra-cute with soft colors, simple shapes, and possibly blush marks on the cheeks.';
+        break;
+      case 'ghibli':
+        styleDescription = 'inspired by Studio Ghibli\'s art style';
+        additionalDetails = 'The emote should have a whimsical, hand-drawn quality with soft edges and a slightly muted color palette.';
+        break;
+      case 'pixelated':
+        styleDescription = 'in a retro pixelated style';
+        additionalDetails = 'The design should use a limited color palette and visible pixels, reminiscent of old-school video game graphics.';
+        break;
+      default:
+        styleDescription = 'in a vibrant, cartoonish style';
+        additionalDetails = 'The style should be playful and friendly, with a distinct, cohesive look.';
+    }
+  
+    return `Design a single, expressive digital emote ${styleDescription}, suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring visibility and impact at a small scale. It should feature exaggerated characteristics appropriate for ${prompt}, conveying a specific emotion or reaction. ${additionalDetails} The background should be transparent for seamless integration into various Twitch chat backgrounds, or have a solid white background if transparency is not available. The emote should be part of a cohesive set that could be expanded with additional designs.`;
+  };

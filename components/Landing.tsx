@@ -305,13 +305,13 @@ export default function Landing() {
                 <AvatarFallback>ME</AvatarFallback>
               </Avatar>
             </div>
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <h3 className="text-xl font-bold">Text Based Emotes</h3>
               <Avatar className="w-16 h-16">
                 <AvatarImage alt="Text Based Emote" src="/textbased.png" />
                 <AvatarFallback>TB</AvatarFallback>
               </Avatar>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

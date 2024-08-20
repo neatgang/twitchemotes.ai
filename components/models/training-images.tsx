@@ -1,0 +1,82 @@
+'use client'
+
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+import { useState } from 'react'; // Import useState
+import { FileUpload } from "@/components/FileUpload"; // Import FileUpload component
+import Image from "next/image";
+
+export default function TrainingImages() {
+  const [dropdownVisible, setDropdownVisible] = useState(false); // State to toggle dropdown visibility
+  const [selectedItem, setSelectedItem] = useState(''); // State to store the selected dropdown item
+  const [images, setImages] = useState<string[]>([]); // State to store uploaded images URLs
+
+  // Dummy data for dropdown items
+  const dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+
+  // Function to handle dropdown selection
+  const handleDropdownSelect = (item: string) => {
+    setSelectedItem(item);
+    setDropdownVisible(false); // Hide dropdown after selection
+  };
+
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+  // Function to handle file upload changes
+  const handleFileChange = (url?: string) => {
+    if (url) {
+      setImages(prevImages => [...prevImages, url]);
+    }
+    console.log("Uploaded file URL:", url);
+    // Here you can set the URL to state or perform other actions as needed
+  };
+
+  return (
+    <div className="w-2/3">
+      <h2 className="text-xl font-bold mb-4">Training Images</h2>
+      {/* <Button variant="outline" className="w-full mb-4 text-black">
+        Select from Library
+      </Button> */}
+      <FileUpload onChange={handleFileChange} endpoint="imageUploader" />
+      <div className="mt-6">
+        <p>Dataset: {images.length} image{images.length !== 1 ? 's' : ''}</p>
+        <div className="h-4 bg-[#242424] rounded-full mt-2">
+          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${images.length / 15 * 100}%` }}></div>
+        </div>
+        <div className="flex justify-between text-sm mt-1">
+          <span>Min: 5</span>
+          <span>Max: 15</span>
+        </div>
+        {/* Display uploaded images in a grid with 5 images per row */}
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+          {images.map((image, index) => (
+            <div key={index} className="col-span-1">
+              <Image src={image} alt={`Uploaded ${index + 1}`} className="object-cover" width={1000} height={1000}/>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Dropdown Toggle Button */}
+      {/* <Button onClick={toggleDropdown} className="bg-gray-500 text-white mt-4">Options</Button> */}
+      {/* Dropdown Menu */}
+      {dropdownVisible && (
+        <div className="relative w-full">
+          <div className="absolute bg-white shadow-lg mt-2 rounded-lg w-full z-10 text-black">
+            {dropdownItems.map((item, index) => (
+              <div
+                key={index}
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleDropdownSelect(item)}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

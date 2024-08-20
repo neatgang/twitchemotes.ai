@@ -1,3 +1,4 @@
+import { generateThemedEmotePrompt } from "@/app/features/editor/utils";
 import { checkApiLimit, incrementApiLimit } from "@/lib/api-limit";
 import { db } from "@/lib/db";
 import { checkSubscription } from "@/lib/oldsubscription";
@@ -29,16 +30,18 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Generate themed prompt
+    // console.log('Final Prompt:', finalPrompt);
+
     const result = await fal.subscribe("fal-ai/flux/dev", {
       input: {
-        prompt,
+        prompt: prompt,
         image_size: image_size || "square_hd",
         num_inference_steps: num_inference_steps || 28,
         guidance_scale: guidance_scale || 3.5,
         num_images: num_images || 1,
         enable_safety_checker: enable_safety_checker !== undefined ? enable_safety_checker : true
       },
-      // logs: true,
       onQueueUpdate: (update) => {
         if (update.status === "IN_PROGRESS") {
           update.logs?.map((log) => log.message).forEach(console.log);
