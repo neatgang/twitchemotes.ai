@@ -112,31 +112,60 @@ export const createFilter = (value: string) => {
     return effect
 }
 
-export const generateThemedEmotePrompt = (prompt: string, theme: string): string => {
+export const generateThemedEmotePrompt = (prompt: string, theme: string) => {
     let styleDescription = '';
     let additionalDetails = '';
   
     switch (theme.toLowerCase()) {
-      case 'chibi':
-        styleDescription = 'in a chibi style with an oversized head and small body';
-        additionalDetails = 'The character should have large, expressive eyes and a cute, simplified design.';
-        break;
-      case 'kawaii':
-        styleDescription = 'in an adorable kawaii style';
-        additionalDetails = 'The design should be ultra-cute with soft colors, simple shapes, and possibly blush marks on the cheeks.';
-        break;
-      case 'ghibli':
-        styleDescription = 'inspired by Studio Ghibli\'s art style';
-        additionalDetails = 'The emote should have a whimsical, hand-drawn quality with soft edges and a slightly muted color palette.';
-        break;
-      case 'pixelated':
-        styleDescription = 'in a retro pixelated style';
-        additionalDetails = 'The design should use a limited color palette and visible pixels, reminiscent of old-school video game graphics.';
-        break;
-      default:
-        styleDescription = 'in a vibrant, cartoonish style';
-        additionalDetails = 'The style should be playful and friendly, with a distinct, cohesive look.';
+        case 'pixel':
+            styleDescription = 'in a pixel art style';
+            additionalDetails = 'The design should use a limited color palette and visible pixels, reminiscent of early video game graphics.';
+            break;
+        case 'kawaii':
+            styleDescription = 'in a kawaii style';
+            additionalDetails = 'The design should be ultra-cute with soft colors, simple shapes, and possibly blush marks on the cheeks.';
+            break;
+        case 'object':
+            styleDescription = 'as an object';
+            additionalDetails = 'The emote should represent a physical object with clear, simple lines and vibrant colors.';
+            break;
+        case 'cute-bold-line':
+            styleDescription = 'with cute bold lines';
+            additionalDetails = 'The design should feature bold, rounded lines that enhance the cuteness of the emote.';
+            break;
+        case 'text-based':
+            styleDescription = 'as text-based';
+            additionalDetails = 'The emote should primarily use stylized text or calligraphy to convey an expression or sentiment.';
+            break;
+        case '3d-based':
+            styleDescription = 'in a 3D style';
+            additionalDetails = 'The emote should have a three-dimensional appearance, with detailed shading and lighting to enhance depth.';
+            break;
+        case 'pepe-based':
+            styleDescription = 'in a Pepe style';
+            additionalDetails = 'The emote should mimic the distinctive, somewhat crude art style of Pepe the Frog memes.';
+            break;
+        case 'sticker-based':
+            styleDescription = 'as a sticker';
+            additionalDetails = 'The emote should look like a sticker, possibly with a white border and shadow to give it a lifted effect.';
+            break;
+        case 'chibi':
+            styleDescription = 'in a chibi style';
+            additionalDetails = 'The character should have large, expressive eyes and a cute, simplified design with an oversized head and small body.';
+            break;
+        case 'meme':
+            styleDescription = 'as a meme';
+            additionalDetails = 'The emote should incorporate elements of popular memes, using humor and recognizable themes.';
+            break;
+        case 'ghibli':
+            styleDescription = 'inspired by Studio Ghibli\'s art style';
+            additionalDetails = 'The emote should have a whimsical, hand-drawn quality with soft edges and a slightly muted color palette.';
+            break;
+        default:
+            // Provide a generic description if the theme is not recognized
+            styleDescription = 'with a unique style';
+            additionalDetails = 'The design should be visually appealing and recognizable at a small scale.';
     }
-  
+
     return `Design a single, expressive digital emote ${styleDescription}, suitable for use on a Twitch streamer's channel. The emote should depict ${prompt}, ensuring visibility and impact at a small scale. It should feature exaggerated characteristics appropriate for ${prompt}, conveying a specific emotion or reaction. ${additionalDetails} The background should be transparent for seamless integration into various Twitch chat backgrounds, or have a solid white background if transparency is not available. The emote should be part of a cohesive set that could be expanded with additional designs.`;
-  };
+}

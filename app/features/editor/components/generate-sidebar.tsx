@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"; // Import Accordion components
 import { generateThemedEmotePrompt } from "../utils";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
@@ -55,6 +56,9 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
+      // Ensure the correct theme is being sent
+      console.log("Submitting with emoteType:", data.emoteType); // Add this line to debug
+
       const selectedModel = generation.models.find(model => model.name === data.model);
       if (!selectedModel) {
         throw new Error("Selected model not found");
@@ -63,6 +67,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       const response = await axios.post(selectedModel.apiRoute, {
         prompt: data.prompt,
         amount: parseInt(data.amount),
+        resolution: data.resolution, // Ensure resolution is included if it's part of the request
         emoteType: data.emoteType,
       });
 
@@ -97,7 +102,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                 <FormItem>
                   <FormLabel>Prompt</FormLabel>
                   <FormControl>
-                    <Input placeholder="A space invader" {...field} />
+                    <Textarea placeholder="A space invader" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,7 +151,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                               <SelectValue placeholder="Select emote type" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="pixelated">Pixel</SelectItem>
+                              <SelectItem value="pixel">Pixel</SelectItem>
                               <SelectItem value="kawaii">Kawaii</SelectItem>
                               <SelectItem value="object">Object</SelectItem>
                               <SelectItem value="cute-bold-line">Cute Bold Line</SelectItem>
@@ -156,6 +161,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                               <SelectItem value="sticker-based">Sticker Based</SelectItem>
                               <SelectItem value="chibi">Chibi</SelectItem>
                               <SelectItem value="meme">Meme</SelectItem>
+                              <SelectItem value="ghibli">Ghibli</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>

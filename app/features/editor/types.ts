@@ -245,5 +245,43 @@ export const generation = {
                 },
             ],
         },
+        {
+            name: "FLUX.1 [schnell]",
+            apiRoute: "/api/models/fal/fluxschnell",
+            description: "Generate emotes using the Flux-Schnell model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of ${subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of ${subject}.",
+                },
+                {
+                    name: "realistic",
+                    prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
+        {
+            name: "FLUX.1 [pro]",
+            apiRoute: "/api/models/fal/fluxpro",
+            description: "Generate emotes using the Flux-Schnell model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of ${subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of ${subject}.",
+                },
+                {
+                    name: "realistic",
+                    prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
     ],
 };

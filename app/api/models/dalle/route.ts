@@ -70,13 +70,20 @@ export async function POST(req: Request) {
       return new NextResponse("You have run out of credits.", { status: 403 });
     }
 
+    console.log('Emote Type:', emoteType); // Debugging the received emoteType
+
     const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Use emoteType to generate the final prompt
     console.log('Final Prompt:', finalPrompt);
+
+    if (!finalPrompt) {
+      console.error('Final prompt is required');
+      return new NextResponse("Final prompt is required", { status: 400 });
+    }
 
     const response = await openai.images.generate({
       model: "dall-e-3",
       prompt: finalPrompt, // Use the finalPrompt with emoteType
-      size: resolution,
+      // size: "512x512", // Adjusted to a supported resolution
       quality: "standard",
     });
 
@@ -101,7 +108,7 @@ export async function POST(req: Request) {
     // }
 
     // Return a success response or the saved emotes as needed
-    return NextResponse.json( response.data[0].url );
+    return NextResponse.json(response.data[0].url);
   } catch (error) {
     console.error('[EMOTE_GENERATION_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });
