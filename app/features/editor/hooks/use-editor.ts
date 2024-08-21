@@ -229,17 +229,36 @@ const buildEditor = ({
 
         addImage: (value: string) => {
             fabric.Image.fromURL(value, (image) => {
-                const workspace = getWorkspace()
-
-                image.scaleToWidth(workspace?.width || 0)
-                image.scaleToHeight(workspace?.height || 0)
-
-                addToCanvas(image)
-            },
-                {
-                    crossOrigin: "anonymous"
+                // Ensure image is loaded and has defined dimensions before proceeding
+                if (!image || typeof image.width === 'undefined' || typeof image.height === 'undefined') {
+                    console.error('Image not fully loaded or missing dimensions');
+                    return;
                 }
-            )
+
+                const workspace = getWorkspace();
+
+                // Use optional chaining with fallback values for canvas dimensions
+                const canvasWidth = canvas?.width || 0;
+                const canvasHeight = canvas?.height || 0;
+
+                // Determine the scale factors based on the image and canvas (or workspace) dimensions
+                const scaleX = workspace?.width ? workspace.width / image.width : 1;
+                const scaleY = workspace?.height ? workspace.height / image.height : 1;
+                const scaleToFit = Math.min(scaleX, scaleY);
+
+                // Check if the image is smaller than the canvas and adjust scaling to avoid blurriness
+                if (image.width < canvasWidth && image.height < canvasHeight) {
+                    image.scale(scaleToFit); // Adjust scale to maintain quality
+                } else {
+                    // For larger images, you might want to scale down or adjust as needed
+                    image.scaleToWidth(workspace?.width || 0);
+                    image.scaleToHeight(workspace?.height || 0);
+                }
+
+                addToCanvas(image);
+            }, {
+                crossOrigin: "anonymous"
+            });
         },
 
         delete: () => {
