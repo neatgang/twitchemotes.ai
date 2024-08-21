@@ -81,13 +81,13 @@ model Emote {
   id           String        @id @default(cuid())
   prompt       String?
   style        String?
-  imageUrl     String?       @db.Text
+  imageUrl     String?       @db.VarChar(255)
   user         User?         @relation(fields: [userId], references: [id])
   userId       String?
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime?     @default(now())
   emoteForSale EmoteForSale?
 
-  @@index([userId], name: "userId")
+  @@index([userId])
 }
 
 enum EmoteStatus {

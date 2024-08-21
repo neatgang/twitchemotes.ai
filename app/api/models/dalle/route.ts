@@ -5,6 +5,10 @@ import { NextResponse } from "next/server";
 import OpenAI from 'openai';
 import { db } from "@/lib/db";
 import { generateThemedEmotePrompt } from "@/app/features/editor/utils";
+import AWS from "aws-sdk";
+import { env } from "@/env.mjs";
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export const maxDuration = 300;
 
@@ -20,8 +24,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log('Request Body:', body);
 
-    const { prompt, amount = 1, resolution = "1024x1024" } = body;
-    console.log('Parsed Body:', { prompt, amount, resolution });
+    const { prompt, amount = 1, resolution = "1024x1024", emoteType } = body;
+    console.log('Parsed Body:', { prompt, amount, resolution, emoteType });
 
     if (!userId) {
       console.error('Unauthorized: No user ID');
@@ -66,26 +70,40 @@ export async function POST(req: Request) {
       return new NextResponse("You have run out of credits.", { status: 403 });
     }
 
-    // const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Generate themed prompt
-    // console.log('Final Prompt:', finalPrompt);
+    const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Use emoteType to generate the final prompt
+    console.log('Final Prompt:', finalPrompt);
 
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: prompt,
-      size: "1024x1024",
+      prompt: finalPrompt, // Use the finalPrompt with emoteType
+      size: resolution,
       quality: "standard",
     });
 
-    // const images = response.data
-    //   .filter((image): image is { url: string } => !!image.url) // Filter out images without a URL
+    // const images = response.data; // Assuming this is the array of generated images
 
-    // console.log('Image Objects:', images);
+    // Loop through each generated image and save it
+    // for (const image of images) {
+    //   const imageUrl = image.url; // Adjust according to your actual image URL structure
 
-    console.log("response", response);
+    //   // Convert image URL to S3 URL or keep as is if already using S3 URLs
+    //   const s3ImageUrl = imageUrl; // Placeholder for any conversion logic if necessary
 
-    return NextResponse.json(response);
+    //   // Save each emote to the database
+    //   await db.emote.create({
+    //     data: {
+    //       userId: userId,
+    //       prompt: prompt,
+    //       imageUrl: s3ImageUrl,
+    //       // Add any other fields as necessary
+    //     },
+    //   });
+    // }
+
+    // Return a success response or the saved emotes as needed
+    return NextResponse.json( response.data[0].url );
   } catch (error) {
-    console.error('[IMAGE_ERROR]', error);
+    console.error('[EMOTE_GENERATION_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -54,7 +54,7 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
             <MousePointerClick className="size-4"/>
           </Button>
         </Hint>
-        {/* <Hint label="Undo" side="bottom" sideOffset={10}>
+        <Hint label="Undo" side="bottom" sideOffset={10}>
           <Button variant="ghost" size="icon" onClick={() => {}} className="">
             <Undo2 className="size-4"/>
           </Button>
@@ -70,8 +70,8 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
           <div className="text-xs text-muted-foreground">
             Saved
           </div>
-        </div> */}
-        {/* <div className="ml-auto flex items-center gap-x-4">
+        </div>
+        <div className="ml-auto flex items-center gap-x-4">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="ghost">
@@ -112,7 +112,7 @@ export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div> */}
+        </div>
       </div>
   </nav>
   )

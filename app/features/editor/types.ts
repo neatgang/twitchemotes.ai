@@ -228,7 +228,7 @@ export const generation = {
         // },
         {
             name: "FLUX.1 [dev]",
-            apiRoute: "/api/models/fal/flux-dev",
+            apiRoute: "/api/models/fal/fluxdev",
             description: "Generate emotes using the Flux-Dev model.",
             themes: [
                 {

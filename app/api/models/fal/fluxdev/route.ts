@@ -18,7 +18,7 @@ fal.config({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { prompt, image_size, num_inference_steps, guidance_scale, num_images, enable_safety_checker } = body;
+    const { prompt, image_size, num_inference_steps, guidance_scale, num_images, enable_safety_checker, emoteType } = body;
     const { userId } = auth();
 
     // Validate input
@@ -30,12 +30,11 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Generate themed prompt
-    // console.log('Final Prompt:', finalPrompt);
+    const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Use emoteType to generate the final prompt
 
     const result = await fal.subscribe("fal-ai/flux/dev", {
       input: {
-        prompt: prompt,
+        prompt: finalPrompt, // Use the finalPrompt with emoteType
         image_size: image_size || "square_hd",
         num_inference_steps: num_inference_steps || 28,
         guidance_scale: guidance_scale || 3.5,

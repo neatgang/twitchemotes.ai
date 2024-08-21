@@ -18,6 +18,7 @@ import { db } from "@/lib/db";
 import { getUser } from "@/actions/get-user";
 import Landing from "@/components/Landing";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 // const demophotos = [
 //   {
@@ -352,6 +353,7 @@ export default function LandingPage() {
 <section>
 
   <Landing />
+  <Footer />
 </section>
   )
 }

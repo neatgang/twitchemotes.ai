@@ -27,8 +27,8 @@ const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
   amount: z.string().default("1"),
   resolution: z.string().default("512x512"),
-  emoteType: z.string().default("default"),
-  model: z.string().default("")
+  emoteType: z.string().default("chibi"),
+  model: z.string().default("DALL-E 3")
 });
 
 interface EmoteGeneratorSidebarProps {
@@ -47,52 +47,10 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       prompt: "",
       amount: "1",
       // resolution: "512x512",
-      emoteType: "default",
-      model: ""
+      emoteType: "chibi",
+      model: "DALL-E 3"
     }
   });
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => { // works with dalle 3
-  //   setIsLoading(true);
-  //   try {
-  //     const selectedModel = generation.models.find(model => model.name === data.model);
-  //     if (!selectedModel) {
-  //       throw new Error("Selected model not found");
-  //     }
-
-  //     const response = await axios.post(selectedModel.apiRoute, {
-  //       prompt: data.prompt,
-  //       amount: data.amount,
-  //       resolution: data.resolution,
-  //       emoteType: data.emoteType,
-  //     });
-
-  //     const imageUrls = response.data.images;
-  //     setPhotos(imageUrls);
-  //   } catch (error) {
-  //     console.error("Error generating images:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // const onSubmit = async (data: z.infer<typeof formSchema>) => { // works with FAL model
-  //   setIsLoading(true);
-  //   try {
-  //     const selectedModel = generation.models.find(model => model.name === data.model);
-  //     if (!selectedModel) {
-  //       throw new Error("Selected model not found");
-  //     }
-
-  //     const response = await axios.post(selectedModel.apiRoute, data);
-  //     const photosArray = response.data.images; // Extract URLs from response
-  //     setPhotos(photosArray);
-  //   } catch (error) {
-  //     console.error('Error generating emotes:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -101,43 +59,23 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       if (!selectedModel) {
         throw new Error("Selected model not found");
       }
-  
-      const finalPrompt = generateThemedEmotePrompt(data.prompt, data.emoteType); // Generate themed prompt
-      console.log("finalPrompt", finalPrompt);
-  
-      let response;
-      if (selectedModel.apiRoute.includes("fal")) {
-        response = await axios.post(selectedModel.apiRoute, {
-          prompt: finalPrompt,
-          // image_size: data.resolution,
-          num_images: parseInt(data.amount),
-          // emoteType: data.emoteType,
-        });
-      } else if (selectedModel.apiRoute.includes("dalle")) {
-        response = await axios.post(selectedModel.apiRoute, {
-          prompt: finalPrompt,
-          amount: parseInt(data.amount),
-          resolution: data.resolution,
-        });
-      }
-  
-      console.log("response", response);
-  
-      let imageUrls: string[] = [];
-      if (selectedModel.apiRoute.includes("fal")) {
-        if (response?.data?.images) {
-          imageUrls = response.data.images.map((image: { url: string }) => image.url);
-        }
-      } else if (selectedModel.apiRoute.includes("dalle")) {
-        if (response?.data?.data) {
-          imageUrls = response.data.data.map((image: { url: string }) => image.url);
-        }
-      }
-  
-      if (imageUrls.length > 0) {
+
+      const response = await axios.post(selectedModel.apiRoute, {
+        prompt: data.prompt,
+        amount: parseInt(data.amount),
+        emoteType: data.emoteType,
+      });
+
+      // Check if the response is from the FAL API and has an 'images' array
+      if (response.data.images && Array.isArray(response.data.images)) {
+        // Extract URLs from the 'images' array
+        const imageUrls = response.data.images.map((image: any) => image.url);
         setPhotos(imageUrls);
+      } else if (typeof response.data === 'string') {
+        // Direct URL string from the DALL-E API
+        setPhotos([response.data]);
       } else {
-        throw new Error("No images found in the response");
+        throw new Error("Unexpected response format");
       }
     } catch (error) {
       console.error("Error generating images:", error);
@@ -261,11 +199,11 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
           </form>
         </Form>
         <div className="mt-4 gap-4 grid grid-cols-2">
-          {photos && photos.length > 0 && photos.map((url, index) => ( // Add conditional check
+          {photos && photos.length > 0 && photos.map((url, index) => (
             <div key={index} className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border grid grid-cols-4">
               <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill/>
               <button
-                onClick={() => editor?.addGeneratedEmote(url)} // Add to canvas on click
+                onClick={() => editor?.addGeneratedEmote(url)}
                 className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
               >
                 Add to Canvas
