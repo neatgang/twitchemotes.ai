@@ -154,7 +154,7 @@ export const Navbar = ({
               <Link href="/emoteboard/editor/1">Emoteboard</Link>
             </Button>
             <NavigationMenuList className="hidden sm:flex">
-              {/* <NavigationMenuItem>
+              <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Create Emotes</a>
                 </NavigationMenuTrigger>
@@ -170,7 +170,7 @@ export const Navbar = ({
                     ))}
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem> */}
+              </NavigationMenuItem>
               {/* <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Tools</a>

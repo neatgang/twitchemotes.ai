@@ -10,9 +10,10 @@ import { ToasterProvider } from '@/components/ToasterProvider'
 import { checkSubscription } from '../lib/subscription'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Script from 'next/script'
-import { getUserCredits } from '@/actions/get-user-credits'
+
 import { getUser } from '@/actions/get-user'
 import { Providers } from '@/components/providers'
+import { getUserCredits } from '@/actions/get-user-credits'
 
 const inter = Inter({ subsets: ['latin'] })
 
