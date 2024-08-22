@@ -154,7 +154,7 @@ export const Navbar = ({
               <Link href="/emoteboard/editor/1">Emoteboard</Link>
             </Button>
             <NavigationMenuList className="hidden sm:flex">
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Create Emotes</a>
                 </NavigationMenuTrigger>
@@ -166,13 +166,12 @@ export const Navbar = ({
                         title={type.name}
                         href={type.link}
                       >
-                        {/* {type?.description} Ensure descriptions are available or adjust accordingly */}
                       </ListItem>
                     ))}
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
+              </NavigationMenuItem> */}
+              {/* <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   <a>Tools</a>
                 </NavigationMenuTrigger>
@@ -184,12 +183,11 @@ export const Navbar = ({
                         title={type.name}
                         href={type.link}
                       >
-                        {/* {type?.description} Ensure descriptions are available or adjust accordingly */}
                       </ListItem>
                     ))}
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
             </NavigationMenuList>
             <Button variant="ghost" className="hidden sm:block">
               <Link href="/showcase">Showcase</Link>

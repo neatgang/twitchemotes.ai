@@ -17,15 +17,15 @@ interface NavbarProps {
 
 export const Navbar = ({ activeTool, onChangeActiveTool }: NavbarProps) => {
   return (
-    <nav className='w-full flex items-center h-[68px] gap-x-8'>
-      {/* <Button variant="link">
-        <Link href="/" className="flex items-center">
-        <Avatar className="mr-2">
+    <nav className='w-full flex items-center h-[68px]'>
+      <Button variant="link">
+        <Link href="/emoteboard/editor/1" className="flex items-center">
+        {/* <Avatar className="mr-2">
           <AvatarImage src="/peepopainter.jpg"/>
-        </Avatar> 
-        EmoteMaker.ai
+        </Avatar>  */}
+        Emoteboard
         </Link>
-      </Button> */}
+      </Button>
       <div className="w-full flex items-center gap-x-1 h-full border-b border-gray-200 px-2">
         {/* <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>

@@ -11,7 +11,7 @@ const EditorProjectIdPage = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    redirect('/signin');
+    redirect('/sign-in');
   }
 
   const emotes = await fetchUserEmotes(userId);

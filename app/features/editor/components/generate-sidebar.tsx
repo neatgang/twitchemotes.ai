@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { Loader } from "lucide-react";
+import { Loader, Sparkle } from "lucide-react";
 import { ActiveTool, Editor, generation } from "../types";
 import Image from "next/image";
 import {
@@ -41,6 +41,7 @@ interface EmoteGeneratorSidebarProps {
 export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }: EmoteGeneratorSidebarProps) => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [enhancedPrompt, setEnhancedPrompt] = useState(""); // Add state for enhanced prompt
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,6 +90,24 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
     }
   };
 
+  // Function to enhance the prompt
+  const enhancePrompt = async () => {
+    const currentPrompt = form.getValues("prompt");
+    setIsLoading(true); // Reuse the existing loading state
+    try {
+      const response = await axios.post('/api/models/chat-completion', { prompt: currentPrompt });
+      if (response.data && response.data.enhancedPrompt) {
+        form.setValue("prompt", response.data.enhancedPrompt);
+        // setEnhancedPrompt(response.data.enhancedPrompt); // Update enhanced prompt state
+        // console.log("Enhanced Prompt:", response.data.enhancedPrompt); // Debugging: Log the enhanced prompt
+      }
+    } catch (error) {
+      console.error("Error enhancing prompt:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <aside className={cn("bg-white relative border-r z-[40] w-[300px] h-full flex flex-col", activeTool === "emote-generator" ? "visible" : "hidden")}>
       <ToolSidebarHeader title="Generate Emotes" description="Generate emotes from a prompt" />
@@ -108,6 +127,17 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                 </FormItem>
               )}
             />
+            {/* Conditionally render the enhanced prompt textarea */}
+            {enhancedPrompt && (
+              <>
+              <p className="text-sm text-muted-foreground">Enhanced Prompt</p>
+              <Textarea readOnly value={enhancedPrompt} className="mt-2" placeholder="Enhanced prompt will appear here." />
+              </>
+            )}
+            <Button onClick={enhancePrompt} disabled={isLoading} className="mt-2 w-full">
+              {isLoading ? <Loader className="animate-spin" /> : "Enhance Prompt"}
+              <Sparkle className="w-4 h-4 ml-2" />
+            </Button>
             <Accordion type="single" collapsible>
               <AccordionItem value="model">
                 <AccordionTrigger>Model</AccordionTrigger>
@@ -207,7 +237,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
         <div className="mt-4 gap-4 grid grid-cols-2">
           {photos && photos.length > 0 && photos.map((url, index) => (
             <div key={index} className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border grid grid-cols-4">
-              <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill/>
+              <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
               <button
                 onClick={() => editor?.addGeneratedEmote(url)}
                 className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
