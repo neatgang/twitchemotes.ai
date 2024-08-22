@@ -135,7 +135,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
               </>
             )}
             <Button onClick={enhancePrompt} disabled={isLoading} className="mt-2 w-full">
-              {isLoading ? <Loader className="animate-spin" /> : "Enhance Prompt"}
+              {isLoading ? <Loader className="animate-spin" /> : "Enhance Prompt (1 Credit)"}
               <Sparkle className="w-4 h-4 ml-2" />
             </Button>
             <Accordion type="single" collapsible>
@@ -230,7 +230,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
               </AccordionItem>
             </Accordion>
             <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? <Loader className="animate-spin" /> : "Generate"}
+              {isLoading ? <Loader className="animate-spin" /> : "Generate Emote (1 Credit)"}
             </Button>
           </form>
         </Form>
