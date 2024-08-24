@@ -24,6 +24,9 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { generateThemedEmotePrompt } from "../utils";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUpload } from "@/components/FileUpload";
+import { SaveAll } from "lucide-react";
+import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
 
 const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
@@ -43,15 +46,15 @@ interface EmoteGeneratorSidebarProps {
 export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }: EmoteGeneratorSidebarProps) => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [enhancedPrompt, setEnhancedPrompt] = useState(""); // Add state for enhanced prompt
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Add this line to store the uploaded image URL or data
+  const [enhancedPrompt, setEnhancedPrompt] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const { userId } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
       amount: "1",
-      // resolution: "512x512",
       emoteType: "chibi",
       model: "DALL-E 3"
     }
@@ -60,8 +63,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      // Ensure the correct theme is being sent
-      console.log("Submitting with emoteType:", data.emoteType); // Add this line to debug
+      console.log("Submitting with emoteType:", data.emoteType);
 
       const selectedModel = generation.models.find(model => model.name === data.model);
       if (!selectedModel) {
@@ -71,26 +73,48 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       const response = await axios.post(selectedModel.apiRoute, {
         prompt: data.prompt,
         amount: parseInt(data.amount),
-        resolution: data.resolution, // Ensure resolution is included if it's part of the request
+        resolution: data.resolution,
         emoteType: data.emoteType,
-        image: uploadedImage, // Include the uploaded image in the request
+        image: uploadedImage,
       });
 
-      // Check if the response is from the FAL API and has an 'images' array
+      let imageUrls: string[] = [];
+
       if (response.data.images && Array.isArray(response.data.images)) {
-        // Extract URLs from the 'images' array
-        const imageUrls = response.data.images.map((image: any) => image.url);
-        setPhotos(imageUrls);
+        imageUrls = response.data.images.map((image: any) => image.url);
       } else if (typeof response.data === 'string') {
-        // Direct URL string from the DALL-E API
-        setPhotos([response.data]);
+        imageUrls = [response.data];
       } else {
         throw new Error("Unexpected response format");
       }
+
+      setPhotos(imageUrls);
+
+      // Automatically save each generated image
+      for (const imageUrl of imageUrls) {
+        await handleSave(imageUrl, data.prompt, userId || '');
+      }
+
+      toast.success('Emotes generated and saved successfully!');
     } catch (error) {
       console.error("Error generating images:", error);
+      toast.error('Failed to generate or save emotes. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+    try {
+      const saveResponse = await axios.post('/api/saveemote', {
+        userId: userId,
+        prompt,
+        imageUrl,
+      });
+      console.log(saveResponse.data);
+    } catch (error) {
+      console.error('Failed to save emote:', error);
+      throw error; // Propagate the error to be handled in onSubmit
     }
   };
 
@@ -111,6 +135,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       setIsLoading(false);
     }
   };
+
 
   return (
     <aside className={cn("bg-white relative border-r z-[40] w-[300px] h-full flex flex-col", activeTool === "emote-generator" ? "visible" : "hidden")}>
@@ -232,32 +257,32 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                   />
                 </AccordionContent>
               </AccordionItem>
-                          {/* Add this section within your form */}
-            {uploadedImage ? (
-              <div className="flex flex-col items-center">
-                <Image src={uploadedImage} alt="Uploaded Image" width={200} height={200} className="object-cover rounded-lg" />
-                <Button onClick={() => setUploadedImage(null)} className="mt-2">Remove Image</Button>
-              </div>
-            ) : (
-              <AccordionItem value="uploadImage">
-                <AccordionTrigger>Upload Image</AccordionTrigger>
-                <AccordionContent>
-              <div className="flex flex-col items-center">
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={() => (
-                    <FormItem>
-                      <FormControl>
-                        <FileUpload onChange={(url) => setUploadedImage(url ?? null)} endpoint="imageUploader" />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+              {/* Add this section within your form */}
+              {uploadedImage ? (
+                <div className="flex flex-col items-center">
+                  <Image src={uploadedImage} alt="Uploaded Image" width={200} height={200} className="object-cover rounded-lg" />
+                  <Button onClick={() => setUploadedImage(null)} className="mt-2">Remove Image</Button>
                 </div>
-              </AccordionContent>
-              </AccordionItem>
-            )}
+              ) : (
+                <AccordionItem value="uploadImage">
+                  <AccordionTrigger>Upload Image</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col items-center">
+                      <FormField
+                        control={form.control}
+                        name="image"
+                        render={() => (
+                          <FormItem>
+                            <FormControl>
+                              <FileUpload onChange={(url) => setUploadedImage(url ?? null)} endpoint="imageUploader" />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              )}
             </Accordion>
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? <Loader className="animate-spin" /> : "Generate Emote (1 Credit)"}
@@ -266,14 +291,20 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
         </Form>
         <div className="mt-4 gap-4 grid grid-cols-2">
           {photos && photos.length > 0 && photos.map((url, index) => (
-            <div key={index} className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border grid grid-cols-4">
-              <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
-              <button
-                onClick={() => editor?.addGeneratedEmote(url)}
-                className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
-              >
-                Add to Canvas
-              </button>
+            <div key={index} className="flex flex-col items-center">
+              <div className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border">
+                <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
+                <button
+                  onClick={() => editor?.addGeneratedEmote(url)}
+                  className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
+                >
+                  Add to Canvas
+                </button>
+              </div>
+              {/* <Button onClick={() => handleSave(url, form.getValues().prompt, userId || '')} variant="secondary" className="mt-2 w-full">
+                <SaveAll className="h-4 w-4 mr-2" />
+                Save
+              </Button> */}
             </div>
           ))}
         </div>
