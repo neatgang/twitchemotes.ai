@@ -14,12 +14,7 @@ const routes = [
     {
       label: 'Create Emotes',
       icon: Paintbrush2, // Example icon, replace with actual icons as needed
-      href: '/emotes',
-    },
-    {
-      label: 'Generate Prompts',
-      icon: BookIcon, // Example icon
-      href: '/imagetoprompt',
+      href: '/emoteboard/editor/1',
     },
     {
       label: 'Showcase',

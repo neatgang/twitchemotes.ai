@@ -23,13 +23,15 @@ import {
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"; // Import Accordion components
 import { generateThemedEmotePrompt } from "../utils";
 import { Textarea } from "@/components/ui/textarea";
+import { FileUpload } from "@/components/FileUpload";
 
 const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
   amount: z.string().default("1"),
   resolution: z.string().default("512x512"),
   emoteType: z.string().default("chibi"),
-  model: z.string().default("DALL-E 3")
+  model: z.string().default("DALL-E 3"),
+  image: z.string().optional(), // Add image field to the schema
 });
 
 interface EmoteGeneratorSidebarProps {
@@ -42,6 +44,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
   const [photos, setPhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [enhancedPrompt, setEnhancedPrompt] = useState(""); // Add state for enhanced prompt
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // Add this line to store the uploaded image URL or data
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,6 +73,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
         amount: parseInt(data.amount),
         resolution: data.resolution, // Ensure resolution is included if it's part of the request
         emoteType: data.emoteType,
+        image: uploadedImage, // Include the uploaded image in the request
       });
 
       // Check if the response is from the FAL API and has an 'images' array
@@ -130,8 +134,8 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
             {/* Conditionally render the enhanced prompt textarea */}
             {enhancedPrompt && (
               <>
-              <p className="text-sm text-muted-foreground">Enhanced Prompt</p>
-              <Textarea readOnly value={enhancedPrompt} className="mt-2" placeholder="Enhanced prompt will appear here." />
+                <p className="text-sm text-muted-foreground">Enhanced Prompt</p>
+                <Textarea readOnly value={enhancedPrompt} className="mt-2" placeholder="Enhanced prompt will appear here." />
               </>
             )}
             <Button onClick={enhancePrompt} disabled={isLoading} className="mt-2 w-full">
@@ -228,6 +232,32 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                   />
                 </AccordionContent>
               </AccordionItem>
+                          {/* Add this section within your form */}
+            {uploadedImage ? (
+              <div className="flex flex-col items-center">
+                <Image src={uploadedImage} alt="Uploaded Image" width={200} height={200} className="object-cover rounded-lg" />
+                <Button onClick={() => setUploadedImage(null)} className="mt-2">Remove Image</Button>
+              </div>
+            ) : (
+              <AccordionItem value="uploadImage">
+                <AccordionTrigger>Upload Image</AccordionTrigger>
+                <AccordionContent>
+              <div className="flex flex-col items-center">
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={() => (
+                    <FormItem>
+                      <FormControl>
+                        <FileUpload onChange={(url) => setUploadedImage(url ?? null)} endpoint="imageUploader" />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                </div>
+              </AccordionContent>
+              </AccordionItem>
+            )}
             </Accordion>
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? <Loader className="animate-spin" /> : "Generate Emote (1 Credit)"}

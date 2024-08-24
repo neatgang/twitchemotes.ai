@@ -23,6 +23,7 @@ export const FileUpload = ({
       onUploadError={(error: Error) => {
         toast.error(`${error?.message}`);
       }}
+      className="w-[250px]"
     />
   )
 }

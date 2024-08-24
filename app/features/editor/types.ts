@@ -145,6 +145,7 @@ export type BuildEditorProps = {
     setStrokeDashArray: (value: number[]) => void;
     fontFamily: string;
     setFontFamily: (value: string) => void;
+    // shakeAnimation: (object: fabric.Object) => void;
 }
 
 export interface Editor {
@@ -184,6 +185,7 @@ export interface Editor {
     saveImage: () => void;
     enableDrawingMode: () => void;
     disableDrawingMode: () => void;
+    // shakeAnimation: (object: fabric.Object) => void;
 }
 
 export const generation = {
@@ -267,6 +269,25 @@ export const generation = {
         {
             name: "FLUX.1 [pro]",
             apiRoute: "/api/models/fal/fluxpro",
+            description: "Generate emotes using the Flux-Schnell model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of ${subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of ${subject}.",
+                },
+                {
+                    name: "realistic",
+                    prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
+        {
+            name: "FLUX.1 [dev] - Image to Image",
+            apiRoute: "/api/models/fal/fluxdev/imagetoimage",
             description: "Generate emotes using the Flux-Schnell model.",
             themes: [
                 {

@@ -20,7 +20,7 @@ const buildEditor = ({
     strokeDashArray,
     setStrokeDashArray,
     fontFamily,
-    setFontFamily
+    setFontFamily,
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -67,6 +67,38 @@ const buildEditor = ({
             throw new Error("No active image selected");
         }
     };
+
+    function shakeObject(object: fabric.Object, canvas: fabric.Canvas) {
+        const duration = 500; // Duration of the animation in milliseconds
+        const frequency = 10; // How many shakes within the duration
+        const amplitude = 5; // How far to shake (in pixels)
+    
+        for (let i = 0; i < frequency; i++) {
+            const direction = i % 2 === 0 ? 1 : -1; // Alternate direction
+            const animationOptions = {
+                left: object.left! + direction * amplitude,
+                easing: fabric.util.ease.easeInOutQuad,
+            };
+    
+            // Animate back and forth
+            object.animate('left', object.left! + direction * amplitude, {
+                duration: duration / frequency,
+                onChange: canvas.renderAll.bind(canvas),
+                onComplete: i === frequency - 1 ? () => {
+                    // Final callback to reset position
+                    object.set({ left: object.left });
+                    canvas.renderAll();
+                } : undefined,
+                easing: fabric.util.ease.easeInOutQuad,
+            });
+        }
+    }
+    
+    // Example usage within your editor logic
+    const activeObject = canvas.getActiveObject();
+    if (activeObject && activeObject.type === 'image') {
+        shakeObject(activeObject, canvas);
+    }
 
     const inpaint = async (prompt: string, maskUrl: string) => {
         const objects = canvas.getActiveObjects();
@@ -115,7 +147,9 @@ const buildEditor = ({
         }
     
         return maskCanvas.toDataURL('image/png');
+        
       };
+      
 
     return {
 
@@ -485,6 +519,7 @@ const buildEditor = ({
         generateMaskUrl,
         getActiveImageUrl,
         updateImage,
+        // shakeAnimation,
 
         getActiveFillColor: () => {
             const selectedObject = selectedObjects[0]
@@ -552,7 +587,7 @@ const buildEditor = ({
             return value
         },
 
-        selectedObjects
+        selectedObjects,
     }
 }
 
@@ -591,7 +626,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
                 strokeDashArray,
                 setStrokeDashArray,
                 fontFamily,
-                setFontFamily
+                setFontFamily,
             });
         }
 
@@ -603,7 +638,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         strokeWidth,
         selectedObjects,
         strokeDashArray,
-        fontFamily
+        fontFamily,
     ]);
 
     const init = useCallback(({

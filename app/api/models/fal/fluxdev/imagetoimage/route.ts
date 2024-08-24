@@ -21,6 +21,8 @@ export async function POST(req: Request) {
     const { prompt, image_size, num_inference_steps, guidance_scale, num_images, enable_safety_checker, emoteType, image } = body;
     const { userId } = auth();
 
+    console.log(body.image);
+
     // Validate input
     if (!prompt) {
       return new NextResponse("Prompt is required", { status: 400 });
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
 
     const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Use emoteType to generate the final prompt
 
-    const result = await fal.subscribe("fal-ai/flux-pro", {
+    const result = await fal.subscribe("fal-ai/flux/dev/image-to-image", {
       input: {
         prompt: finalPrompt, // Use the finalPrompt with emoteType
         image_size: image_size || "square_hd",
@@ -40,7 +42,7 @@ export async function POST(req: Request) {
         guidance_scale: guidance_scale || 3.5,
         num_images: num_images || 1,
         enable_safety_checker: enable_safety_checker !== undefined ? enable_safety_checker : true,
-        image: image, // Include the image in the request if the API supports it
+        image_url: image
       },
       onQueueUpdate: (update) => {
         if (update.status === "IN_PROGRESS") {
@@ -65,6 +67,8 @@ export async function POST(req: Request) {
     }
 
     console.log(result);
+
+
 
     return NextResponse.json(result);
 
