@@ -51,19 +51,30 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
     }
   };
 
+  const handleClearImages = () => {
+    setImages([]);
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
+  };
+
+  console.log('handleRemoveImage:', handleRemoveImage); // Add this line
+
   return (
     <div className="p-6 h-full">
-      {/* <Header /> */}
       <div className="flex gap-6 mt-2 mb-2">
-        <ModelSidebar onStartTraining={handleTraining} userId={userId} /> {/* Pass userId to ModelSidebar */}
+        <ModelSidebar onStartTraining={handleTraining} userId={userId} />
         <TrainingImages
           emotes={emotes} 
           images={images} 
           onFileChange={handleFileChange} 
           onEmoteSelect={handleEmoteSelect} 
+          onClearImages={handleClearImages}
+          onRemoveImage={handleRemoveImage}
           trainingResult={trainingResult}
-          userId={userId} // Pass userId to TrainingImages
-        /> {/* Pass state and handlers as props */}
+          userId={userId}
+        />
       </div>
     </div>
   );
