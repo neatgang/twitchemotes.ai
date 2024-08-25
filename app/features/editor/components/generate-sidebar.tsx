@@ -92,7 +92,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
 
       // Automatically save each generated image
       for (const imageUrl of imageUrls) {
-        await handleSave(imageUrl, data.prompt, userId || '');
+        await handleSave(imageUrl, data.prompt, userId || '', data.emoteType, data.model);
       }
 
       toast.success('Emotes generated and saved successfully!');
@@ -104,12 +104,14 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
     }
   };
 
-  const handleSave = async (imageUrl: string, prompt: string, userId: string) => {
+  const handleSave = async (imageUrl: string, prompt: string, userId: string, emoteType: string, model: string) => {
     try {
-      const saveResponse = await axios.post('/api/saveemote', {
+    const saveResponse = await axios.post('/api/saveemote', {
         userId: userId,
         prompt,
         imageUrl,
+        style: emoteType,
+        model: model
       });
       console.log(saveResponse.data);
     } catch (error) {

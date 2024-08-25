@@ -81,6 +81,7 @@ model Emote {
   id           String        @id @default(cuid())
   prompt       String?
   style        String?
+  model        String? // Add this line
   imageUrl     String?       @db.Text
   user         User?         @relation(fields: [userId], references: [id])
   userId       String?
@@ -108,6 +109,7 @@ model EmoteForSale {
   prompt         String
   price          Float?
   style          String?
+  model          String? // Add this line
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   status         EmoteStatus @default(DRAFT)
