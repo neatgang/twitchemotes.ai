@@ -51,7 +51,7 @@ export const getEmotes = async ({ userId }: { userId: string | null }) => {
         userId: userId,
       },
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       }
     });
 

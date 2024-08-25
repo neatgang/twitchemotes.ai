@@ -9,7 +9,12 @@ import { ChevronDown } from "lucide-react"
 import { useState } from 'react'; // Import useState
 import { cn } from "@/lib/utils"; // Ensure cn is imported from utils
 
-export default function ModelSidebar() {
+interface ModelSidebarProps {
+  onStartTraining: () => void;
+  userId?: string; // Add userId prop
+}
+
+export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarProps) {
   // State for managing inputs and selections
   const [newModelName, setNewModelName] = useState('');
   const [subject, setSubject] = useState('');
@@ -265,7 +270,7 @@ export default function ModelSidebar() {
           </div>
         </div>
       )}
-      <Button className="w-full bg-blue-600">Start Training</Button>
+      <Button onClick={onStartTraining} className="bg-blue-500 text-white mt-4 w-full">Start Training</Button>
       <Button variant="outline" className="w-full text-black"   >
         Save As Draft
       </Button>

@@ -1,15 +1,14 @@
-import ModelSidebar from "@/components/models/model-sidebar";
-import TrainingImages from "@/components/models/training-images";
+import { getEmotes } from "@/actions/get-emotes";
+import { auth } from "@clerk/nextjs/server";
+import ModelPageClient from "@/components/models/model-page-client";
 
+export default async function ModelsPage() {
+  const { userId } = auth();
+  if (!userId) {
+    return null; // or redirect to login
+  }
 
-export default function Home() {
-  return (
-    <div className="p-6 h-full">
-      {/* <Header /> */}
-      <div className="flex gap-6 mt-2 mb-2">
-        <ModelSidebar />
-        <TrainingImages />
-      </div>
-    </div>
-  )
+  const { emotes } = await getEmotes({ userId });
+
+  return <ModelPageClient initialEmotes={emotes} />;
 }
