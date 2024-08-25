@@ -47,13 +47,13 @@ export default function TrainingImages({
   };
 
   return (
-    <div className="w-2/3">
+    <div className="w-full lg:w-3/4">
       <h2 className="text-xl font-bold mb-4">Your Emotes</h2>
-      <div className="flex items-center justify-between w-full space-x-1 overflow-x-auto pb-2">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
         {getCurrentEmotes().map((emote: Emote) => (
           <div 
             key={emote.id} 
-            className="relative w-[60px] h-[60px] flex-grow flex-shrink-0 group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border cursor-pointer"
+            className="aspect-square relative group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border cursor-pointer"
             onClick={() => onEmoteSelect(emote.imageUrl!)}
           >
             <Image

@@ -62,8 +62,8 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
   console.log('handleRemoveImage:', handleRemoveImage); // Add this line
 
   return (
-    <div className="p-6 h-full">
-      <div className="flex gap-6 mt-2 mb-2">
+    <div className="p-4 lg:p-6 h-full">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
         <ModelSidebar onStartTraining={handleTraining} userId={userId} />
         <TrainingImages
           emotes={emotes} 
