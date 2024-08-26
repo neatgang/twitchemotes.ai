@@ -4,26 +4,24 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export async function addEmoteToLibrary(emoteId: string) {
+interface EmoteData {
+  prompt?: string;
+  imageUrl: string;
+  style: string;
+}
+
+export async function addEmoteToLibrary(emoteData: EmoteData) {
   try {
     const { userId } = auth();
     if (!userId) {
       throw new Error('Unauthorized');
     }
 
-    const emoteForSale = await db.emoteForSale.findUnique({
-      where: { id: emoteId },
-    });
-
-    if (!emoteForSale) {
-      throw new Error('Emote not found');
-    }
-
     const newEmote = await db.emote.create({
       data: {
-        prompt: emoteForSale.prompt,
-        style: emoteForSale.style,
-        imageUrl: emoteForSale.imageUrl,
+        prompt: emoteData.prompt,
+        style: emoteData.style,
+        imageUrl: emoteData.imageUrl,
         userId: userId,
       },
     });

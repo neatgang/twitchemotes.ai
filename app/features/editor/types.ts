@@ -182,9 +182,9 @@ export interface Editor {
     changeFontFamily: (value: string) => void;
     getActiveFontFamily: () => string;
     removeBackground: () => void;
-    saveImage: () => void;
     enableDrawingMode: () => void;
     disableDrawingMode: () => void;
+    downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
 }
 

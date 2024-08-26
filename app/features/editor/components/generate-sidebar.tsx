@@ -27,6 +27,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { SaveAll } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/nextjs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
@@ -46,7 +47,7 @@ interface EmoteGeneratorSidebarProps {
 export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }: EmoteGeneratorSidebarProps) => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [enhancedPrompt, setEnhancedPrompt] = useState("");
+  const [enhancedPrompts, setEnhancedPrompts] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const { userId } = useAuth();
 
@@ -120,24 +121,32 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
     }
   };
 
-  // Function to enhance the prompt
   const enhancePrompt = async () => {
     const currentPrompt = form.getValues("prompt");
-    setIsLoading(true); // Reuse the existing loading state
+    setIsLoading(true);
     try {
-      const response = await axios.post('/api/models/chat-completion', { prompt: currentPrompt });
-      if (response.data && response.data.enhancedPrompt) {
-        form.setValue("prompt", response.data.enhancedPrompt);
-        // setEnhancedPrompt(response.data.enhancedPrompt); // Update enhanced prompt state
-        // console.log("Enhanced Prompt:", response.data.enhancedPrompt); // Debugging: Log the enhanced prompt
+      const response = await axios.post('/api/models/enhance-prompt', { prompt: currentPrompt });
+      console.log('API Response:', response.data);
+      if (response.data && Array.isArray(response.data.enhancedPrompts)) {
+        setEnhancedPrompts(response.data.enhancedPrompts);
+        toast.success('Prompt enhanced successfully!');
+      } else {
+        console.error('Unexpected response format:', response.data);
+        toast.error('Failed to enhance prompt. Using original prompt.');
+        setEnhancedPrompts([currentPrompt]);
       }
     } catch (error) {
       console.error("Error enhancing prompt:", error);
+      toast.error('Failed to enhance prompt. Please try again.');
+      setEnhancedPrompts([currentPrompt]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleSelectEnhancedPrompt = (selectedPrompt: string) => {
+    form.setValue("prompt", selectedPrompt);
+  };
 
   return (
     <aside className={cn("bg-white relative border-r z-[40] w-[300px] h-full flex flex-col", activeTool === "emote-generator" ? "visible" : "hidden")}>
@@ -158,17 +167,29 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                 </FormItem>
               )}
             />
-            {/* Conditionally render the enhanced prompt textarea */}
-            {enhancedPrompt && (
-              <>
-                <p className="text-sm text-muted-foreground">Enhanced Prompt</p>
-                <Textarea readOnly value={enhancedPrompt} className="mt-2" placeholder="Enhanced prompt will appear here." />
-              </>
-            )}
-            <Button onClick={enhancePrompt} disabled={isLoading} className="mt-2 w-full">
+            <Button onClick={enhancePrompt} disabled={isLoading} className="w-full">
               {isLoading ? <Loader className="animate-spin" /> : "Enhance Prompt (1 Credit)"}
-              {/* <Sparkle className="w-4 h-4 ml-2" /> */}
             </Button>
+            {enhancedPrompts.length > 0 && (
+              <div className="mt-2">
+                <Select onValueChange={handleSelectEnhancedPrompt}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select enhanced prompt">
+                      Select enhanced prompt
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {enhancedPrompts.map((prompt, index) => (
+                      <SelectItem key={index} value={prompt}>
+                        <div className="max-w-[250px] whitespace-normal break-words">
+                          {prompt}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <Accordion type="single" collapsible>
               <AccordionItem value="model">
                 <AccordionTrigger>Model</AccordionTrigger>
@@ -303,10 +324,6 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                   Add to Canvas
                 </button>
               </div>
-              {/* <Button onClick={() => handleSave(url, form.getValues().prompt, userId || '')} variant="secondary" className="mt-2 w-full">
-                <SaveAll className="h-4 w-4 mr-2" />
-                Save
-              </Button> */}
             </div>
           ))}
         </div>

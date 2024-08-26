@@ -24,16 +24,16 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    // Add custom rule for handling .excalidrawlib files
-    config.module.rules.push({
-      test: /\.excalidrawlib$/,
-      use: "raw-loader",
-    });
+  // webpack: (config, { isServer }) => {
+  //   // Add custom rule for handling .excalidrawlib files
+  //   config.module.rules.push({
+  //     test: /\.excalidrawlib$/,
+  //     use: "raw-loader",
+  //   });
 
-    // Return the updated configuration
-    return config;
-  },
+  //   // Return the updated configuration
+  //   return config;
+  // },
 };
 
 module.exports = nextConfig;

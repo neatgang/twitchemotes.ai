@@ -32,10 +32,14 @@ export default function Marketplace({ emotesForSale, currentPage, totalPages }: 
     router.push(`/showcase?page=${page}`);
   };
 
-  const handleAddToLibrary = async (emoteId: string) => {
-    setIsLoading(prev => ({ ...prev, [emoteId]: true }));
+  const handleAddToLibrary = async (emote: EmoteForSale) => {
+    setIsLoading(prev => ({ ...prev, [emote.id]: true }));
     try {
-      const result = await addEmoteToLibrary(emoteId);
+      const result = await addEmoteToLibrary({
+        prompt: emote.prompt,
+        imageUrl: emote.imageUrl,
+        style: emote.style || 'custom' // Use the emote's style if available, otherwise default to 'custom'
+      });
       if (result.success) {
         toast.success('Emote added to your library!');
       } else {
@@ -44,7 +48,7 @@ export default function Marketplace({ emotesForSale, currentPage, totalPages }: 
     } catch (error) {
       toast.error('Failed to add emote to library');
     } finally {
-      setIsLoading(prev => ({ ...prev, [emoteId]: false }));
+      setIsLoading(prev => ({ ...prev, [emote.id]: false }));
     }
   };
 
@@ -81,7 +85,7 @@ export default function Marketplace({ emotesForSale, currentPage, totalPages }: 
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-50">{emote.prompt}</p>
               </div>
               <Button 
-                onClick={() => handleAddToLibrary(emote.id)} 
+                onClick={() => handleAddToLibrary(emote)} 
                 className="mt-2 w-full flex" 
                 variant="outline"
                 disabled={isLoading[emote.id]}

@@ -1,3 +1,4 @@
+
 import { useCallback, useState, useMemo } from "react"
 
 import { fabric } from "fabric"
@@ -7,6 +8,7 @@ import { useCanvasEvents } from "./use-canvas-events";
 import { createFilter, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
 import axios from "axios";
+import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 
 const buildEditor = ({
     canvas,
@@ -151,6 +153,61 @@ const buildEditor = ({
       };
       
 
+    // const saveImage = async () => {
+    //     return new Promise<void>((resolve, reject) => {
+    //         // Ensure all images have crossOrigin set
+    //         canvas.getObjects('image').forEach((object) => {
+    //             const img = object as fabric.Image;
+    //             if (img.getSrc().indexOf('crossOrigin') === -1) {
+    //                 img.setSrc(img.getSrc(), () => { }, { crossOrigin: 'anonymous' });
+    //             }
+    //         });
+
+    //         // Wait for images to load before saving
+    //         setTimeout(async () => {
+    //             try {
+    //                 const dataURL = canvas.toDataURL({
+    //                     format: 'png',
+    //                     quality: 1.0
+    //                 });
+
+    //                 // Convert dataURL to Blob
+    //                 const response = await fetch(dataURL);
+    //                 const blob = await response.blob();
+
+    //                 // Create a File from the Blob
+    //                 const file = new File([blob], 'emote.png', { type: 'image/png' });
+
+    //                 // Upload the file to your server or cloud storage
+    //                 // This step depends on your backend implementation
+    //                 // For this example, let's assume you have an uploadImage function
+    //                 const imageUrl = await uploadImage(file);
+
+    //                 // Get the prompt from the first text object on the canvas
+    //                 const textObject = canvas.getObjects('text')[0] as fabric.Text;
+    //                 const prompt = textObject ? textObject.text : 'New Emote';
+
+    //                 // Call addEmoteToLibrary with the new emote data
+    //                 const result = await addEmoteToLibrary({
+    //                     prompt: prompt,
+    //                     imageUrl,
+    //                     style: 'custom',
+    //                 });
+
+    //                 if (result.success) {
+    //                     console.log('Emote saved successfully');
+    //                     resolve();
+    //                 } else {
+    //                     throw new Error(result.error);
+    //                 }
+    //             } catch (error) {
+    //                 console.error('Error saving emote:', error);
+    //                 reject(error);
+    //             }
+    //         }, 1000); // Adjust timeout as needed
+    //     });
+    // };
+
     return {
 
         enableDrawingMode: () => {
@@ -197,7 +254,7 @@ const buildEditor = ({
             });
         },
 
-        saveImage: () => {
+        downloadImage: () => {
             // Ensure all images have crossOrigin set
             canvas.getObjects('image').forEach((object) => {
                 const img = object as fabric.Image;

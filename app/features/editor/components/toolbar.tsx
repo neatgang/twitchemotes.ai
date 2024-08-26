@@ -5,7 +5,7 @@ import { ActiveTool, Editor } from "../types"
 import { Hint } from "@/components/hint";
 
 import { cn } from "@/lib/utils";
-import { AlignRight, ArrowDown, ArrowUp, ChevronDown, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
+import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
@@ -177,11 +177,11 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
             <div className="flex items-center h-full justify-center">
                 <Hint label="Save Image" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.saveImage()}
+                        onClick={() => editor?.downloadImage()}
                         size="icon"
                         variant="ghost"
                     >
-                        <Save className="size-4"/>
+                        <DownloadCloud className="size-4"/>
                     </Button>
                 </Hint>
                 </div>
