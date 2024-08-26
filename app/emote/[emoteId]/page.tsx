@@ -1,3 +1,5 @@
+"use"
+
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
@@ -7,6 +9,8 @@ import { getEmoteById } from '@/actions/get-emote-by-id';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import EmoteProduct from '../_components/EmoteProduct';
+import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
+import { toast } from "react-hot-toast";
 
 export async function generateMetadata({ params }: { params: { emoteId: string } }) {
   const emoteListing = await db.emoteForSale.findUnique({

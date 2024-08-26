@@ -6,9 +6,6 @@ import { EmoteForSale } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 import {
   Pagination,
   PaginationContent,
@@ -26,30 +23,9 @@ interface MarketplaceProps {
 
 export default function Marketplace({ emotesForSale, currentPage, totalPages }: MarketplaceProps) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<{ [key: string]: boolean }>({});
 
   const handlePageChange = (page: number) => {
     router.push(`/showcase?page=${page}`);
-  };
-
-  const handleAddToLibrary = async (emote: EmoteForSale) => {
-    setIsLoading(prev => ({ ...prev, [emote.id]: true }));
-    try {
-      const result = await addEmoteToLibrary({
-        prompt: emote.prompt,
-        imageUrl: emote.imageUrl,
-        style: emote.style || 'custom' // Use the emote's style if available, otherwise default to 'custom'
-      });
-      if (result.success) {
-        toast.success('Emote added to your library!');
-      } else {
-        throw new Error(result.error);
-      }
-    } catch (error) {
-      toast.error('Failed to add emote to library');
-    } finally {
-      setIsLoading(prev => ({ ...prev, [emote.id]: false }));
-    }
   };
 
   return (
@@ -84,14 +60,11 @@ export default function Marketplace({ emotesForSale, currentPage, totalPages }: 
               <div>
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-50">{emote.prompt}</p>
               </div>
-              <Button 
-                onClick={() => handleAddToLibrary(emote)} 
-                className="mt-2 w-full flex" 
-                variant="outline"
-                disabled={isLoading[emote.id]}
-              >
-                {isLoading[emote.id] ? 'Adding...' : 'Add to Library'}
-              </Button>
+              <Link href={`/emote/${emote.id}`} passHref>
+                <Button className="mt-2 w-full flex" variant="outline">
+                  View Emote
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
         ))}
