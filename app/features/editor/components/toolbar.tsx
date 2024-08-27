@@ -185,6 +185,17 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                     </Button>
                 </Hint>
                 </div>
+                <div className="flex items-center h-full justify-center">
+                <Hint label="Save Emote" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => editor?.saveEmote()}
+                        size="icon"
+                        variant="ghost"
+                    >
+                        <Save className="size-4"/>
+                    </Button>
+                </Hint>
+            </div>
         </div>
     )
 }

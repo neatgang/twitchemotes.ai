@@ -5,10 +5,11 @@ import { fabric } from "fabric"
 import { useAutoResize } from "./use-auto-resize";
 import { BuildEditorProps, CIRCLE_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS } from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
-import { createFilter, isTextType } from "../utils";
+import { createFilter, downloadFile, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
 import axios from "axios";
 import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
+import toast from "react-hot-toast";
 
 const buildEditor = ({
     canvas,
@@ -24,6 +25,56 @@ const buildEditor = ({
     fontFamily,
     setFontFamily,
 }: BuildEditorProps): Editor => {
+
+    const generateSaveOptions = () => {
+        const { width, height, left, top } = getWorkspace() as fabric.Rect;
+
+        return {
+            name: "Image",
+            format: "png",
+            quality: 1.0,
+            width: width,
+            height: height,
+            left: left,
+            top: top,
+        }
+    };
+
+    const savePng = () => {
+        const options = generateSaveOptions();
+
+        canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+        const dataURL = canvas.toDataURL(options);
+
+        downloadFile(dataURL, "png");
+    }
+
+    const saveEmote = async () => {
+        try {
+            const options = generateSaveOptions();
+
+            canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+            const dataURL = canvas.toDataURL(options);
+
+            const response = await axios.post('/api/saveemote', {
+                userId: 'user-id', // Replace with actual user ID
+                imageUrl: dataURL
+            });
+
+            if (response.status === 200) {
+                toast.success('Emote saved successfully');
+            } else {
+                throw new Error('Failed to save emote');
+            }
+        } catch (error) {
+            console.error('Error saving emote:', error);
+            toast.error('Failed to save emote');
+        } finally {
+            // Reset the canvas transform
+            // canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+            // canvas.renderAll();
+        }
+    }
 
     const getWorkspace = () => {
         return canvas
@@ -153,61 +204,6 @@ const buildEditor = ({
       };
       
 
-    // const saveImage = async () => {
-    //     return new Promise<void>((resolve, reject) => {
-    //         // Ensure all images have crossOrigin set
-    //         canvas.getObjects('image').forEach((object) => {
-    //             const img = object as fabric.Image;
-    //             if (img.getSrc().indexOf('crossOrigin') === -1) {
-    //                 img.setSrc(img.getSrc(), () => { }, { crossOrigin: 'anonymous' });
-    //             }
-    //         });
-
-    //         // Wait for images to load before saving
-    //         setTimeout(async () => {
-    //             try {
-    //                 const dataURL = canvas.toDataURL({
-    //                     format: 'png',
-    //                     quality: 1.0
-    //                 });
-
-    //                 // Convert dataURL to Blob
-    //                 const response = await fetch(dataURL);
-    //                 const blob = await response.blob();
-
-    //                 // Create a File from the Blob
-    //                 const file = new File([blob], 'emote.png', { type: 'image/png' });
-
-    //                 // Upload the file to your server or cloud storage
-    //                 // This step depends on your backend implementation
-    //                 // For this example, let's assume you have an uploadImage function
-    //                 const imageUrl = await uploadImage(file);
-
-    //                 // Get the prompt from the first text object on the canvas
-    //                 const textObject = canvas.getObjects('text')[0] as fabric.Text;
-    //                 const prompt = textObject ? textObject.text : 'New Emote';
-
-    //                 // Call addEmoteToLibrary with the new emote data
-    //                 const result = await addEmoteToLibrary({
-    //                     prompt: prompt,
-    //                     imageUrl,
-    //                     style: 'custom',
-    //                 });
-
-    //                 if (result.success) {
-    //                     console.log('Emote saved successfully');
-    //                     resolve();
-    //                 } else {
-    //                     throw new Error(result.error);
-    //                 }
-    //             } catch (error) {
-    //                 console.error('Error saving emote:', error);
-    //                 reject(error);
-    //             }
-    //         }, 1000); // Adjust timeout as needed
-    //     });
-    // };
-
     return {
 
         enableDrawingMode: () => {
@@ -228,25 +224,50 @@ const buildEditor = ({
                 if (object.type === "image") {
                     const imageObject = object as fabric.Image;
                     const imageUrl = imageObject.getSrc();
-
+        
                     try {
                         const response = await axios.post('/api/fal/birefnet-bg-remove', {
                             image: imageUrl
-                        })
-
+                        });
+        
                         if (response.status !== 200) {
                             throw new Error('Failed to remove background');
                         }
-
-                        const newImageUrl = response.data.image.url; // Accessing the correct property
-
+        
+                        const newImageUrl = response.data.image.url;
+        
                         fabric.Image.fromURL(newImageUrl, (newImage) => {
+                            // Ensure image is loaded and has defined dimensions before proceeding
+                            if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
+                                console.error('Image not fully loaded or missing dimensions');
+                                return;
+                            }
+        
+                            const workspace = getWorkspace();
+        
+                            // Use optional chaining with fallback values for canvas dimensions
+                            const canvasWidth = canvas?.width || 0;
+                            const canvasHeight = canvas?.height || 0;
+        
+                            // Determine the scale factors based on the image and canvas (or workspace) dimensions
+                            const scaleX = workspace?.width ? workspace.width / newImage.width : 1;
+                            const scaleY = workspace?.height ? workspace.height / newImage.height : 1;
+                            const scaleToFit = Math.min(scaleX, scaleY);
+        
+                            // Check if the image is smaller than the canvas and adjust scaling to avoid blurriness
+                            if (newImage.width < canvasWidth && newImage.height < canvasHeight) {
+                                newImage.scale(scaleToFit); // Adjust scale to maintain quality
+                            } else {
+                                // For larger images, you might want to scale down or adjust as needed
+                                newImage.scaleToWidth(workspace?.width || 0);
+                                newImage.scaleToHeight(workspace?.height || 0);
+                            }
+        
                             canvas.remove(imageObject);
-                            canvas.add(newImage);
-                            canvas.setActiveObject(newImage);
+                            addToCanvas(newImage);
                             canvas.renderAll();
                         }, { crossOrigin: 'anonymous' });
-
+        
                     } catch (error) {
                         console.error('Error removing background:', error);
                     }
@@ -274,6 +295,36 @@ const buildEditor = ({
                 link.download = 'canvas.png';
                 link.click();
             }, 1000); // Adjust timeout as needed
+        },
+
+        saveEmote: async () => {
+            if (!canvas) {
+                toast.error('Canvas is not initialized');
+                return;
+            }
+
+            try {
+                // Convert canvas to dataURL
+                const dataURL = canvas.toDataURL({
+                    format: 'png',
+                    quality: 1.0
+                });
+
+                // Send the dataURL to the server
+                const response = await axios.post('/api/saveemote', {
+                    userId: 'user-id', // Replace with actual user ID
+                    imageUrl: dataURL
+                });
+
+                if (response.status !== 200) {
+                    throw new Error('Failed to save emote');
+                }
+
+                toast.success('Emote saved successfully');
+            } catch (error) {
+                console.error('Error saving emote:', error);
+                toast.error('Failed to save emote');
+            }
         },
 
         changeImageFilter: (value: string) => {
@@ -346,7 +397,7 @@ const buildEditor = ({
                     image.scaleToHeight(workspace?.height || 0);
                 }
 
-                addToCanvas(image);
+            addToCanvas(image);
             }, {
                 crossOrigin: "anonymous"
             });
