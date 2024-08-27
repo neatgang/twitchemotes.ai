@@ -26,7 +26,7 @@ const totalPages = Math.ceil(totalEmotes / ITEMS_PER_PAGE);
 
   return (
     <Marketplace 
-      emotesForSale={emotesForSale}
+    initialEmotesForSale={emotesForSale}
       currentPage={currentPage}
       totalPages={totalPages}
     />
