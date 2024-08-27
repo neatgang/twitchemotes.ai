@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import Image from "next/image"
-import { CloudLightningIcon, ComputerIcon, SparkleIcon, TimerIcon, TwitchIcon, WandIcon } from "lucide-react"
+import { CloudLightningIcon, ComputerIcon, SparkleIcon, TimerIcon, TwitchIcon, WandIcon, CreditCardIcon, DollarSignIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useProModal } from "@/hooks/use-pro-modal"
@@ -12,392 +12,403 @@ import { checkSubscription } from "@/lib/subscription"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useUser } from "@clerk/nextjs"
+import { generation } from "@/app/features/editor/types";
+import { motion } from "framer-motion";
+import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@/components/ui/card"
 
 export default function Landing() {
-
   const [loading, setLoading] = useState(false);
-    const [isPro, setIsPro] = useState(false);
-    const { user } = useUser()
-    const router = useRouter();
-    const proModal = useProModal();
+  const [isPro, setIsPro] = useState(false);
+  const { user } = useUser()
+  const router = useRouter();
+  const proModal = useProModal();
   
-    useEffect(() => {
-      const fetchIsPro = async () => {
-        const proStatus = await checkSubscription();
-        setIsPro(proStatus);
-      };
-  
-      fetchIsPro();
-    }, []);
-  
-    const handleStartCreating = () => {
-      if (user) {
-        router.push('/emotes');
-      } else {
-        // proModal.onOpen();
-        router.push('/sign-in');
-      }
+  useEffect(() => {
+    const fetchIsPro = async () => {
+      const proStatus = await checkSubscription();
+      setIsPro(proStatus);
     };
-
-    const onSubscribe = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("/api/stripe");
   
-        window.location.href = response.data.url;
-      } catch (error) {
-        toast.error("Something went wrong");
-      } finally {
-        setLoading(false);
-      }
+    fetchIsPro();
+  }, []);
+  
+  const handleStartCreating = () => {
+    if (user) {
+      router.push('/emoteboard/editor/new');
+    } else {
+      router.push('/sign-in');
     }
+  };
 
+  const onSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe");
+  
+      window.location.href = response.data.url;
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const onBasicSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe/subscriptions/basic")
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onStandardSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe/subscriptions/standard")
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onPremiumSubscribe = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/stripe/subscriptions/premium")
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
-      <section className="relative w-full bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-12 md:py-18 lg:py-20">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
+      {/* Hero Section - Optimized */}
+      <section className="relative w-full bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-16 md:py-24 lg:py-32">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
-            <div className="space-y-4">
-              <div className="inline-flex items-center rounded-full bg-white/20 px-4 py-1 text-white">
-                <SparkleIcon className="mr-2 h-5 w-5" />
-                <span className="text-sm font-medium">EmoteMaker.ai</span>
-              </div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">
-                Unleash Your Creativity with EmoteMaker.ai!
-              </h1>
-              <p className="max-w-xl text-lg text-white/80">
-                Empower your Twitch streams and Discord communities with custom, vibrant emotes created effortlessly.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {/* <Link href="/emotes"> */}
-                <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100" size="lg" variant="default" >
-                  Get Started
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div className="space-y-6">
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-5xl font-extrabold tracking-tight text-white md:text-6xl lg:text-7xl"
+              >
+                Create Custom Emotes in Seconds with AI
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-xl text-white/90 max-w-xl"
+              >
+                Empower your Twitch streams and Discord communities with unique, AI-generated emotes. No design skills needed!
+              </motion.p>
+
+              <ul className="list-disc list-inside text-white/80">
+                <li>No design skills needed</li>
+                <li>AI-powered</li>
+                <li>Twitch & Discord ready</li>
+              </ul>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100 text-lg" size="lg">
+                  Start Creating for Free
                 </Button>
-                {/* </Link> */}
+                <Button onClick={() => router.push('/showcase')} className="bg-transparent border-2 border-white text-white hover:bg-white/10 text-lg" size="lg">
+                  View Emote Gallery
+                </Button>
               </div>
             </div>
             <div className="relative">
-              <div className="absolute inset-0 -z-10 overflow-hidden rounded-xl">
-                <Image
-                  alt="Emotes Collage"
-                  className="h-full w-full object-cover object-center"
-                  height={600}
-                  src="/placeholder.svg"
-                  style={{
-                    aspectRatio: "800/600",
-                    objectFit: "cover",
-                  }}
-                  width={800}
-                />
+              <Image
+                alt="AI-Generated Emotes Collage"
+                className="rounded-xl shadow-2xl"
+                height={600}
+                src="/emoteboard1.png"
+                style={{
+                  aspectRatio: "800/600",
+                  objectFit: "cover",
+                }}
+                width={800}
+              />
+              <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
+                <p className="font-bold text-[#7928CA]">1,000+ Emotes Created!</p>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section className="bg-white py-12 md:py-18 lg:py-20">
+
+      {/* Social Proof */}
+      {/* <section className="bg-white py-12">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <p className="text-lg text-gray-600">Trusted by streamers and communities on:</p>
+          <div className="flex justify-center items-center space-x-8 mt-6">
+            <Image src="/twitch-logo.svg" alt="Twitch" width={120} height={40} />
+            <Image src="/discord-logo.svg" alt="Discord" width={120} height={40} />
+            <Image src="/youtube-logo.svg" alt="YouTube" width={120} height={40} />
+          </div>
+        </div>
+      </section> */}
+
+      {/* How It Works */}
+      <section className="bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="flex flex-col items-center text-center">
-              <TwitchIcon className="h-12 w-12 text-[#7928CA]" />
-              <h3 className="mt-4 text-xl font-bold">Frustrated Streamers</h3>
-              <p className="mt-2 text-gray-500">
-                Creating custom emotes can be a frustrating and time-consuming process for streamers.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <ComputerIcon className="h-12 w-12 text-[#7928CA]" />
-              <h3 className="mt-4 text-xl font-bold">Complicated Design Software</h3>
-              <p className="mt-2 text-gray-500">
-                Traditional design tools can be complex and overwhelming, especially for those without design
-                experience.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <TimerIcon className="h-12 w-12 text-[#7928CA]" />
-              <h3 className="mt-4 text-xl font-bold">Time-Consuming Process</h3>
-              <p className="mt-2 text-gray-500">
-                Creating custom emotes often involves a lengthy and tedious process, taking time away from content
-                creation.
-              </p>
-            </div>
+          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Create Emotes in 3 Easy Steps</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: "1. Describe Your Idea", description: "Tell our AI what kind of emote you want to create.", icon: SparkleIcon },
+              { title: "2. Generate Options", description: "Our AI creates multiple unique emote designs based on your description.", icon: WandIcon },
+              { title: "3. Customize & Download", description: "Fine-tune your favorite design and download it ready for use.", icon: CloudLightningIcon },
+            ].map((step, index) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+                key={index} 
+                className="bg-white p-6 rounded-lg shadow-md text-center"
+              >
+                <step.icon className="h-12 w-12 text-[#7928CA] mx-auto mb-4" />
+                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                <p className="text-gray-600">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <Button onClick={handleStartCreating} className="bg-[#7928CA] text-white hover:bg-[#6a23b3] text-lg">
+              Try It Now - It&apos;s Free!
+            </Button>
           </div>
         </div>
       </section>
-      <section className="relative bg-gradient-to-r from-[#FF0080] to-[#7928CA] py-12 md:py-18 lg:py-20">
+
+      {/* Pricing and Features */}
+      <section className="bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
-            <div className="relative">
-              <div className="absolute inset-0 -z-10 overflow-hidden rounded-xl">
-                <Image
-                  alt="Emote Creation Process"
-                  className="h-full w-full object-cover object-center"
-                  height={600}
-                  src="/placeholder.svg"
-                  style={{
-                    aspectRatio: "800/600",
-                    objectFit: "cover",
-                  }}
-                  width={800}
-                />
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="inline-flex items-center rounded-full bg-white/20 px-4 py-1 text-white">
-                <SparkleIcon className="mr-2 h-5 w-5" />
-                <span className="text-sm font-medium">The Solution</span>
-              </div>
-              <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">
-                Instant Creation Magic
-              </h2>
-              <p className="max-w-xl text-lg text-white/80">
-                EmoteMaker.ai revolutionizes the emote creation process with its cutting-edge AI technology and
-                user-friendly interface.
-              </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="flex items-center gap-4">
-                  <WandIcon className="h-8 w-8 text-white" />
-                  <div>
-                    <h3 className="text-lg font-bold text-white">One-Click Background Removal</h3>
-                    <p className="text-sm text-white/80">
-                      Easily remove backgrounds from images with a single click, allowing you to create transparent
-                      emotes effortlessly.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <CloudLightningIcon className="h-8 w-8 text-white" />
-                  <div>
-                    <h3 className="text-lg font-bold text-white">Rapid Emote Generation</h3>
-                    <p className="text-sm text-white/80">
-                      Leverage the power of AI to generate custom emotes in seconds, saving you valuable time and
-                      effort.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="bg-white py-12 md:py-18 lg:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
-            <div className="space-y-4">
-              <div className="inline-flex items-center rounded-full bg-[#7928CA] px-4 py-1 text-white">
-                <SparkleIcon className="mr-2 h-5 w-5" />
-                <span className="text-sm font-medium">One-Click Background Removal</span>
-              </div>
-              <h2 className="text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl">
-                Effortless Transparent Emotes
-              </h2>
-              <p className="max-w-xl text-lg text-gray-500">
-                Say goodbye to tedious background removal tasks. With EmoteMaker.ai, you can create transparent emotes
-                with a single click, saving you valuable time and effort.
-              </p>
-            </div>
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="relative">
-                  {/* <Image
-                    alt="Emote with Background"
-                    className="aspect-square object-contain rounded-lg"
-                    height={400}
-                    src="/placeholder.svg"
-                    width={400}
-                  /> */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">Before</div>
-                </div>
-                <div className="relative">
-                  {/* <Image
-                    alt="Transparent Emote"
-                    className="aspect-square object-contain rounded-lg"
-                    height={400}
-                    src="/placeholder.svg"
-                    width={400}
-                  /> */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white">After</div>
-                </div>
-              </div>
-              <div className="mt-4">
-                <span className="w-full rounded-md bg-muted" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="bg-white py-12 md:py-18 lg:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-4 text-center">
-            <h2 className="text-4xl font-extrabold tracking-tight">Emote Styles Gallery</h2>
-            <p className="max-w-xl mx-auto text-lg text-gray-500">
-              Explore the diverse range of emote styles available on EmoteMaker.ai, from pixel art to kawaii designs.
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Powerful Features and Flexible Pricing</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Create professional-quality emotes with our advanced tools and choose a plan that fits your needs.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Pixel Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Pixel Emote" src="/ashootingstar.png" />
-                <AvatarFallback>PE</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Kawaii Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Kawaii Emote" src="/kawaiiboy.png" />
-                <AvatarFallback>KE</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Object Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Object Emote" src="/hamsandwich.png" />
-                <AvatarFallback>OE</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Cute Bold Line Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Cute Bold Line Emote" src="/cbl.png?height=64&width=64" />
-                <AvatarFallback>CBL</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Text Based Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Text Based Emote" src="/textbased.png" />
-                <AvatarFallback>TB</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">3D Based Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="3D Emote" src="/3dbasketball.png" />
-                <AvatarFallback>3D</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Pepe Based Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Pepe Emote" src="/placeholder.svg?height=64&width=64" />
-                <AvatarFallback>PF</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Sticker Based Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Sticker Emote" src="/turtlesticker.png" />
-                <AvatarFallback>S</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-            <h3 className="text-xl font-bold">Chibi Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Chibi Emote" src="/chibi1.png" />
-                <AvatarFallback>CE</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold">Meme Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Meme Emote" src="/meme.png" />
-                <AvatarFallback>ME</AvatarFallback>
-              </Avatar>
-            </div>
-            {/* <div className="space-y-4">
-              <h3 className="text-xl font-bold">Text Based Emotes</h3>
-              <Avatar className="w-16 h-16">
-                <AvatarImage alt="Text Based Emote" src="/textbased.png" />
-                <AvatarFallback>TB</AvatarFallback>
-              </Avatar>
-            </div> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { title: "AI-Powered Generation", description: "Create unique emotes from text descriptions with enhanced prompts.", icon: SparkleIcon },
+              { title: "One-Click Background Removal", description: "Instantly remove backgrounds for transparent emotes.", icon: WandIcon },
+              { title: "Custom Editing Tools", description: "Fine-tune your emotes with our easy-to-use editor.", icon: ComputerIcon },
+              { title: "Multiple Style Options", description: "Choose from pixel art, kawaii, 3D, and more styles.", icon: CloudLightningIcon },
+              { title: "Twitch & Discord Ready", description: "Download emotes in the perfect format for your platform.", icon: TwitchIcon },
+              { title: "Flexible Pricing", description: "Choose from monthly plans or buy credits as you need them.", icon: TimerIcon },
+            ].map((feature, index) => (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                key={index}
+                className="bg-gray-100 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <feature.icon className="h-8 w-8 text-[#7928CA] mb-3" />
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      </section>
-      <section className="bg-white py-12 md:py-18 lg:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="space-y-4 text-center">
-            <h2 className="text-4xl font-extrabold tracking-tight">User Testimonials</h2>
-            <p className="max-w-xl mx-auto text-lg text-gray-500">
-              See what our satisfied customers have to say about EmoteMaker.ai.
+          <div className="mt-12 text-center">
+            <p className="text-lg text-gray-600 mb-4">
+              Explore our pricing options or purchase credits for one-time use.
             </p>
-          </div>
-          <div className="grid grid-cols-1 gap-8 mt-12 md:grid-cols-3 lg:grid-cols-3">
-            <Link href="https://www.twitch.tv/xnotloc">
-          <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="flex items-center gap-4">
-                <Avatar>
-                  <AvatarImage alt="@shadcn" src="/notloc.png" />
-                  <AvatarFallback>NL</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h4 className="font-bold">Notloc</h4>
-                  <p className="text-sm text-gray-500">Twitch Streamer</p>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-500">
-              &quot;Yo, EmoteMaker.ai is straight up amazing for making custom Twitch emotes! I had some really specific ideas in mind, like a chibi avatar of myself with a chat bubble that said &quot;Yappin&quot; since I&apos;m always going off on tangents on stream. I also wanted a bold &quot;BOZO!&quot; text emote my chat could spam whenever I fail.
-Dude, the emote maker had me covered! The chibi creator had a ton of options to make a cute mini-me &quot;Yappin&quot; emote that looks just like my IRL self. And typing in my &quot;BOZO!&quot; text and picking colors and styles was a piece of cake. EmoteMaker.ai made it stupid easy to bring my emote visions to life.
-The whole process was quick and the emotes came out clean AF. They match my stream&apos;s vibe perfectly. Since uploading them, chat&apos;s been popping off with the new emotes! The custom &quot;BOZO!&quot; spam when I choke is hilarious and the &quot;Yappin&quot; emote is already an inside joke.
-Seriously, if you want dope custom emotes for your stream, don&apos;t sleep on EmoteMaker.ai. It&apos;s the real deal and lets you make exactly what you want with no hassle. 11/10, already planning to make more!&quot;
-              </p>
+            <div className="flex justify-center space-x-4">
+              <Button onClick={() => router.push('/pricing')} className="bg-[#7928CA] text-white hover:bg-[#6a23b3]">
+                View Pricing Plans
+              </Button>
+              <Button onClick={() => router.push('/credits')} variant="outline" className="border-[#7928CA] text-[#7928CA] hover:bg-[#7928CA] hover:text-white">
+                Buy Credits
+              </Button>
             </div>
-            </Link>
-            <Link href="https://www.twitch.tv/goldenturtleboy">
-          <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="flex items-center gap-4">
-                <Avatar>
-                  <AvatarImage alt="GoldenTurtleBoy" src="/goldenturtle.png" />
-                  <AvatarFallback>GT</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h4 className="font-bold">GoldenTurtleBoy</h4>
-                  <p className="text-sm text-gray-500">Twitch Streamer</p>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-500">
-              &quot;EmoteMaker.ai was a game-changer for creating the perfect pixelated golden turtle emote for my Twitch channel. The AI generated so many adorable designs and after some tweaks, I landed on the ideal shimmering gold turtle that perfectly captured what I had envisioned.&quot;
-              </p>
-            </div>
-            </Link>
-            <Link href="https://discord.gg/33uK96vD9N">
-          <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="flex items-center gap-4">
-                <Avatar>
-                  <AvatarImage alt="Ducky" src="/ducky.png" />
-                  <AvatarFallback>D</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h4 className="font-bold">Ducky</h4>
-                  <p className="text-sm text-gray-500">WoW Guild and Discord Community</p>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-500">
-              &quot;Oh man, EmoteMaker.ai was a total lifesaver for our WoW guild&apos;s Discord! We really wanted some unique duck emotes that captured the vibe of the game. I wasn&apos;t sure what to expect, but holy cow - the AI came up with so many cool designs blending ducks with WoW stuff.
-After playing around with the options a bit, we found the perfect emotes. They&apos;re like ducks cosplaying as epic WoW characters, it&apos;s hilarious and awesome. Seriously, EmoteMaker.ai made the whole process a breeze and the emotes have been a huge hit with our guildies. 10/10 would quack again!&quot;
-              </p>
-            </div>
-            </Link>
-          {/* <div className="bg-gray-100 p-6 rounded-lg">
-              <div className="flex items-center gap-4">
-                <Avatar>
-                  <AvatarImage alt="Ducky" src="/goldenturtle.png" />
-                  <AvatarFallback>GT</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h4 className="font-bold">Ducky</h4>
-                  <p className="text-sm text-gray-500">WoW Guild and Discord Community</p>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-500">
-              &quot;Oh man, EmoteMaker.ai was a total lifesaver for our WoW guild&apos;s Discord! We really wanted some unique duck emotes that captured the vibe of the game. I wasn&apos;t sure what to expect, but holy cow - the AI came up with so many cool designs blending ducks with WoW stuff.
-After playing around with the options a bit, we found the perfect emotes. They&apos;re like ducks cosplaying as epic WoW characters, it&apos;s hilarious and awesome. Seriously, EmoteMaker.ai made the whole process a breeze and the emotes have been a huge hit with our guildies. 10/10 would quack again!&quot;
-              </p>
-            </div> */}
           </div>
         </div>
       </section>
-    </>
+
+      {/* Testimonials - Optimized */}
+      <section className="bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12 text-white">Loved by Streamers and Communities</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Notloc",
+                role: "Twitch Streamer",
+                image: "/notloc.png",
+                quote: "EmoteMaker.ai is a game-changer! I created custom emotes that perfectly match my stream&apos;s vibe in minutes.",
+                link: "https://www.twitch.tv/xnotloc"
+              },
+              {
+                name: "GoldenTurtleBoy",
+                role: "Twitch Streamer",
+                image: "/goldenturtle.png",
+                quote: "The AI generated so many adorable designs for my channel. My viewers absolutely love the new emotes!",
+                link: "https://www.twitch.tv/goldenturtleboy"
+              },
+              {
+                name: "Ducky",
+                role: "Discord Community Leader",
+                image: "/ducky.png",
+                quote: "EmoteMaker.ai was a total lifesaver for our Discord! We now have unique emotes that represent our community perfectly.",
+                link: "https://discord.gg/33uK96vD9N"
+              }
+            ].map((testimonial, index) => (
+              <Link href={testimonial.link} key={index}>
+                <motion.div
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <Avatar>
+                      <AvatarImage alt={testimonial.name} src={testimonial.image} />
+                      <AvatarFallback>{testimonial.name.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h4 className="font-bold">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 italic">&quot;{testimonial.quote}&quot;</p>
+                </motion.div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing - New Section */}
+      <section className="bg-white py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Simple, Transparent Pricing</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="border rounded-lg p-8 text-center"
+            >
+              <h3 className="text-2xl font-bold mb-4">Basic</h3>
+              <p className="text-4xl font-bold mb-6">$5<span className="text-lg font-normal">/month</span></p>
+              <ul className="text-left mb-8">
+                <li className="mb-2 flex items-center"><CreditCardIcon className="h-5 w-5 text-purple-500 mr-2" /> 50 credits/month</li>
+                <li className="mb-2 flex items-center"><DollarSignIcon className="h-5 w-5 text-purple-500 mr-2" /> Additional credits at $0.12 each</li>
+              </ul>
+              <Button onClick={onBasicSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Basic</Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="border-4 border-[#7928CA] rounded-lg p-8 text-center relative"
+            >
+              <div className="absolute top-0 right-0 bg-[#7928CA] text-white py-1 px-4 rounded-bl-lg">Most Popular</div>
+              <h3 className="text-2xl font-bold mb-4">Standard</h3>
+              <p className="text-4xl font-bold mb-6">$10<span className="text-lg font-normal">/month</span></p>
+              <ul className="text-left mb-8">
+                <li className="mb-2 flex items-center"><CreditCardIcon className="h-5 w-5 text-purple-500 mr-2" /> 150 credits/month</li>
+                <li className="mb-2 flex items-center"><DollarSignIcon className="h-5 w-5 text-purple-500 mr-2" /> Additional credits at $0.10 each</li>
+              </ul>
+              <Button onClick={onStandardSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Standard</Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="border rounded-lg p-8 text-center"
+            >
+              <h3 className="text-2xl font-bold mb-4">Premium</h3>
+              <p className="text-4xl font-bold mb-6">$24<span className="text-lg font-normal">/month</span></p>
+              <ul className="text-left mb-8">
+                <li className="mb-2 flex items-center"><CreditCardIcon className="h-5 w-5 text-purple-500 mr-2" /> 300 credits/month</li>
+                <li className="mb-2 flex items-center"><DollarSignIcon className="h-5 w-5 text-purple-500 mr-2" /> Additional credits at $0.08 each</li>
+              </ul>
+              <Button onClick={onPremiumSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Premium</Button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Add */}
+      <section className="bg-gray-100 py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Need More Credits?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle>Small Pack</CardTitle>
+                <CardDescription>20 Credits | $2.40 | $0.12 per credit</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Medium Pack</CardTitle>
+                <CardDescription>50 Credits | $5.00 | $0.10 per credit</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Large Pack</CardTitle>
+                <CardDescription>100 Credits | $8.00 | $0.08 per credit</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA - Optimized */}
+      <section className="bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <h2 className="text-4xl font-extrabold tracking-tight text-white mb-6">
+            Ready to Transform Your Stream?
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Join thousands of streamers and communities already using EmoteMaker.ai to engage their audience with unique, custom emotes.
+          </p>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100 text-lg" size="lg">
+              Start Creating Your Free Emotes Now
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+    </motion.div>
   )
 }

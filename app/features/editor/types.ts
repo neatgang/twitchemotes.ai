@@ -186,6 +186,7 @@ export interface Editor {
     disableDrawingMode: () => void;
     downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
+    saveEmote: () => void;
 }
 
 export const generation = {

@@ -1,5 +1,16 @@
 import { RGBColor } from "react-color"
 import { fabric } from "fabric"
+import { uuid } from "uuidv4"
+
+export function downloadFile(file: string, type: string) {
+    const anchorElement = document.createElement("a");
+
+    anchorElement.href = file;
+    anchorElement.download = `${uuid()}.${type}`;
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
+    document.body.remove();
+}
 
 export function isTextType (type: string | undefined) {
     return type === "text" || type === "textbox" || type === "i-text"
