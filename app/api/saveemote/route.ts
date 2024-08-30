@@ -11,7 +11,7 @@ export const maxDuration = 300;
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-  const { userId, prompt, imageUrl } = await req.json();
+  const { userId, prompt, imageUrl, style, model } = await req.json();
 
   const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
   const imageBase64 = Buffer.from(response.data, 'binary').toString('base64');
@@ -43,11 +43,14 @@ export async function POST(req: Request) {
     // Construct the S3 URL
     const s3ImageUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${imageId}`;
 
+    // Update this part to include style and model
     const emote = await prisma.emote.create({
       data: {
         userId,
         prompt,
         imageUrl: s3ImageUrl, // Use the S3 URL
+        style,  // Add the style field
+        model,  // Add the model field
       },
     });
 

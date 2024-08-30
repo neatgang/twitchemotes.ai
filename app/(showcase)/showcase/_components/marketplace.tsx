@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
-import { EmoteForSale } from "@prisma/client";
+import { EmoteForSale, Emote } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,22 +16,32 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Input } from "@/components/ui/input"
-// import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import axios from "axios";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { EmoteHistoryCard } from "@/app/profile/_components/EmoteHistory";
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
   currentPage: number;
   totalPages: number;
+  userEmotes: (Emote & { emoteForSale: EmoteForSale | null })[];
 }
 
-export default function Marketplace({ initialEmotesForSale, currentPage, totalPages }: MarketplaceProps) {
+export default function Marketplace({ initialEmotesForSale, currentPage, totalPages, userEmotes }: MarketplaceProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [emotesForSale, setEmotesForSale] = useState(initialEmotesForSale);
   const [loading, setLoading] = useState(false);
-  // const [filter, setFilter] = useState("all");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchEmotes = async () => {
@@ -64,6 +74,23 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
     router.push(`/showcase?page=1&search=${e.target.value}`);
   };
 
+  const LoadingSkeleton = () => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+      {[...Array(10)].map((_, index) => (
+        <Card key={index} className="group">
+          <CardContent className="p-4">
+            <Skeleton className="aspect-square w-full mb-4" />
+            <Skeleton className="h-4 w-3/4 mb-2" />
+            <Skeleton className="h-4 w-1/2" />
+          </CardContent>
+          <CardFooter className="p-4 pt-0">
+            <Skeleton className="h-10 w-full" />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -81,22 +108,27 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
               onChange={handleSearchChange}
               className="max-w-xs"
             />
-            {/* <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="animals">Animals</SelectItem>
-                <SelectItem value="emotions">Emotions</SelectItem>
-                <SelectItem value="characters">Characters</SelectItem>
-              </SelectContent>
-            </Select> */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">Add Emote</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>My Emotes</DialogTitle>
+                  <DialogDescription>
+                    View and manage your created emotes.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="mt-4">
+                  <EmoteHistoryCard emotes={userEmotes} />
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
       {loading ? (
-        <p>Loading...</p>
+        <LoadingSkeleton />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {emotesForSale.map((emote) => (
@@ -125,7 +157,7 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
         </div>
       )}
       
-      <Pagination className="mt-8">
+      <Pagination className="mt-8 mx-auto">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious 

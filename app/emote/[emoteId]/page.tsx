@@ -17,6 +17,9 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
     where: {
       id: params.emoteId,
     },
+    include: {
+      emote: true, // Include the related Emote to get style and model
+    },
   });
 
   if (!emoteListing) {
@@ -27,18 +30,18 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
   }
 
   return {
-    title: `A ${emoteListing.prompt} ${emoteListing.style} style emote. | EmoteMaker.ai`,
-    description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
+    title: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote. | EmoteMaker.ai`,
+    description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
     image: `${emoteListing.imageUrl}`,
     openGraph: {
       title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
+      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
       images: [emoteListing.imageUrl],
     },
     twitter: {
       card: 'summary_large_image',
       title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.style} style emote.`,
+      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
       images: [emoteListing.imageUrl],
     },
   };
@@ -49,6 +52,9 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
     where: {
       id: params.emoteId,
     },
+    include: {
+      emote: true,
+    },
   });
 
   if (!emoteListing) {
@@ -57,7 +63,11 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
 
   return (
     <>
-      <EmoteProduct emoteListing={emoteListing} />
+      <EmoteProduct 
+        emoteListing={emoteListing} 
+        emoteStyle={emoteListing.style ?? 'Not specified'}
+        emoteModel={emoteListing.emote.model ?? 'Not specified'}
+      />
     </>
   );
 };
