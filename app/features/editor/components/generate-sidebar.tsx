@@ -107,17 +107,17 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
 
   const handleSave = async (imageUrl: string, prompt: string, userId: string, emoteType: string, model: string) => {
     try {
-    const saveResponse = await axios.post('/api/saveemote', {
+      const saveResponse = await axios.post('/api/saveemote', {
         userId: userId,
         prompt,
         imageUrl,
-        style: emoteType,
-        model: model
+        style: emoteType,  // This is the emote type
+        model: model       // This is the selected model
       });
       console.log(saveResponse.data);
     } catch (error) {
       console.error('Failed to save emote:', error);
-      throw error; // Propagate the error to be handled in onSubmit
+      throw error;
     }
   };
 
