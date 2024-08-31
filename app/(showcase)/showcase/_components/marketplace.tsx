@@ -28,6 +28,7 @@ import {
 import { EmoteHistoryCard } from "@/app/profile/_components/EmoteHistory";
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useToast } from "@/components/ui/use-toast"
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
@@ -45,6 +46,7 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userEmotesPage, setUserEmotesPage] = useState(1);
   const userEmotesPerPage = 10;
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchEmotes = async () => {
@@ -143,6 +145,21 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                           />
                         </div>
                         <p className="text-xs text-center truncate w-full">{emote.prompt || 'Untitled Emote'}</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2"
+                          onClick={() => {
+                            // Replace console.log with toast
+                            toast({
+                              title: emote.emoteForSale ? "Viewing Listing" : "Adding to Listing",
+                              description: `Emote ID: ${emote.id}`,
+                            })
+                            // Implement the logic to add to listing or view listing here
+                          }}
+                        >
+                          {emote.emoteForSale ? 'View Listing' : 'Add to Listing'}
+                        </Button>
                       </div>
                     ))}
                   </div>
