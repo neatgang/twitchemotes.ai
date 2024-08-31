@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog"
 import { EmoteHistoryCard } from "@/app/profile/_components/EmoteHistory";
 import { Skeleton } from "@/components/ui/skeleton"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
@@ -119,7 +120,7 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
             />
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full">Add Emote</Button>
+                <Button variant="outline" className="w-full md:w-auto">Add Emote</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -128,9 +129,24 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                     View and manage your created emotes.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="mt-4">
-                  <EmoteHistoryCard emotes={paginatedUserEmotes} />
-                </div>
+                <ScrollArea className="h-[300px] mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    {paginatedUserEmotes.map((emote) => (
+                      <div key={emote.id} className="flex flex-col items-center">
+                        <div className="relative w-24 h-24 mb-2">
+                          <Image
+                            src={emote.imageUrl || '/placeholder-image.jpg'}
+                            alt={emote.prompt || 'Emote image'}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded-md"
+                          />
+                        </div>
+                        <p className="text-xs text-center truncate w-full">{emote.prompt || 'Untitled Emote'}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
                 <Pagination className="mt-4">
                   <PaginationContent>
                     <PaginationItem>
@@ -139,16 +155,11 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                         className={userEmotesPage === 1 ? "pointer-events-none opacity-50" : ""}
                       />
                     </PaginationItem>
-                    {[...Array(userEmotesTotalPages)].map((_, index) => (
-                      <PaginationItem key={index}>
-                        <PaginationLink 
-                          onClick={() => setUserEmotesPage(index + 1)}
-                          isActive={userEmotesPage === index + 1}
-                        >
-                          {index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
+                    <PaginationItem>
+                      <span className="text-sm">
+                        Page {userEmotesPage} of {userEmotesTotalPages}
+                      </span>
+                    </PaginationItem>
                     <PaginationItem>
                       <PaginationNext 
                         onClick={() => setUserEmotesPage(prev => Math.min(prev + 1, userEmotesTotalPages))}
