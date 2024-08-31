@@ -42,6 +42,8 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
   const [emotesForSale, setEmotesForSale] = useState(initialEmotesForSale);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [userEmotesPage, setUserEmotesPage] = useState(1);
+  const userEmotesPerPage = 10;
 
   useEffect(() => {
     const fetchEmotes = async () => {
@@ -91,6 +93,13 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
     </div>
   );
 
+  const paginatedUserEmotes = userEmotes.slice(
+    (userEmotesPage - 1) * userEmotesPerPage,
+    userEmotesPage * userEmotesPerPage
+  );
+
+  const userEmotesTotalPages = Math.ceil(userEmotes.length / userEmotesPerPage);
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -120,8 +129,34 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                   </DialogDescription>
                 </DialogHeader>
                 <div className="mt-4">
-                  <EmoteHistoryCard emotes={userEmotes} />
+                  <EmoteHistoryCard emotes={paginatedUserEmotes} />
                 </div>
+                <Pagination className="mt-4">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setUserEmotesPage(prev => Math.max(prev - 1, 1))}
+                        className={userEmotesPage === 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                    {[...Array(userEmotesTotalPages)].map((_, index) => (
+                      <PaginationItem key={index}>
+                        <PaginationLink 
+                          onClick={() => setUserEmotesPage(index + 1)}
+                          isActive={userEmotesPage === index + 1}
+                        >
+                          {index + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setUserEmotesPage(prev => Math.min(prev + 1, userEmotesTotalPages))}
+                        className={userEmotesPage === userEmotesTotalPages ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
               </DialogContent>
             </Dialog>
           </div>
