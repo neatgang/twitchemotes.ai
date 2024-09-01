@@ -14,6 +14,8 @@ import { z } from "zod";
 import axios from "axios";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import toast from "react-hot-toast";
+import { getUser } from "@/actions/get-user";
+import { useState } from "react";
 
 interface ProfileFormData {
     username: string;
@@ -25,15 +27,13 @@ const profileFormSchema = z.object({
     bio: z.string().min(1, { message: "Bio is required" }),
 });
 
-
-
 interface ProfileCardProps {
     userId: string,
     profile: Profile | null;
 }
 
-
 export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
+    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof profileFormSchema>>({
         resolver: zodResolver(profileFormSchema),
@@ -41,38 +41,27 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
             username: profile?.name || '',
             bio: profile?.bio || '',
         }
-      });
-
-    // const onSubmit = async (data: ProfileFormData) => {
-    //     try {
-    //         const response = await axios.post('/api/profile/route', {
-    //             userId: profile?.userId,
-    //             name: data.username,
-    //             bio: data.bio,
-    //         });
-    
-    //         console.log('Profile updated:', response.data);
-    //         reset(response.data); // Reset form with updated data
-    //     } catch (error) {
-    //         console.error('Failed to update profile:', error);
-    //     }
-    // };
+    });
 
     const onSubmit = async (values: z.infer<typeof profileFormSchema>) => {
         try {
-            // Ensure that `userId` is not undefined or null
-    
+            setIsLoading(true);
             const response = await axios.post('/api/profile', {
-                userId: userId, // Correctly referenced from the profile prop
+                userId: userId,
                 name: values.username,
                 bio: values.bio
             });
     
-            console.log(response.data);  // Log the updated profile data
+            console.log(response.data);
             toast.success('Profile updated successfully!');
+            
+            // Update the user data using the getUser action
+            await getUser({ userId, name: values.username });
         } catch (error: any) {
             toast.error('Failed to update profile. Please try again.');
             console.error(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 

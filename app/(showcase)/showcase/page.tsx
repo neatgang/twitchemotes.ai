@@ -44,6 +44,7 @@ const MarketplacePage = async ({ searchParams }: { searchParams: { page?: string
       currentPage={currentPage}
       totalPages={totalPages}
       userEmotes={userEmotes}
+      userId={userId}  // Add this line to pass userId to Marketplace
     />
   )
 }

@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/actions/get-user"; // You'll need to create this hook
 
 interface EmoteHistoryProps {
   emotes: (Emote & { emoteForSale: EmoteForSale | null })[];
+  userId: string;
 }
 
-export const EmoteHistoryCard = ({ emotes }: EmoteHistoryProps) => {
+export const EmoteHistoryCard = ({ emotes, userId }: EmoteHistoryProps) => {
   const [selectedEmote, setSelectedEmote] = useState<Emote | null>(null);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +25,12 @@ export const EmoteHistoryCard = ({ emotes }: EmoteHistoryProps) => {
       // If the emote is already listed, redirect to the emote page
       router.push(`/emote/${emote.id}`);
     } else {
-      // If the emote is not listed, proceed with listing it
+      const user = await getUser({ userId });
+      if (!user?.name) {
+        toast.error("Please set up your username in your profile before listing an emote.");
+        return;
+      }
+
       try {
         setIsLoading(true);
         const response = await axios.post('/api/sell-emote', { emoteId: emote.id });
