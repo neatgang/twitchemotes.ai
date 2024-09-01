@@ -29,15 +29,17 @@ import { EmoteHistoryCard } from "@/app/profile/_components/EmoteHistory";
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
+import { getUser } from "@/actions/get-user"; // You'll need to create this hook
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
   currentPage: number;
   totalPages: number;
   userEmotes: (Emote & { emoteForSale: EmoteForSale | null })[];
+  userId: string; // Added userId to the props
 }
 
-export default function Marketplace({ initialEmotesForSale, currentPage, totalPages, userEmotes }: MarketplaceProps) {
+export default function Marketplace({ initialEmotesForSale, currentPage, totalPages, userEmotes, userId }: MarketplaceProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
@@ -103,6 +105,40 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
 
   const userEmotesTotalPages = Math.ceil(userEmotes.length / userEmotesPerPage);
 
+  const handleEmoteAction = async (emote: Emote & { emoteForSale: EmoteForSale | null }) => {
+    if (emote.emoteForSale) {
+      router.push(`/emote/${emote.id}`);
+    } else {
+      const user = await getUser({ userId });
+      if (!user?.name) {
+        toast({
+          title: "Profile Incomplete",
+          description: "Please set up your username in your profile before listing an emote.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      try {
+        setLoading(true);
+        const response = await axios.post('/api/sell-emote', { emoteId: emote.id });
+        toast({
+          title: "Success",
+          description: "Emote listed for sale",
+        });
+        router.push(`/emote/${response.data.id}`);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to list emote",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -150,12 +186,7 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                           size="sm" 
                           className="mt-2"
                           onClick={() => {
-                            // Replace console.log with toast
-                            toast({
-                              title: emote.emoteForSale ? "Viewing Listing" : "Adding to Listing",
-                              description: `Emote ID: ${emote.id}`,
-                            })
-                            // Implement the logic to add to listing or view listing here
+                            handleEmoteAction(emote);
                           }}
                         >
                           {emote.emoteForSale ? 'View Listing' : 'Add to Listing'}

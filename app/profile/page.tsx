@@ -75,7 +75,7 @@ const ProfilePage = async () => {
           </div>
         </div>
         <div className="py-4">
-          <EmoteHistoryCard emotes={emotes} />
+          <EmoteHistoryCard emotes={emotes} userId={userId!} />
         </div>
         <div className="py-4">
         <GuidesForGamersCTA />
