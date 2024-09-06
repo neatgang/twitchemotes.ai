@@ -2,30 +2,17 @@ import { auth } from "@clerk/nextjs/server"
 import { db } from "@/lib/db";
 import Marketplace from "./_components/marketplace";
 import { redirect } from "next/navigation";
+import { getEmotesForSale } from "@/actions/get-emotes-for-sale";
 
-const ITEMS_PER_PAGE = 20;
-
-const MarketplacePage = async ({ searchParams }: { searchParams: { page?: string } }) => {
+const MarketplacePage = async () => {
   const { userId } = auth();
   
   if (!userId) {
     redirect('/signin');
   }
 
-  const currentPage = Number(searchParams.page) || 1;
+  const { emotesForSale } = await getEmotesForSale();
 
-  const totalEmotes = await db.emoteForSale.count();
-  const totalPages = Math.ceil(totalEmotes / ITEMS_PER_PAGE);
-
-  const emotesForSale = await db.emoteForSale.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    skip: (currentPage - 1) * ITEMS_PER_PAGE,
-    take: ITEMS_PER_PAGE,
-  });
-
-  // Fetch user's emotes
   const userEmotes = await db.emote.findMany({
     where: {
       userId: userId,
@@ -41,10 +28,8 @@ const MarketplacePage = async ({ searchParams }: { searchParams: { page?: string
   return (
     <Marketplace 
       initialEmotesForSale={emotesForSale}
-      currentPage={currentPage}
-      totalPages={totalPages}
       userEmotes={userEmotes}
-      userId={userId}  // Add this line to pass userId to Marketplace
+      userId={userId}
     />
   )
 }

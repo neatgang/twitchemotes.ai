@@ -1,22 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { EmoteForSale, Emote } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input"
-import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -25,60 +16,58 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { EmoteHistoryCard } from "@/app/profile/_components/EmoteHistory";
 import { Skeleton } from "@/components/ui/skeleton"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
-import { getUser } from "@/actions/get-user"; // You'll need to create this hook
+import { getUser } from "@/actions/get-user";
+import axios from "axios";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import { cn } from "@/lib/utils"; // Make sure to import the cn utility
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
-  currentPage: number;
-  totalPages: number;
   userEmotes: (Emote & { emoteForSale: EmoteForSale | null })[];
-  userId: string; // Added userId to the props
+  userId: string;
 }
 
-export default function Marketplace({ initialEmotesForSale, currentPage, totalPages, userEmotes, userId }: MarketplaceProps) {
+const ITEMS_PER_PAGE = 20;
+
+export default function Marketplace({ initialEmotesForSale, userEmotes, userId }: MarketplaceProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-  const [emotesForSale, setEmotesForSale] = useState(initialEmotesForSale);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [userEmotesPage, setUserEmotesPage] = useState(1);
-  const userEmotesPerPage = 10;
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchEmotes = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`/api/emotes`, {
-          params: {
-            page: currentPage,
-            search: searchTerm,
-            // filter,
-          },
-        });
-        setEmotesForSale(response.data.emotes);
-      } catch (error) {
-        console.error("Failed to fetch emotes", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const filteredEmotes = useMemo(() => {
+    return initialEmotesForSale.filter(emote => 
+      emote.prompt.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [initialEmotesForSale, searchTerm]);
 
-    fetchEmotes();
-  }, [currentPage, searchTerm]);
+  const totalPages = Math.ceil(filteredEmotes.length / ITEMS_PER_PAGE);
 
-  const handlePageChange = (page: number) => {
-    router.push(`/showcase?page=${page}&search=${searchTerm}`);
-  };
+  const paginatedEmotes = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredEmotes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredEmotes, currentPage]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    router.push(`/showcase?page=1&search=${e.target.value}`);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const LoadingSkeleton = () => (
@@ -97,13 +86,6 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
       ))}
     </div>
   );
-
-  const paginatedUserEmotes = userEmotes.slice(
-    (userEmotesPage - 1) * userEmotesPerPage,
-    userEmotesPage * userEmotesPerPage
-  );
-
-  const userEmotesTotalPages = Math.ceil(userEmotes.length / userEmotesPerPage);
 
   const handleEmoteAction = async (emote: Emote & { emoteForSale: EmoteForSale | null }) => {
     if (emote.emoteForSale) {
@@ -169,7 +151,7 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                 </DialogHeader>
                 <ScrollArea className="h-[300px] mt-4">
                   <div className="grid grid-cols-2 gap-4">
-                    {paginatedUserEmotes.map((emote) => (
+                    {userEmotes.map((emote) => (
                       <div key={emote.id} className="flex flex-col items-center">
                         <div className="relative w-24 h-24 mb-2">
                           <Image
@@ -195,27 +177,6 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
                     ))}
                   </div>
                 </ScrollArea>
-                <Pagination className="mt-4">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => setUserEmotesPage(prev => Math.max(prev - 1, 1))}
-                        className={userEmotesPage === 1 ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <span className="text-sm">
-                        Page {userEmotesPage} of {userEmotesTotalPages}
-                      </span>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => setUserEmotesPage(prev => Math.min(prev + 1, userEmotesTotalPages))}
-                        className={userEmotesPage === userEmotesTotalPages ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
               </DialogContent>
             </Dialog>
           </div>
@@ -224,62 +185,72 @@ export default function Marketplace({ initialEmotesForSale, currentPage, totalPa
       {loading ? (
         <LoadingSkeleton />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {emotesForSale.map((emote) => (
-            <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
-              <CardContent className="p-4">
-                <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
-                  <Image
-                    alt={emote.prompt}
-                    className="object-cover group-hover:scale-105 transition-transform duration-200"
-                    src={emote.imageUrl}
-                    layout="fill"
-                  />
-                </div>
-                <h3 className="font-medium text-sm truncate">{emote.prompt}</h3>
-                {/* <p className="text-xs text-gray-500">by {emote.userId}</p> */}
-              </CardContent>
-              <CardFooter className="p-4 pt-0">
-                <Link href={`/emote/${emote.id}`} passHref className="w-full">
-                  <Button className="w-full" variant="outline">
-                    View Emote
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {paginatedEmotes.map((emote) => (
+              <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
+                <CardContent className="p-4">
+                  <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
+                    <Image
+                      alt={emote.prompt}
+                      className="object-cover group-hover:scale-105 transition-transform duration-200"
+                      src={emote.imageUrl}
+                      layout="fill"
+                    />
+                  </div>
+                  <h3 className="font-medium text-sm truncate">{emote.prompt}</h3>
+                </CardContent>
+                <CardFooter className="p-4 pt-0">
+                  <Link href={`/emote/${emote.id}`} passHref className="w-full">
+                    <Button className="w-full" variant="outline">
+                      View Emote
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          
+          <Pagination className="mt-8">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) handlePageChange(currentPage - 1);
+                  }}
+                  className={cn(currentPage === 1 && "pointer-events-none opacity-50")}
+                />
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(index + 1);
+                    }}
+                    isActive={currentPage === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                  }}
+                  className={cn(currentPage === totalPages && "pointer-events-none opacity-50")}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </>
       )}
-      
-      <Pagination className="mt-8 mx-auto">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious 
-              href="#" 
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-            />
-          </PaginationItem>
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink 
-                href="#" 
-                onClick={() => handlePageChange(index + 1)}
-                isActive={currentPage === index + 1}
-              >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext 
-              href="#" 
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </main>
   );
 }

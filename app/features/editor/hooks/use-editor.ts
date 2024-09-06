@@ -94,10 +94,13 @@ const buildEditor = ({
     };
 
     const addToCanvas = (object: fabric.Object) => {
-        center(object)
-        canvas.add(object)
-        canvas.setActiveObject(object)
-    }
+        console.log("Adding object to canvas", object);
+        center(object);
+        canvas.add(object);
+        canvas.setActiveObject(object);
+        canvas.renderAll();
+        console.log("Object added to canvas");
+    };
 
     const getActiveImageUrl = (): string => {
         const activeObject = canvas.getActiveObject();
@@ -154,55 +157,65 @@ const buildEditor = ({
     }
 
     const inpaint = async (prompt: string, maskUrl: string) => {
-        const objects = canvas.getActiveObjects();
-        objects.forEach(async (object) => {
-          if (object.type === "image") {
-            const imageObject = object as fabric.Image;
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === "image") {
+            const imageObject = activeObject as fabric.Image;
             const imageUrl = imageObject.getSrc();
-    
-            try {
-              const response = await axios.post('/api/inpaint', {
-                prompt,
-                image_url: imageUrl,
-                mask_url: maskUrl,
-              });
-    
-              if (response.status !== 200) {
-                throw new Error('Failed to inpaint image');
-              }
-    
-              const newImageUrl = response.data.image.url;
-    
-              fabric.Image.fromURL(newImageUrl, (newImage) => {
-                canvas.remove(imageObject);
-                canvas.add(newImage);
-                canvas.setActiveObject(newImage);
-                canvas.renderAll();
-              }, { crossOrigin: 'anonymous' });
-    
-            } catch (error) {
-              console.error('Error inpainting image:', error);
-            }
-          }
-        });
-      };
 
-      const generateMaskUrl = () => {
+            try {
+                const response = await axios.post('/api/inpaint', {
+                    prompt,
+                    image_url: imageUrl,
+                    mask_url: maskUrl,
+                });
+
+                if (response.status !== 200) {
+                    throw new Error('Failed to inpaint image');
+                }
+
+                const newImageUrl = response.data.image.url;
+
+                fabric.Image.fromURL(newImageUrl, (newImage) => {
+                    canvas.remove(imageObject);
+                    addToCanvas(newImage);
+                    canvas.renderAll();
+                }, { crossOrigin: 'anonymous' });
+
+            } catch (error) {
+                console.error('Error inpainting image:', error);
+                toast.error('Failed to inpaint image');
+            }
+        } else {
+            toast.error('No image selected for inpainting');
+        }
+    };
+
+    const generateMaskUrl = () => {
         const maskCanvas = document.createElement('canvas');
         maskCanvas.width = canvas.getWidth();
         maskCanvas.height = canvas.getHeight();
         const maskCtx = maskCanvas.getContext('2d');
-    
+
         if (maskCtx) {
-          canvas.getObjects('path').forEach((path) => {
-            path.render(maskCtx);
-          });
+            canvas.getObjects('path').forEach((path) => {
+                path.render(maskCtx);
+            });
         }
-    
+
         return maskCanvas.toDataURL('image/png');
-        
-      };
-      
+    };
+
+    const startDrawingMask = () => {
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.color = 'black';
+        canvas.freeDrawingBrush.width = 10;
+    };
+
+    const clearMask = () => {
+        const paths = canvas.getObjects('path');
+        paths.forEach((path) => canvas.remove(path));
+        canvas.renderAll();
+    };
 
     return {
 
@@ -219,6 +232,7 @@ const buildEditor = ({
         },
 
         removeBackground: async () => {
+            console.log("removeBackground called");
             const objects = canvas.getActiveObjects();
             objects.forEach(async (object) => {
                 if (object.type === "image") {
@@ -237,6 +251,7 @@ const buildEditor = ({
                         const newImageUrl = response.data.image.url;
         
                         fabric.Image.fromURL(newImageUrl, (newImage) => {
+                            console.log("New image loaded", newImage);
                             // Ensure image is loaded and has defined dimensions before proceeding
                             if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
                                 console.error('Image not fully loaded or missing dimensions');
@@ -266,7 +281,8 @@ const buildEditor = ({
                             canvas.remove(imageObject);
                             addToCanvas(newImage);
                             canvas.renderAll();
-                        }, { crossOrigin: 'anonymous' });
+                            console.log("Canvas updated");
+                        });
         
                     } catch (error) {
                         console.error('Error removing background:', error);
@@ -627,7 +643,8 @@ const buildEditor = ({
         generateMaskUrl,
         getActiveImageUrl,
         updateImage,
-        // shakeAnimation,
+        startDrawingMask,
+        clearMask,
 
         getActiveFillColor: () => {
             const selectedObject = selectedObjects[0]

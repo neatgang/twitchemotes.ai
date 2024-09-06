@@ -12,8 +12,7 @@ import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { ColorPicker } from "./color-picker";
 import { TbColorFilter } from "react-icons/tb";
-
-
+import { Wand2 } from 'lucide-react'; // Add this import
 
 interface ToolbarProps {
     editor: Editor | undefined;
@@ -196,6 +195,13 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                     </Button>
                 </Hint>
             </div>
+            <Button
+                variant={activeTool === "inpaint" ? "secondary" : "ghost"}
+                size="icon"
+                onClick={() => onChangeActiveTool("inpaint")}
+            >
+                <Wand2 className="h-4 w-4" />
+            </Button>
         </div>
     )
 }
