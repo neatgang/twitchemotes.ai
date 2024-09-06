@@ -234,64 +234,63 @@ const buildEditor = ({
         removeBackground: async () => {
             console.log("removeBackground called");
             const objects = canvas.getActiveObjects();
-            objects.forEach(async (object) => {
+            const promises = objects.map(async (object) => {
                 if (object.type === "image") {
                     const imageObject = object as fabric.Image;
                     const imageUrl = imageObject.getSrc();
-        
+
                     try {
                         const response = await axios.post('/api/fal/birefnet-bg-remove', {
                             image: imageUrl
                         });
-        
+
                         if (response.status !== 200) {
                             throw new Error('Failed to remove background');
                         }
-        
+
                         const newImageUrl = response.data.image.url;
-        
-                        fabric.Image.fromURL(newImageUrl, (newImage) => {
-                            console.log("New image loaded", newImage);
-                            // Ensure image is loaded and has defined dimensions before proceeding
-                            if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
-                                console.error('Image not fully loaded or missing dimensions');
-                                return;
-                            }
-        
-                            const workspace = getWorkspace();
-        
-                            // Use optional chaining with fallback values for canvas dimensions
-                            const canvasWidth = canvas?.width || 0;
-                            const canvasHeight = canvas?.height || 0;
-        
-                            // Determine the scale factors based on the image and canvas (or workspace) dimensions
-                            const scaleX = workspace?.width ? workspace.width / newImage.width : 1;
-                            const scaleY = workspace?.height ? workspace.height / newImage.height : 1;
-                            const scaleToFit = Math.min(scaleX, scaleY);
-        
-                            // Check if the image is smaller than the canvas and adjust scaling to avoid blurriness
-                            if (newImage.width < canvasWidth && newImage.height < canvasHeight) {
-                                newImage.scale(scaleToFit); // Adjust scale to maintain quality
-                            } else {
-                                // For larger images, you might want to scale down or adjust as needed
-                                newImage.scaleToWidth(workspace?.width || 0);
-                                newImage.scaleToHeight(workspace?.height || 0);
-                            }
-        
-                            canvas.remove(imageObject);
-                            addToCanvas(newImage);
-                            canvas.renderAll();
-                            console.log("Canvas updated");
+
+                        return new Promise<void>((resolve) => {
+                            fabric.Image.fromURL(newImageUrl, (newImage) => {
+                                console.log("New image loaded", newImage);
+                                if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
+                                    console.error('Image not fully loaded or missing dimensions');
+                                    resolve();
+                                    return;
+                                }
+
+                                const workspace = getWorkspace();
+                                const canvasWidth = canvas?.width || 0;
+                                const canvasHeight = canvas?.height || 0;
+                                const scaleX = workspace?.width ? workspace.width / newImage.width : 1;
+                                const scaleY = workspace?.height ? workspace.height / newImage.height : 1;
+                                const scaleToFit = Math.min(scaleX, scaleY);
+
+                                if (newImage.width < canvasWidth && newImage.height < canvasHeight) {
+                                    newImage.scale(scaleToFit);
+                                } else {
+                                    newImage.scaleToWidth(workspace?.width || 0);
+                                    newImage.scaleToHeight(workspace?.height || 0);
+                                }
+
+                                canvas.remove(imageObject);
+                                addToCanvas(newImage);
+                                canvas.renderAll();
+                                console.log("Canvas updated");
+                                resolve();
+                            }, { crossOrigin: 'anonymous' });
                         });
-        
                     } catch (error) {
                         console.error('Error removing background:', error);
                     }
                 }
             });
+
+            await Promise.all(promises);
+            console.log("All background removals completed");
         },
 
-        downloadImage: () => {
+        downloadImage: async () => {
             // Ensure all images have crossOrigin set
             canvas.getObjects('image').forEach((object) => {
                 const img = object as fabric.Image;
@@ -300,17 +299,20 @@ const buildEditor = ({
                 }
             });
 
-            // Wait for images to load before saving
-            setTimeout(() => {
-                const dataURL = canvas.toDataURL({
-                    format: 'png',
-                    quality: 1.0
-                });
-                const link = document.createElement('a');
-                link.href = dataURL;
-                link.download = 'canvas.png';
-                link.click();
-            }, 1000); // Adjust timeout as needed
+            // Wait for all images to load
+            await new Promise((resolve) => {
+                canvas.renderAll();
+                setTimeout(resolve, 1000); // Adjust timeout as needed
+            });
+
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1.0
+            });
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'canvas.png';
+            link.click();
         },
 
         saveEmote: async () => {
