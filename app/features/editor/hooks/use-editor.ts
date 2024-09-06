@@ -278,7 +278,7 @@ const buildEditor = ({
                                 canvas.renderAll();
                                 console.log("Canvas updated");
                                 resolve();
-                            }, { crossOrigin: 'anonymous' });
+                            });
                         });
                     } catch (error) {
                         console.error('Error removing background:', error);
