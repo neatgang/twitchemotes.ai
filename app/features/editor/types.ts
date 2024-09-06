@@ -167,6 +167,7 @@ export type BuildEditorProps = {
     fontFamily: string;
     setFontFamily: (value: string) => void;
     // shakeAnimation: (object: fabric.Object) => void;
+    
 }
 
 export interface Editor {
@@ -210,6 +211,7 @@ export interface Editor {
     saveEmote: () => Promise<void>;
     startDrawingMask: () => void; // Add this method
     clearMask: () => void; // Add this method
+    
 }
 
 export const generation = {

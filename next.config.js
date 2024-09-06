@@ -35,6 +35,11 @@ const nextConfig = {
   //   // Return the updated configuration
   //   return config;
   // },
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 };
 
 module.exports = nextConfig;

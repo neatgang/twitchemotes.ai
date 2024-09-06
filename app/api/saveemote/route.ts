@@ -35,22 +35,19 @@ export async function POST(req: Request) {
         Key: imageId,
         Body: Buffer.from(imageBase64!, "base64"),
         ContentEncoding: "base64",
-        // Body: Buffer.from(imageUrl),
         ContentType: "image/gif",
       })
       .promise();
 
-    // Construct the S3 URL
     const s3ImageUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${imageId}`;
 
-    // Update this part to include style and model
     const emote = await prisma.emote.create({
       data: {
         userId,
         prompt,
-        imageUrl: s3ImageUrl, // Use the S3 URL
-        style,  // Add the style field
-        model,  // Add the model field
+        imageUrl: s3ImageUrl,
+        style,
+        model,
       },
     });
 
