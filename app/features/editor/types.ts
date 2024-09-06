@@ -207,7 +207,7 @@ export interface Editor {
     disableDrawingMode: () => void;
     downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
-    saveEmote: () => void;
+    saveEmote: () => Promise<void>;
     startDrawingMask: () => void; // Add this method
     clearMask: () => void; // Add this method
 }

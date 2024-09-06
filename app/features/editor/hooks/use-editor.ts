@@ -50,29 +50,32 @@ const buildEditor = ({
     }
 
     const saveEmote = async () => {
+        if (!canvas) {
+            toast.error('Canvas is not initialized');
+            return;
+        }
+
         try {
-            const options = generateSaveOptions();
+            // Convert canvas to dataURL
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1.0
+            });
 
-            canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-            const dataURL = canvas.toDataURL(options);
-
+            // Send the dataURL to the server
             const response = await axios.post('/api/saveemote', {
                 userId: 'user-id', // Replace with actual user ID
                 imageUrl: dataURL
             });
 
-            if (response.status === 200) {
-                toast.success('Emote saved successfully');
-            } else {
+            if (response.status !== 200) {
                 throw new Error('Failed to save emote');
             }
+
+            toast.success('Emote saved successfully');
         } catch (error) {
             console.error('Error saving emote:', error);
             toast.error('Failed to save emote');
-        } finally {
-            // Reset the canvas transform
-            // canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-            // canvas.renderAll();
         }
     }
 
@@ -217,6 +220,133 @@ const buildEditor = ({
         canvas.renderAll();
     };
 
+    const removeBackground = async () => {
+        console.log("removeBackground called");
+        const objects = canvas.getActiveObjects();
+        const promises = objects.map(async (object) => {
+            if (object.type === "image") {
+                const imageObject = object as fabric.Image;
+                const imageUrl = imageObject.getSrc();
+
+                try {
+                    const response = await axios.post('/api/fal/birefnet-bg-remove', {
+                        image: imageUrl
+                    });
+
+                    if (response.status !== 200) {
+                        throw new Error('Failed to remove background');
+                    }
+
+                    const newImageUrl = response.data.image.url;
+
+                    return new Promise<void>((resolve) => {
+                        fabric.Image.fromURL(newImageUrl, (newImage) => {
+                            console.log("New image loaded", newImage);
+                            if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
+                                console.error('Image not fully loaded or missing dimensions');
+                                resolve();
+                                return;
+                            }
+
+                            // Set crossOrigin attribute for the new image
+                            newImage.set({
+                                crossOrigin: 'anonymous',
+                                // Preserve the original image's position and scale
+                                left: imageObject.left,
+                                top: imageObject.top,
+                                scaleX: imageObject.scaleX,
+                                scaleY: imageObject.scaleY,
+                            });
+
+                            canvas.remove(imageObject);
+                            canvas.add(newImage);
+                            canvas.setActiveObject(newImage);
+                            canvas.renderAll();
+                            console.log("Canvas updated");
+                            resolve();
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error removing background:', error);
+                }
+            }
+        });
+
+        await Promise.all(promises);
+        console.log("All background removals completed");
+    };
+
+    const downloadImage = async () => {
+        // Get the workspace dimensions
+        const workspace = getWorkspace() as fabric.Rect;
+        const width = workspace?.width ?? canvas.getWidth();
+        const height = workspace?.height ?? canvas.getHeight();
+        const left = workspace?.left ?? 0;
+        const top = workspace?.top ?? 0;
+
+        // Create a temporary canvas with the workspace dimensions
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempContext = tempCanvas.getContext('2d');
+
+        if (!tempContext) {
+            console.error('Failed to get 2D context');
+            return;
+        }
+
+        // Draw background
+        tempContext.fillStyle = 'white';
+        tempContext.fillRect(0, 0, width, height);
+
+        // Function to load an image and draw it on the canvas
+        const drawImageOnCanvas = async (imgObject: fabric.Image) => {
+            return new Promise<void>((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    tempContext.drawImage(
+                        img,
+                        (imgObject.left ?? 0) - left,
+                        (imgObject.top ?? 0) - top,
+                        (imgObject.width ?? 0) * (imgObject.scaleX ?? 1),
+                        (imgObject.height ?? 0) * (imgObject.scaleY ?? 1)
+                    );
+                    resolve();
+                };
+                img.onerror = reject;
+                // Use the proxy route to fetch the image
+                const originalSrc = imgObject.getSrc();
+                img.src = `/api/proxy-image?url=${encodeURIComponent(originalSrc)}`;
+            });
+        };
+
+        // Draw all objects on the canvas
+        const drawPromises = canvas.getObjects().map(async (obj) => {
+            if (obj.type === 'image') {
+                await drawImageOnCanvas(obj as fabric.Image);
+            }
+            // Add handling for other object types if needed
+        });
+
+        try {
+            await Promise.all(drawPromises);
+
+            // Convert the temporary canvas to a data URL
+            const dataURL = tempCanvas.toDataURL('image/png');
+
+            // Create a download link and trigger the download
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'canvas_image.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error creating image:', error);
+        }
+    };
+
     return {
 
         enableDrawingMode: () => {
@@ -231,119 +361,9 @@ const buildEditor = ({
             canvas.isDrawingMode = false
         },
 
-        removeBackground: async () => {
-            console.log("removeBackground called");
-            const objects = canvas.getActiveObjects();
-            const promises = objects.map(async (object) => {
-                if (object.type === "image") {
-                    const imageObject = object as fabric.Image;
-                    const imageUrl = imageObject.getSrc();
-
-                    try {
-                        const response = await axios.post('/api/fal/birefnet-bg-remove', {
-                            image: imageUrl
-                        });
-
-                        if (response.status !== 200) {
-                            throw new Error('Failed to remove background');
-                        }
-
-                        const newImageUrl = response.data.image.url;
-
-                        return new Promise<void>((resolve) => {
-                            fabric.Image.fromURL(newImageUrl, (newImage) => {
-                                console.log("New image loaded", newImage);
-                                if (!newImage || typeof newImage.width === 'undefined' || typeof newImage.height === 'undefined') {
-                                    console.error('Image not fully loaded or missing dimensions');
-                                    resolve();
-                                    return;
-                                }
-
-                                const workspace = getWorkspace();
-                                const canvasWidth = canvas?.width || 0;
-                                const canvasHeight = canvas?.height || 0;
-                                const scaleX = workspace?.width ? workspace.width / newImage.width : 1;
-                                const scaleY = workspace?.height ? workspace.height / newImage.height : 1;
-                                const scaleToFit = Math.min(scaleX, scaleY);
-
-                                if (newImage.width < canvasWidth && newImage.height < canvasHeight) {
-                                    newImage.scale(scaleToFit);
-                                } else {
-                                    newImage.scaleToWidth(workspace?.width || 0);
-                                    newImage.scaleToHeight(workspace?.height || 0);
-                                }
-
-                                canvas.remove(imageObject);
-                                addToCanvas(newImage);
-                                canvas.renderAll();
-                                console.log("Canvas updated");
-                                resolve();
-                            });
-                        });
-                    } catch (error) {
-                        console.error('Error removing background:', error);
-                    }
-                }
-            });
-
-            await Promise.all(promises);
-            console.log("All background removals completed");
-        },
-
-        downloadImage: async () => {
-            // Ensure all images have crossOrigin set
-            canvas.getObjects('image').forEach((object) => {
-                const img = object as fabric.Image;
-                if (img.getSrc().indexOf('crossOrigin') === -1) {
-                    img.setSrc(img.getSrc(), () => { }, { crossOrigin: 'anonymous' });
-                }
-            });
-
-            // Wait for all images to load
-            await new Promise((resolve) => {
-                canvas.renderAll();
-                setTimeout(resolve, 1000); // Adjust timeout as needed
-            });
-
-            const dataURL = canvas.toDataURL({
-                format: 'png',
-                quality: 1.0
-            });
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'canvas.png';
-            link.click();
-        },
-
-        saveEmote: async () => {
-            if (!canvas) {
-                toast.error('Canvas is not initialized');
-                return;
-            }
-
-            try {
-                // Convert canvas to dataURL
-                const dataURL = canvas.toDataURL({
-                    format: 'png',
-                    quality: 1.0
-                });
-
-                // Send the dataURL to the server
-                const response = await axios.post('/api/saveemote', {
-                    userId: 'user-id', // Replace with actual user ID
-                    imageUrl: dataURL
-                });
-
-                if (response.status !== 200) {
-                    throw new Error('Failed to save emote');
-                }
-
-                toast.success('Emote saved successfully');
-            } catch (error) {
-                console.error('Error saving emote:', error);
-                toast.error('Failed to save emote');
-            }
-        },
+        removeBackground,
+        downloadImage,
+        saveEmote,
 
         changeImageFilter: (value: string) => {
             const objects = canvas.getActiveObjects();
@@ -416,8 +436,6 @@ const buildEditor = ({
                 }
 
             addToCanvas(image);
-            }, {
-                crossOrigin: "anonymous"
             });
         },
 
