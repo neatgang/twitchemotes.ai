@@ -11,8 +11,17 @@ import { Separator } from '@/components/ui/separator';
 import EmoteProduct from '../_components/EmoteProduct';
 import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 import { toast } from "react-hot-toast";
+import { Metadata, ResolvingMetadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { emoteId: string } }) {
+type Props = {
+  params: { emoteId: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const emoteListing = await db.emoteForSale.findUnique({
     where: {
       id: params.emoteId,
@@ -30,13 +39,19 @@ export async function generateMetadata({ params }: { params: { emoteId: string }
   }
 
   return {
-    title: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote. | EmoteMaker.ai`,
+    title: `${emoteListing.prompt} ${emoteListing.emote.style} Emote | EmoteMaker.ai`,
     description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
-    image: `${emoteListing.imageUrl}`,
     openGraph: {
       title: emoteListing.prompt,
       description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
-      images: [emoteListing.imageUrl],
+      images: [
+        {
+          url: emoteListing.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: emoteListing.prompt,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
