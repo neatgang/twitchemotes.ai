@@ -23,6 +23,7 @@ import { useUser } from "@clerk/nextjs"
 import { EmoteGeneratorSidebar } from "./generate-sidebar"
 import { FilterSidebar } from "./filter-sidebar"
 import { DrawSidebar } from "./draw-sidebar"
+import { InpaintSidebar } from "./inpaint-sidebar" // Add this import
 
 interface EditorProps {
   userId: string;
@@ -149,6 +150,11 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
           onChangeActiveTool={onChangeActiveTool}
         />
         <DrawSidebar 
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+        <InpaintSidebar // Add the InpaintSidebar component
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

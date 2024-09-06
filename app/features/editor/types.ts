@@ -81,7 +81,28 @@ export const colors = [
     "transparent",
 ]
 
-export type ActiveTool = "select" | "shapes" | "text" | "images" | "draw" | "fill" | "stroke-color" | "stroke-width" | "font" | "opacity" | "filter" | "settings" | "ai" | "remove-bg" | "templates" | "emotes" | "emote-generator"
+export type ActiveTool = 
+    | "select" 
+    | "shape" 
+    | "text" 
+    | "image" 
+    | "emote" 
+    | "generate" 
+    | "filter" 
+    | "draw" 
+    | "inpaint"
+    | "fill"
+    | "stroke-color"
+    | "stroke-width"
+    | "font"
+    | "opacity"
+    | "remove-bg"
+    | "emotes"
+    | "emote-generator"
+    | "images"
+    | "shapes"
+    | "settings"
+
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -187,6 +208,8 @@ export interface Editor {
     downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
     saveEmote: () => void;
+    startDrawingMask: () => void; // Add this method
+    clearMask: () => void; // Add this method
 }
 
 export const generation = {
