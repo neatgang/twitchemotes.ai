@@ -42,8 +42,8 @@ model Profile {
   youtube   String? @db.Text
   instagram String? @db.Text
   twitter   String? @db.Text
-  status    String? @default("active") // e.g., active, suspended, inactive
-  isPublic  Boolean @default(false) // New field to control profile visibility
+  status    String? @default("active")
+  isPublic  Boolean @default(false) // Add this line if it's not already present
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

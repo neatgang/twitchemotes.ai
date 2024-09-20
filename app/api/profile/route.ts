@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { userId, name, bio, twitch, youtube, instagram, twitter } = await req.json();
+    const { userId, name, bio, twitch, youtube, instagram, twitter, isPublic } = await req.json();
     if (!userId) {
       return new NextResponse('User ID is required', { status: 400 });
     }
@@ -18,12 +18,29 @@ export async function POST(req: Request) {
       // Update existing profile
       updatedProfile = await db.profile.update({
         where: { userId },
-        data: { name, bio, twitch, youtube, instagram, twitter },
+        data: { 
+          name, 
+          bio, 
+          twitch, 
+          youtube, 
+          instagram, 
+          twitter, 
+          isPublic: isPublic !== undefined ? isPublic : existingProfile.isPublic 
+        },
       });
     } else {
       // Create new profile if it doesn't exist
       updatedProfile = await db.profile.create({
-        data: { userId, name, bio, twitch, youtube, instagram, twitter },
+        data: { 
+          userId, 
+          name, 
+          bio, 
+          twitch, 
+          youtube, 
+          instagram, 
+          twitter, 
+          isPublic: isPublic !== undefined ? isPublic : false 
+        },
       });
     }
 

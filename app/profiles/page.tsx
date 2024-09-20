@@ -1,7 +1,6 @@
 import ProfileCard from '@/components/ProfileCard';
 import { db } from '@/lib/db';
 
-
 export const metadata = {
   title: 'Public Profiles | EmoteMaker.ai',
   description: 'Browse active public profiles of EmoteMaker.ai users',

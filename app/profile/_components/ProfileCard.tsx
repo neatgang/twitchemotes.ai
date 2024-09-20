@@ -42,6 +42,7 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
         defaultValues: {
             username: profile?.name || '',
             bio: profile?.bio || '',
+            isPublic: profile?.isPublic || false, // Initialize isPublic
         }
     });
 
@@ -52,7 +53,7 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
                 userId: userId,
                 name: values.username,
                 bio: values.bio,
-                isPublic: values.isPublic, // Add this line
+                isPublic: values.isPublic,
             });
 
             console.log(response.data);
