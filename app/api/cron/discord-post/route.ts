@@ -102,7 +102,7 @@ async function cronJob() {
 // Schedule cron job to run every 30 minutes
 cron.schedule('*/30 * * * *', cronJob);
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     // This endpoint can be used to manually trigger the cron job
     await cronJob();
