@@ -70,13 +70,13 @@ export const UserAccountNav = ({
           </div>
         </div> */}
         {/* <DropdownMenuSeparator /> */}
-        <DropdownMenuItem asChild>
+        {/* <DropdownMenuItem asChild>
           <Link href='/emotes'>Create Emotes</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link href='/imagetoprompt'>Generate Prompts</Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuItem asChild>
           <Link href='/profile'>View Profile</Link>

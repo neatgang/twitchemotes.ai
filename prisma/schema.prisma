@@ -43,6 +43,7 @@ model Profile {
   instagram String? @db.Text
   twitter   String? @db.Text
   status    String? @default("active") // e.g., active, suspended, inactive
+  isPublic  Boolean @default(false) // New field to control profile visibility
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

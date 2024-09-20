@@ -12,10 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import toast from "react-hot-toast";
 import { getUser } from "@/actions/get-user";
 import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
 
 interface ProfileFormData {
     username: string;
@@ -25,6 +26,7 @@ interface ProfileFormData {
 const profileFormSchema = z.object({
     username: z.string().min(1, { message: "Username is required" }),
     bio: z.string().min(1, { message: "Bio is required" }),
+    isPublic: z.boolean(), // Add this line
 });
 
 interface ProfileCardProps {
@@ -49,9 +51,10 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
             const response = await axios.post('/api/profile', {
                 userId: userId,
                 name: values.username,
-                bio: values.bio
+                bio: values.bio,
+                isPublic: values.isPublic, // Add this line
             });
-    
+
             console.log(response.data);
             toast.success('Profile updated successfully!');
             
@@ -102,6 +105,25 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
         //   disabled={isLoading} 
           placeholder="I am a simple streamer" 
           {...field}
+        />
+      </FormControl>
+    </FormItem>
+  )}
+  />
+      <FormField
+  name="isPublic"
+  render={({ field }) => (
+    <FormItem className="col-span-12 flex flex-row items-center justify-between rounded-lg border p-4">
+      <div className="space-y-0.5">
+        <FormLabel className="text-base">Public Profile</FormLabel>
+        <FormDescription>
+          Make your profile visible to everyone
+        </FormDescription>
+      </div>
+      <FormControl>
+        <Switch
+          checked={field.value}
+          onCheckedChange={field.onChange}
         />
       </FormControl>
     </FormItem>
