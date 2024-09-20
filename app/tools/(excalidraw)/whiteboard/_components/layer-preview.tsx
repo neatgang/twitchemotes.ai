@@ -9,7 +9,7 @@ import { Ellipse } from "./ellipse";
 import { Rectangle } from "./rectangle";
 import { Note } from "./note";
 import { Path } from "./path";
-import { Image } from "./image"; // Ensure Image is imported
+import Image from "next/image"; // Import Next.js Image component
 
 interface LayerPreviewProps {
   id: string;
@@ -79,12 +79,29 @@ export const LayerPreview = memo(({
       );
     case LayerType.Image:
       return (
-        <Image
-          id={id}
-          layer={layer}
-          onPointerDown={onLayerPointerDown}
-          selectionColor={selectionColor}
-        />
+        <div
+          onPointerDown={(e) => onLayerPointerDown(e, id)}
+          style={{
+            position: 'absolute',
+            top: layer.y,
+            left: layer.x,
+            width: layer.width,
+            height: layer.height,
+            border: selectionColor ? `2px solid ${selectionColor}` : 'none',
+          }}
+        >
+          <Image
+            src={layer.url}  // Changed from src to url
+            alt={`Image layer ${id}`}
+            width={layer.width}
+            height={layer.height}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+            }}
+          />
+        </div>
       );
     default:
       console.warn("Unknown layer type");

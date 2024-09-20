@@ -37,9 +37,10 @@ const nextConfig = {
   // },
   api: {
     bodyParser: {
-      sizeLimit: '10mb',
+      sizeLimit: "10mb",
     },
   },
+  transpilePackages: ["convex-helpers"],
 };
 
 module.exports = nextConfig;
