@@ -40,6 +40,8 @@ const nextConfig = {
       sizeLimit: "10mb",
     },
   },
+  transpilePackages: ["convex-helpers"],
+  serverless: true,
 };
 
 module.exports = nextConfig;
