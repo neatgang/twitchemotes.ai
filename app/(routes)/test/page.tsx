@@ -142,7 +142,7 @@ const GeneratePage: NextPage = () => {
             <DropdownMenu>
               <DropdownMenuTrigger>{form.numberOfIcons || "Select number"}</DropdownMenuTrigger>
               <DropdownMenuContent>
-                {[...Array(4).keys()].map((i) => (
+                {Array.from({length: 4}, (_, i) => (
                   <DropdownMenuItem key={i + 1} onSelect={() => setForm((prev) => ({ ...prev, numberOfIcons: String(i + 1) }))}>
                     {i + 1}
                   </DropdownMenuItem>

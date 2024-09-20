@@ -98,7 +98,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
     { storage, setMyPresence },
     layerType: LayerType,
     position: Point,
-    imageInfo?: { src: string; width: number; height: number }
+    imageInfo?: { url: string; width: number; height: number }
   ) => {
     const liveLayers = storage.get("layers");
     if (liveLayers.size >= MAX_LAYERS) {
@@ -111,18 +111,19 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
 
     switch (layerType) {
       case LayerType.Image:
-        layer = new LiveObject<ImageLayer>({
-          type: layerType,
+        if (!imageInfo) throw new Error("Image info is required for image layers");
+        layer = new LiveObject({
+          type: LayerType.Image,
           x: position.x,
           y: position.y,
-          height: imageInfo!.height,
-          width: imageInfo!.width,
-          src: imageInfo!.src,
+          height: imageInfo.height,
+          width: imageInfo.width,
+          url: imageInfo.url,
         });
         break;
       case LayerType.Rectangle:
-        layer = new LiveObject<RectangleLayer>({
-          type: layerType,
+        layer = new LiveObject({
+          type: LayerType.Rectangle,
           x: position.x,
           y: position.y,
           height: 100,
@@ -131,8 +132,8 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
         });
         break;
       case LayerType.Ellipse:
-        layer = new LiveObject<EllipseLayer>({
-          type: layerType,
+        layer = new LiveObject({
+          type: LayerType.Ellipse,
           x: position.x,
           y: position.y,
           height: 100,
@@ -141,8 +142,8 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
         });
         break;
       case LayerType.Path:
-        layer = new LiveObject<PathLayer>({
-          type: layerType,
+        layer = new LiveObject({
+          type: LayerType.Path,
           x: position.x,
           y: position.y,
           height: 100,
@@ -152,8 +153,8 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
         });
         break;
       case LayerType.Text:
-        layer = new LiveObject<TextLayer>({
-          type: layerType,
+        layer = new LiveObject({
+          type: LayerType.Text,
           x: position.x,
           y: position.y,
           height: 100,
@@ -163,8 +164,8 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
         });
         break;
       case LayerType.Note:
-        layer = new LiveObject<NoteLayer>({
-          type: layerType,
+        layer = new LiveObject({
+          type: LayerType.Note,
           x: position.x,
           y: position.y,
           height: 100,
@@ -194,7 +195,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
       const img = new window.Image();
       img.onload = () => {
         insertLayer(LayerType.Image, { x: 0, y: 0 }, {
-          src: uploadedImage,
+          url: uploadedImage,
           width: img.width,
           height: img.height,
         });
@@ -208,7 +209,7 @@ const [canvasState, setCanvasState] = useState<CanvasState>({
       const img = new window.Image();
       img.onload = () => {
         insertLayer(LayerType.Image, { x: 0, y: 0 }, {
-          src: resultImage,
+          url: resultImage,
           width: img.width,
           height: img.height,
         });

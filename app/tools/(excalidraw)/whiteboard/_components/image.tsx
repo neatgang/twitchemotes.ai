@@ -1,35 +1,32 @@
-import { colorToCss } from "@/lib/utils";
+import { memo } from "react";
 import { ImageLayer } from "@/types/canvas";
 
 interface ImageProps {
-  id: string;
   layer: ImageLayer;
-  onPointerDown: (e: React.PointerEvent, id: string) => void;
-  selectionColor?: string;
-};
+  onPointerDown: (e: React.PointerEvent) => void;
+  // selectionColor?: string;
+}
 
-export const Image = ({
-  id,
+export const Image = memo(({
   layer,
   onPointerDown,
   // selectionColor,
 }: ImageProps) => {
-  const { x, y, width, height, src } = layer;
+  const { x, y, width, height, url } = layer;  // Changed 'src' to 'url'
 
   return (
     <image
-      className="drop-shadow-md"
-      onPointerDown={(e) => onPointerDown(e, id)}
-      style={{
-        transform: `translate(${x}px, ${y}px)`,
-      }}
-      x={0}
-      y={0}
+      onPointerDown={onPointerDown}
+      href={url}  // Changed 'src' to 'href' and use 'url'
+      x={x}
+      y={y}
       width={width}
       height={height}
-      href={src}
-      strokeWidth={1}
-      stroke={"transparent"}
+      // style={{
+      //   outline: selectionColor ? `2px solid ${selectionColor}` : 'none',
+      // }}
     />
   );
-};
+});
+
+Image.displayName = "Image";

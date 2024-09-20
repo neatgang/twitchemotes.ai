@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "downlevelIteration": true,
     "plugins": [
       {
         "name": "next"
@@ -21,16 +21,21 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types",
+      "./node_modules"
+    ],
+    "types": ["node", "react", "react-dom", "next"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "script/assignUserSub.mjs",
-    "app/tools/(excalidraw)/whiteboard/page.tsx",
-    "app/tools/(excalidraw)/_components/excalidraw.jsx"
+    "types/**/*.d.ts",
+    "alloc.d.ts"
   ],
   "exclude": ["node_modules"]
 }

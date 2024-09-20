@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { EmoteForSale, Emote } from "@prisma/client";
-import Image from "next/image";
+import dynamic from 'next/dynamic'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input"
@@ -39,6 +39,8 @@ interface MarketplaceProps {
 }
 
 const ITEMS_PER_PAGE = 20;
+
+const Image = dynamic(() => import('next/image'), { ssr: false });
 
 export default function Marketplace({ initialEmotesForSale, userEmotes, userId }: MarketplaceProps) {
   const router = useRouter();
@@ -195,7 +197,11 @@ export default function Marketplace({ initialEmotesForSale, userEmotes, userId }
                       alt={emote.prompt}
                       className="object-cover group-hover:scale-105 transition-transform duration-200"
                       src={emote.imageUrl}
-                      layout="fill"
+                      width={300}
+                      height={300}
+                      loading="lazy"
+                      placeholder="blur"
+                      blurDataURL="/placeholder-image.jpg"
                     />
                   </div>
                   <h3 className="font-medium text-sm truncate">{emote.prompt}</h3>

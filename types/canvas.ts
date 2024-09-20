@@ -75,8 +75,7 @@ export type ImageLayer = {
   y: number;
   height: number;
   width: number;
-  src: string;
-  fill?: never; // Explicitly state that fill is not a property of ImageLayer
+  url: string;
 };
 
 export type Point = {
@@ -155,4 +154,4 @@ export type Layer =
   | PathLayer 
   | TextLayer 
   | NoteLayer 
-  | (ImageLayer & { fill?: never });
+  | ImageLayer;
