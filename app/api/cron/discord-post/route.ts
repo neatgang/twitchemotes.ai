@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { headers } from 'next/headers';
 import cron from 'node-cron';
 
 const prisma = new PrismaClient({
@@ -103,16 +104,18 @@ async function cronJob() {
 cron.schedule('*/30 * * * *', cronJob);
 
 export async function GET(req: Request) {
+  const headersList = headers();
+  const authHeader = headersList.get('Authorization');
+
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new NextResponse('Unauthorized', { status: 401 });
+  }
+
   try {
-    // This endpoint can be used to manually trigger the cron job
     await cronJob();
-    return NextResponse.json({ message: 'Cron job triggered manually' });
+    return NextResponse.json({ message: 'Cron job executed successfully' });
   } catch (error) {
-    console.error('Error in manual cron job trigger:', error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: 'Failed to run cron job', details: error.message }, { status: 500 });
-    } else {
-      return NextResponse.json({ error: 'Failed to run cron job', details: 'An unknown error occurred' }, { status: 500 });
-    }
+    console.error('Error in cron job execution:', error);
+    return NextResponse.json({ error: 'Failed to run cron job' }, { status: 500 });
   }
 }
