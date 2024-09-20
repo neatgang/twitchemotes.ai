@@ -8,6 +8,9 @@
     "functions": {
       "app/api/**/*.ts": {
         "runtime": "nodejs18.x"
+      },
+      "api/*.php": {
+        "runtime": "vercel-php@0.5.2"
       }
     }
   }
