@@ -35,13 +35,7 @@ const nextConfig = {
   //   // Return the updated configuration
   //   return config;
   // },
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb",
-    },
-  },
   transpilePackages: ["convex-helpers"],
-  serverless: true,
 };
 
 module.exports = nextConfig;

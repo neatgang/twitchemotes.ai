@@ -1,4 +1,4 @@
-"use"
+
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -27,7 +27,7 @@ export async function generateMetadata(
       id: params.emoteId,
     },
     include: {
-      emote: true, // Include the related Emote to get style and model
+      emote: true,
     },
   });
 
@@ -38,26 +38,61 @@ export async function generateMetadata(
     };
   }
 
+  const prompt = emoteListing.prompt ?? 'Untitled';
+  const style = emoteListing.emote.style ?? 'Unknown';
+  const model = emoteListing.emote.model ?? 'Unknown';
+
+  const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
+  const description = `A ${prompt} ${style} style emote created with ${model}.`;
+
   return {
-    title: `${emoteListing.prompt} ${emoteListing.emote.style} Emote | EmoteMaker.ai`,
-    description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
+    title,
+    description,
+    keywords: [prompt, style, 'emote', 'EmoteMaker.ai'].filter(Boolean),
+    authors: [{ name: 'EmoteMaker.ai' }],
+    creator: 'EmoteMaker.ai',
+    publisher: 'EmoteMaker.ai',
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: {
-      title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
+      title,
+      description,
+      url: `https://emotemaker.ai/emote/${params.emoteId}`,
+      siteName: 'EmoteMaker.ai',
       images: [
         {
-          url: emoteListing.imageUrl,
+          url: emoteListing.imageUrl ?? '',
           width: 1200,
           height: 630,
-          alt: emoteListing.prompt,
+          alt: prompt,
         },
       ],
+      locale: 'en_US',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
-      images: [emoteListing.imageUrl],
+      title,
+      description,
+      images: [emoteListing.imageUrl ?? ''],
+      creator: '@EmoteMaker.AI',
+      site: '@EmoteMaker.AI',
+    },
+    other: {
+      'og:price:amount': emoteListing.price?.toString() ?? '0',
+      'og:price:currency': 'USD',
+    },
+    alternates: {
+      canonical: `https://emotemaker.ai/emote/${params.emoteId}`,
     },
   };
 }
