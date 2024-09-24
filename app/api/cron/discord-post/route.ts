@@ -8,7 +8,7 @@ const prisma = new PrismaClient({
 });
 
 // Discord webhook URL
-// const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL!;
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL!;
 
 // Function to fetch recent EmotesForSale
 async function getRecentEmotes() {
@@ -63,14 +63,14 @@ async function postEmotesToDiscord(emotes: any[]) {
       formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
       formData.append('file', new Blob([imageBuffer]), 'emote.png');
 
-      // const response = await fetch(DISCORD_WEBHOOK_URL, {
-      //   method: 'POST',
-      //   body: formData,
-      // });
+      const response = await fetch(DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        body: formData,
+      });
       
-      // if (!response.ok) {
-      //   throw new Error(`Discord API responded with status: ${response.status}`);
-      // }
+      if (!response.ok) {
+        throw new Error(`Discord API responded with status: ${response.status}`);
+      }
       
       console.log(`Posted emote: ${emote.prompt}`);
     } catch (error) {
