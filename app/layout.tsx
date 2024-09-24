@@ -14,6 +14,7 @@ import Script from 'next/script'
 import { getUser } from '@/actions/get-user'
 import { Providers } from '@/components/providers'
 import { getUserCredits } from '@/actions/get-user-credits'
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -51,6 +52,7 @@ export default async function RootLayout({
               <ModalProvider />
               <Providers>
               {children}
+              <Analytics />
               <Script async src="//cdn.trackdesk.com/tracking.js" />
               <Script
                 id="trackdesk-script"
