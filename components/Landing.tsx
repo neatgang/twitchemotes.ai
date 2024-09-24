@@ -52,7 +52,8 @@ export default function Landing() {
 
   const createCheckoutSession = async (plan: string) => {
     try {
-      const response = await fetch(`/api/stripe/subscriptions/${plan}?referral=${referral || ''}`, {
+      const referralParam = referral ? `?referral=${referral}` : '';
+      const response = await fetch(`/api/stripe/subscriptions/${plan}${referralParam}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -74,9 +75,20 @@ export default function Landing() {
   const [referral, setReferral] = useState<string | null>(null);
 
   useEffect(() => {
-    window.rewardful('ready', function () {
-      setReferral(window.Rewardful.referral);
-    });
+    const checkRewardful = () => {
+      if (typeof window !== 'undefined' && window.Rewardful && typeof window.Rewardful === 'object') {
+        setReferral(window.Rewardful.referral);
+      }
+    };
+
+    // Check immediately in case Rewardful is already loaded
+    checkRewardful();
+
+    // Set up an interval to check periodically
+    const intervalId = setInterval(checkRewardful, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   const createCreditCheckoutSession = async (pack: string) => {
@@ -97,7 +109,8 @@ export default function Landing() {
           return;
       }
 
-      const response = await fetch(`${route}?referral=${referral || ''}`, {
+      const referralParam = referral ? `?referral=${referral}` : '';
+      const response = await fetch(`${route}${referralParam}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
