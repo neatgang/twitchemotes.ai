@@ -173,7 +173,7 @@ export default function Landing() {
                 alt="AI-Generated Emotes Collage"
                 className="rounded-xl shadow-2xl"
                 height={600}
-                src="/emoteboard1.png"
+                src="/hero.png"
                 style={{
                   aspectRatio: "800/600",
                   objectFit: "cover",
