@@ -21,7 +21,7 @@ async function getRecentEmotes() {
       createdAt: {
         gte: twentyFourHoursAgo
       },
-      status: 'PUBLISHED' // Keep this filter for Discord posts
+      // status: 'PUBLISHED' // Keep this filter for Discord posts
     },
     include: {
       user: true
