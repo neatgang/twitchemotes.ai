@@ -79,6 +79,39 @@ export default function Landing() {
     });
   }, []);
 
+  const createCreditCheckoutSession = async (pack: string) => {
+    try {
+      let route = '';
+      switch (pack) {
+        case 'small':
+          route = '/api/stripe/credits/small';
+          break;
+        case 'medium':
+          route = '/api/stripe/credits/medium';
+          break;
+        case 'large':
+          route = '/api/stripe/credits/large';
+          break;
+        default:
+          console.error('Invalid pack size');
+          return;
+      }
+
+      const response = await fetch(`${route}?referral=${referral || ''}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error creating credit checkout session:', error);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -347,7 +380,7 @@ export default function Landing() {
         {referral && <input type="hidden" name="referral" value={referral} />}
       </section>
 
-      {/* Add */}p
+      {/* Add */}
       <section className="bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Need More Credits?</h2>
@@ -358,7 +391,7 @@ export default function Landing() {
                 <CardDescription>20 Credits | $2.40 | $0.12 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('small')}>Buy Now</Button>
               </CardContent>
             </Card>
             <Card>
@@ -367,7 +400,7 @@ export default function Landing() {
                 <CardDescription>50 Credits | $5.00 | $0.10 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('medium')}>Buy Now</Button>
               </CardContent>
             </Card>
             <Card>
@@ -376,7 +409,7 @@ export default function Landing() {
                 <CardDescription>100 Credits | $8.00 | $0.08 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('large')}>Buy Now</Button>
               </CardContent>
             </Card>
           </div>

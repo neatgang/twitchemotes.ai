@@ -14,6 +14,8 @@ export async function GET(req: Request) {
   try {
     const { userId } = auth();
     const user = await currentUser();
+    const { searchParams } = new URL(req.url);
+    const referral = searchParams.get("referral");
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -34,6 +36,7 @@ export async function GET(req: Request) {
       ],
       metadata: {
         userId,
+        referral: referral || null,
       },
     });
 
