@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const { userId } = auth();
     const user = await currentUser();
     const { searchParams } = new URL(req.url);
-    const isPro = searchParams.get("isPro") === "true";
+    const referral = searchParams.get("referral");
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -58,27 +58,9 @@ export async function GET(req: Request) {
       ],
       metadata: {
         userId,
+        referral: referral || null,
       },
     })
-
-    // await db.userApiLimit.upsert({
-    //   where: { userId: userId },
-    //   update: { count: 150 },
-    //   create: { userId: userId, count: 150 },
-    // });
-
-    const userName = user.firstName || '' + user.lastName || ''
-
-  //   await db.user.update({
-  //     where: { id: userId },
-  //     data: {
-  //         credits: {
-  //             increment: 150 // Increment by 50 credits or based on the specific plan
-  //         },
-  //         name: userName,
-  //         email: user.emailAddresses[0].emailAddress
-  //     }
-  // });
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
