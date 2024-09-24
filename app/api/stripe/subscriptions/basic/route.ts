@@ -11,37 +11,26 @@ export async function GET(req: Request) {
   try {
     const { userId } = auth();
     const user = await currentUser();
+    const { searchParams } = new URL(req.url);
+    const isPro = searchParams.get("isPro") === "true";
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Check if the user already has a subscription
-    const existingSubscription = await db.userSubscription.findUnique({
-      where: { userId },
-      select: { stripeCustomerId: true }
-    });
+    const userSubscription = await db.userSubscription.findUnique({
+      where: {
+        userId
+      }
+    })
 
-    let stripeCustomerId = existingSubscription?.stripeCustomerId;
+    if (userSubscription && userSubscription.stripeCustomerId) {
+      const stripeSession = await stripe.billingPortal.sessions.create({
+        customer: userSubscription.stripeCustomerId,
+        return_url: settingsUrl,
+      })
 
-    if (!stripeCustomerId) {
-      // Create a new Stripe customer
-      const customer = await stripe.customers.create({
-        email: user.emailAddresses[0].emailAddress,
-        name: `${user.firstName} ${user.lastName}`.trim() || undefined,
-        metadata: {
-          userId: userId
-        }
-      });
-      stripeCustomerId = customer.id;
-
-      // Create a new UserSubscription record
-      await db.userSubscription.create({
-        data: {
-          userId: userId,
-          stripeCustomerId: stripeCustomerId
-        }
-      });
+      return new NextResponse(JSON.stringify({ url: stripeSession.url }))
     }
 
     const stripeSession = await stripe.checkout.sessions.create({
@@ -50,7 +39,7 @@ export async function GET(req: Request) {
       payment_method_types: ["card"],
       mode: "subscription",
       billing_address_collection: "auto",
-      customer: stripeCustomerId,
+      customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
           price: "price_1PHJN1IlERZTJMCmqIRQ1Szy", // Basic plan price ID
@@ -58,9 +47,11 @@ export async function GET(req: Request) {
         },
       ],
       metadata: {
-        userId: userId
+        userId,
       },
-    });
+    })
+
+    const userName = user.firstName || '' + user.lastName || ''
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
