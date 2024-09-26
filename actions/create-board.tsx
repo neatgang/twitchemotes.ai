@@ -1,8 +1,9 @@
 'use server'
 
-import { db } from "@/lib/db";
+
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { db } from "../lib/db";
 
 export async function createBoard(title: string) {
   const { userId } = auth();

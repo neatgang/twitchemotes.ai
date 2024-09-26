@@ -8,7 +8,7 @@ import { useCanvasEvents } from "./use-canvas-events";
 import { createFilter, downloadFile, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
 import axios from "axios";
-import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
+
 import toast from "react-hot-toast";
 // import '../fabric-extensions';
 

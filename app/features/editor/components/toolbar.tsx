@@ -2,17 +2,21 @@
 
 import { useState } from "react";
 import { ActiveTool, Editor } from "../types"
-import { Hint } from "@/components/hint";
 
-import { cn } from "@/lib/utils";
+
+
 import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { ColorPicker } from "./color-picker";
 import { TbColorFilter } from "react-icons/tb";
 import { Wand2 } from 'lucide-react'; // Add this import
+import { Hint } from "../../../../components/hint";
+import { Button } from "../../../../components/ui/button";
+import { cn } from "../../../../lib/utils";
+
 
 interface ToolbarProps {
     editor: Editor | undefined;
@@ -174,7 +178,7 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
             </div>
             )}
             <div className="flex items-center h-full justify-center">
-                <Hint label="Save Image" side="bottom" sideOffset={5}>
+                <Hint label="Download Emote" side="bottom" sideOffset={5}>
                     <Button
                         onClick={() => editor?.downloadImage()}
                         size="icon"
@@ -183,8 +187,8 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                         <DownloadCloud className="size-4"/>
                     </Button>
                 </Hint>
-                </div>
-                <div className="flex items-center h-full justify-center">
+            </div>
+            <div className="flex items-center h-full justify-center">
                 <Hint label="Save Emote" side="bottom" sideOffset={5}>
                     <Button
                         onClick={() => editor?.saveEmote()}
@@ -195,13 +199,13 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                     </Button>
                 </Hint>
             </div>
-            <Button
+            {/* <Button
                 variant={activeTool === "inpaint" ? "secondary" : "ghost"}
                 size="icon"
                 onClick={() => onChangeActiveTool("inpaint")}
             >
                 <Wand2 className="h-4 w-4" />
-            </Button>
+            </Button> */}
         </div>
     )
 }

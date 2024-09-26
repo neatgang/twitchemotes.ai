@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db } from "../lib/db";
 import { Emote } from "@prisma/client";
 
 interface GetEmoteProps {

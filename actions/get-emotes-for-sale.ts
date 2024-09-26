@@ -1,5 +1,5 @@
 
-import { db } from "@/lib/db";
+import { db } from "../lib/db";
 
 export const getEmotesForSale = async () => {
   // const cacheKey = "emotes-for-sale";
