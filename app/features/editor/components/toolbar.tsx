@@ -3,20 +3,19 @@
 import { useState } from "react";
 import { ActiveTool, Editor } from "../types"
 
-
-
-import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
+import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, EraserIcon, FrameIcon, PaintBucket, PictureInPicture, PictureInPicture2, Save, Scissors, Trash2 } from "lucide-react";
 
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { ColorPicker } from "./color-picker";
-import { TbColorFilter } from "react-icons/tb";
+import { TbColorFilter, TbPictureInPictureFilled } from "react-icons/tb";
 import { Wand2 } from 'lucide-react'; // Add this import
 import { Hint } from "../../../../components/hint";
 import { Button } from "../../../../components/ui/button";
 import { cn } from "../../../../lib/utils";
-
+import { Loader2 } from "lucide-react"; // Add this import
+import { SlPicture } from "react-icons/sl";
 
 interface ToolbarProps {
     editor: Editor | undefined;
@@ -25,6 +24,9 @@ interface ToolbarProps {
 }
 
 export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
+    const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+    const [isSavingEmote, setIsSavingEmote] = useState(false);
+    const [isDownloadingEmote, setIsDownloadingEmote] = useState(false);
 
     const fillColor = editor?.getActiveFillColor()
     const strokeColor = editor?.getActiveStrokeColor()   
@@ -168,11 +170,23 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
               <div className="flex items-center h-full justify-center">
                 <Hint label="Remove Background" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.removeBackground()}
-                        size="icon"
+                        onClick={async () => {
+                            setIsRemovingBackground(true);
+                            try {
+                                await editor?.removeBackground();
+                            } finally {
+                                setIsRemovingBackground(false);
+                            }
+                        }}
+                        size="sm"
                         variant="ghost"
+                        disabled={isRemovingBackground}
                     >
-                        <Scissors className="size-4"/>
+                        {isRemovingBackground ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <EraserIcon className="size-4" />
+                        )}
                     </Button>
                 </Hint>
             </div>
@@ -180,22 +194,46 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
             <div className="flex items-center h-full justify-center">
                 <Hint label="Download Emote" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.downloadImage()}
+                        onClick={async () => {
+                            setIsDownloadingEmote(true);
+                            try {
+                                await editor?.downloadImage();
+                            } finally {
+                                setIsDownloadingEmote(false);
+                            }
+                        }}
                         size="icon"
                         variant="ghost"
+                        disabled={isDownloadingEmote}
                     >
-                        <DownloadCloud className="size-4"/>
+                        {isDownloadingEmote ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <DownloadCloud className="size-4" />
+                        )}
                     </Button>
                 </Hint>
             </div>
             <div className="flex items-center h-full justify-center">
                 <Hint label="Save Emote" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.saveEmote()}
+                        onClick={async () => {
+                            setIsSavingEmote(true);
+                            try {
+                                await editor?.saveEmote();
+                            } finally {
+                                setIsSavingEmote(false);
+                            }
+                        }}
                         size="icon"
                         variant="ghost"
+                        disabled={isSavingEmote}
                     >
-                        <Save className="size-4"/>
+                        {isSavingEmote ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <Save className="size-4" />
+                        )}
                     </Button>
                 </Hint>
             </div>
