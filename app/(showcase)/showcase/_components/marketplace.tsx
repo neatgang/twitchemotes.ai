@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter, Card } from "@/components/ui/card"
 import { EmoteForSale, Emote } from "@prisma/client";
-import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input"
@@ -24,57 +24,55 @@ import axios from "axios";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { cn } from "@/lib/utils"; // Make sure to import the cn utility
+import { cn } from "@/lib/utils";
 
 interface MarketplaceProps {
   initialEmotesForSale: EmoteForSale[];
   userEmotes: (Emote & { emoteForSale: EmoteForSale | null })[];
   userId: string;
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
 }
 
-const ITEMS_PER_PAGE = 20;
-
-const Image = dynamic(() => import('next/image'), { ssr: false });
-
-export default function Marketplace({ initialEmotesForSale, userEmotes, userId }: MarketplaceProps) {
+export default function Marketplace({ 
+  initialEmotesForSale, 
+  userEmotes, 
+  userId, 
+  currentPage, 
+  totalPages, 
+  totalCount 
+}: MarketplaceProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const filteredEmotes = useMemo(() => {
-    return initialEmotesForSale.filter(emote => 
-      emote.prompt.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [initialEmotesForSale, searchTerm]);
-
-  const totalPages = Math.ceil(filteredEmotes.length / ITEMS_PER_PAGE);
-
-  const paginatedEmotes = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredEmotes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredEmotes, currentPage]);
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 1000); // Fallback timer
+    return () => clearTimeout(timer);
+  }, [initialEmotesForSale]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    router.push(`/showcase?page=1&search=${encodeURIComponent(newSearchTerm)}`);
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    router.push(`/showcase?page=${page}&search=${encodeURIComponent(searchTerm)}`);
   };
 
   const LoadingSkeleton = () => (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {[...Array(10)].map((_, index) => (
+      {[...Array(20)].map((_, index) => (
         <Card key={index} className="group">
           <CardContent className="p-4">
             <Skeleton className="aspect-square w-full mb-4" />
@@ -189,7 +187,7 @@ export default function Marketplace({ initialEmotesForSale, userEmotes, userId }
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {paginatedEmotes.map((emote) => (
+            {initialEmotesForSale.map((emote) => (
               <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
                 <CardContent className="p-4">
                   <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
@@ -200,8 +198,6 @@ export default function Marketplace({ initialEmotesForSale, userEmotes, userId }
                       width={300}
                       height={300}
                       loading="lazy"
-                      placeholder="blur"
-                      blurDataURL="/placeholder-image.jpg"
                     />
                   </div>
                   <h3 className="font-medium text-sm truncate">{emote.prompt}</h3>
