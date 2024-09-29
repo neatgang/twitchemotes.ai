@@ -6,8 +6,6 @@ fal.config({
   credentials: process.env.FAL_KEY,
 });
 
-// export const runtime = 'edge'; // Add this line
-
 export const maxDuration = 300; // Set maximum duration to 300 seconds (5 minutes)
 
 export async function POST(req: Request) {

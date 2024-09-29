@@ -14,6 +14,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { TrainingStatus } from "../../types/training"
+
+// Add this type definition
+
 
 interface TrainingImagesProps {
   emotes: Emote[];
@@ -24,6 +28,7 @@ interface TrainingImagesProps {
   onRemoveImage: (index: number) => void; // New prop for removing a single image
   trainingResult: any;
   userId?: string;
+  trainingStatus: TrainingStatus;
 }
 
 export default function TrainingImages({ 
@@ -34,10 +39,11 @@ export default function TrainingImages({
   onClearImages, 
   onRemoveImage,
   trainingResult, 
-  userId 
+  userId, 
+  trainingStatus 
 }: TrainingImagesProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const emotesPerPage = 10;
+  const emotesPerPage = 16;
   const totalPages = Math.ceil(emotes.length / emotesPerPage);
 
   const getCurrentEmotes = () => {
@@ -124,6 +130,13 @@ export default function TrainingImages({
         <div className="mt-4">
           <h3 className="text-lg font-bold mb-4">Training Result</h3>
           <pre>{JSON.stringify(trainingResult, null, 2)}</pre>
+        </div>
+      )}
+      {trainingStatus !== 'IDLE' && (
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Training Status: {trainingStatus}</h3>
+          {trainingStatus === 'IN_PROGRESS' && <p>Training is in progress. This may take a while...</p>}
+          {trainingStatus === 'QUEUED' && <p>Training job is queued. Please wait...</p>}
         </div>
       )}
     </div>

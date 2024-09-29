@@ -1,0 +1,1 @@
+export type TrainingStatus = 'IDLE' | 'QUEUED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'CANCELLED';

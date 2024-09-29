@@ -10,7 +10,7 @@ import * as fal from "@fal-ai/serverless-client";
 import JSZip from 'jszip';
 
 // Add this type definition
-type TrainingStatus = 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'IN_PROGRESS' | 'IN_QUEUE';
+type TrainingStatus = 'IDLE' | 'QUEUED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 
 interface ModelPageClientProps {
   initialEmotes: Emote[];
@@ -23,7 +23,7 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
   const [images, setImages] = useState<string[]>([]); // State to store uploaded images URLs
   const [trainingResult, setTrainingResult] = useState<unknown>(null); // State to store training result
   const [emotes, setEmotes] = useState<Emote[]>(initialEmotes); // State to store emotes
-  const [trainingStatus, setTrainingStatus] = useState<string | null>(null);
+  const [trainingStatus, setTrainingStatus] = useState<TrainingStatus>('IDLE');
 
   // Function to handle file upload changes
   const handleFileChange = (url?: string) => {
@@ -40,8 +40,13 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
 
   // Function to handle training
   const handleTraining = async () => {
+    if (images.length < 4) {
+      console.error("Not enough images for training");
+      return;
+    }
+
     try {
-      setTrainingStatus('Training started');
+      setTrainingStatus('QUEUED');
 
       console.log("Image URLs:", images);
 
@@ -78,23 +83,23 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
 
           const { status, result } = statusResponse.data;
 
+          setTrainingStatus(status as TrainingStatus);
+
           if (status === 'COMPLETED') {
             setTrainingResult(result);
-            setTrainingStatus('Training completed');
           } else if (status === 'FAILED' || status === 'CANCELLED') {
-            setTrainingStatus(`Training ${status.toLowerCase()}`);
-          } else if (status === 'IN_PROGRESS' || status === 'IN_QUEUE') {
-            setTrainingStatus(`Training ${status.toLowerCase().replace('_', ' ')}`);
+            console.error(`Training ${status.toLowerCase()}`);
+          } else if (status === 'IN_PROGRESS' || status === 'QUEUED') {
             setTimeout(checkStatus, 5000); // Check again in 5 seconds
           } else {
-            setTrainingStatus(`Unknown status: ${status}`);
+            console.warn(`Unknown status: ${status}`);
           }
         } catch (error) {
           console.error("Error checking status:", error);
           if (axios.isAxiosError(error) && error.response) {
             console.error("Error response data:", error.response.data);
           }
-          setTrainingStatus('Error occurred while checking status');
+          setTrainingStatus('FAILED');
         }
       };
 
@@ -104,7 +109,7 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
       if (axios.isAxiosError(error) && error.response) {
         console.error("Error response data:", error.response.data);
       }
-      setTrainingStatus('Error occurred during training');
+      setTrainingStatus('FAILED');
     }
   };
 
@@ -120,12 +125,15 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
   };
 
-  console.log('handleRemoveImage:', handleRemoveImage); // Add this line
-
   return (
     <div className="p-4 lg:p-6 h-full">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-        <ModelSidebar onStartTraining={handleTraining} userId={userId} />
+        <ModelSidebar 
+          onStartTraining={handleTraining} 
+          userId={userId} 
+          isTraining={trainingStatus === 'IN_PROGRESS' || trainingStatus === 'QUEUED'}
+          imageCount={images.length}
+        />
         <TrainingImages
           emotes={emotes} 
           images={images} 
@@ -135,6 +143,7 @@ export default function ModelPageClient({ initialEmotes }: ModelPageClientProps)
           onRemoveImage={handleRemoveImage}
           trainingResult={trainingResult}
           userId={userId}
+          trainingStatus={trainingStatus}
         />
       </div>
     </div>
