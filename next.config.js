@@ -13,6 +13,8 @@ const nextConfig = {
       "images.unsplash.com",
       "fal.media",
       "v2.fal.media",
+      "emotemaker.ai",
+      "your-image-hosting-domain.com",
     ],
     remotePatterns: [
       {

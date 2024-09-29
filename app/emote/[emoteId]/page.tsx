@@ -43,6 +43,7 @@ export async function generateMetadata(
   const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
   const description = `A ${prompt} ${style} style emote created with ${model}.`;
   const imageUrl = emoteListing.imageUrl ?? '';
+  const absoluteImageUrl = new URL(imageUrl, 'https://emotemaker.ai').toString();
 
   return {
     title,
@@ -67,10 +68,9 @@ export async function generateMetadata(
       description,
       url: `https://emotemaker.ai/emote/${params.emoteId}`,
       siteName: 'EmoteMaker.ai',
-      
       images: [
         {
-          url: imageUrl,
+          url: absoluteImageUrl,
           width: 1200,
           height: 1200,
           alt: prompt,
@@ -83,16 +83,18 @@ export async function generateMetadata(
       card: 'summary_large_image',
       title,
       description,
-      images: [imageUrl],
+      images: [absoluteImageUrl],
       creator: '@EmoteMaker_AI',
       site: '@EmoteMaker_AI',
     },
     other: {
-      'og:image': imageUrl,
-      'og:image:secure_url': imageUrl,
+      'og:image': absoluteImageUrl,
+      'og:image:secure_url': absoluteImageUrl,
       'og:image:width': '1200',
       'og:image:height': '1200',
       'og:image:alt': prompt,
+      'og:type': 'website',
+      'og:url': `https://emotemaker.ai/emote/${params.emoteId}`,
     },
   };
 }
