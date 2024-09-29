@@ -51,8 +51,8 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
   };
 
   const models = [
-    { name: 'SDXL LoRA', apiRoute: '/api/model/sdxl-lora' },
-    { name: 'SD 1.5 (legacy)', apiRoute: '/api/model/sd-1.5-legacy' },
+    // { name: 'SDXL LoRA', apiRoute: '/api/model/sdxl-lora' },
+    // { name: 'SD 1.5 (legacy)', apiRoute: '/api/model/sd-1.5-legacy' },
     { name: 'Flux', apiRoute: '/api/model/flux' },
   ];
 
@@ -91,6 +91,9 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
   const toggleAdvancedSettings = () => {
     setShowAdvanced(!showAdvanced);
   };
+
+  const [iterMultiplier, setIterMultiplier] = useState(1);
+  const [isStyle, setIsStyle] = useState(false);
 
   return (
     <div className={cn(
@@ -262,6 +265,27 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
                 <span>1e-6</span>
               </div>
               <Slider defaultValue={[1]} max={10} step={1} className="mt-2" />
+            </div>
+            <div>
+              <div className="flex justify-between">
+                <Label>Iter Multiplier</Label>
+                <span>{iterMultiplier}</span>
+              </div>
+              <Slider 
+                value={[iterMultiplier]} 
+                onValueChange={(value) => setIterMultiplier(value[0])} 
+                min={1} 
+                max={10} 
+                step={1} 
+                className="mt-2" 
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <Label>Is Style</Label>
+              <Switch 
+                checked={isStyle}
+                onCheckedChange={setIsStyle}
+              />
             </div>
           </div>
         )}

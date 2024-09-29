@@ -6,36 +6,57 @@ fal.config({
   credentials: process.env.FAL_KEY,
 });
 
+// export const runtime = 'edge'; // Add this line
+
+export const maxDuration = 300; // Set maximum duration to 300 seconds (5 minutes)
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { images_data_url, steps, rank, learning_rate, experimental_optimizers, experimental_multi_checkpoints_count } = body;
     const { userId } = auth();
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const result = await fal.subscribe("fal-ai/flux-lora-general-training", {
-      input: {
-        images_data_url,
-        steps: steps || 1000,
-        rank: rank || 16,
-        learning_rate: learning_rate || 0.0004,
-        experimental_optimizers: experimental_optimizers || "adamw8bit",
-        experimental_multi_checkpoints_count: experimental_multi_checkpoints_count || 1,
-      },
-      logs: true,
-      // onQueueUpdate: (update) => {
-      //   if (update.status === "IN_PROGRESS") {
-      //     update.logs.map((log) => log.message).forEach(console.log);
-      //   }
-      // },
-    });
+    const formData = await req.formData();
+    const zipFile = formData.get('images_zip') as File;
 
-    return NextResponse.json(result);
+    if (!zipFile) {
+      return new NextResponse("No zip file provided", { status: 400 });
+    }
+
+    try {
+      // Upload the zip file to FAL storage
+      const uploadedUrl = await fal.storage.upload(zipFile);
+
+      console.log("Uploaded zip URL:", uploadedUrl);
+
+      const result = await fal.queue.submit("fal-ai/flux-lora-general-training", {
+        input: {
+          images_data_url: uploadedUrl,
+          steps: 500,
+          rank: 16,
+          learning_rate: 0.0004,
+          caption_dropout_rate: 0.05,
+        },
+      });
+
+      console.log("FAL API submit result:", result);
+
+      return NextResponse.json(result);
+    } catch (falError: any) {
+      console.error('FAL API Error:', falError);
+      if (falError.body && falError.body.detail) {
+        console.error('Error details:', JSON.stringify(falError.body.detail, null, 2));
+      }
+      return new NextResponse(JSON.stringify({
+        error: "Error submitting training job",
+        details: falError.message || "Unknown error",
+        status: falError.status
+      }), { status: falError.status || 500 });
+    }
   } catch (error) {
-    console.log('[TRAINING_ERROR]', error);
+    console.error('[TRAINING_ERROR]', error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

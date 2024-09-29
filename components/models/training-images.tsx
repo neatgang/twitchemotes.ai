@@ -107,6 +107,18 @@ export default function TrainingImages({
             </div>
           ))}
         </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Image URLs:</h3>
+          <ul className="list-disc pl-5">
+            {images.map((image, index) => (
+              <li key={index}>
+                <a href={image} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  {image}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       {trainingResult && (
         <div className="mt-4">
