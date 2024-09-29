@@ -1,5 +1,3 @@
-
-
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
@@ -44,6 +42,7 @@ export async function generateMetadata(
 
   const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
   const description = `A ${prompt} ${style} style emote created with ${model}.`;
+  const imageUrl = emoteListing.imageUrl ?? '';
 
   return {
     title,
@@ -68,11 +67,12 @@ export async function generateMetadata(
       description,
       url: `https://emotemaker.ai/emote/${params.emoteId}`,
       siteName: 'EmoteMaker.ai',
+      
       images: [
         {
-          url: emoteListing.imageUrl ?? '',
+          url: imageUrl,
           width: 1200,
-          height: 630,
+          height: 1200,
           alt: prompt,
         },
       ],
@@ -83,16 +83,16 @@ export async function generateMetadata(
       card: 'summary_large_image',
       title,
       description,
-      images: [emoteListing.imageUrl ?? ''],
-      creator: '@EmoteMaker.AI',
-      site: '@EmoteMaker.AI',
+      images: [imageUrl],
+      creator: '@EmoteMaker_AI',
+      site: '@EmoteMaker_AI',
     },
     other: {
-      'og:price:amount': emoteListing.price?.toString() ?? '0',
-      'og:price:currency': 'USD',
-    },
-    alternates: {
-      canonical: `https://emotemaker.ai/emote/${params.emoteId}`,
+      'og:image': imageUrl,
+      'og:image:secure_url': imageUrl,
+      'og:image:width': '1200',
+      'og:image:height': '1200',
+      'og:image:alt': prompt,
     },
   };
 }
