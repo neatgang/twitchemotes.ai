@@ -16,14 +16,17 @@ import { Button } from "../../../../components/ui/button";
 import { cn } from "../../../../lib/utils";
 import { Loader2 } from "lucide-react"; // Add this import
 import { SlPicture } from "react-icons/sl";
+import { Emote } from "@prisma/client";
+import toast from "react-hot-toast";
 
 interface ToolbarProps {
     editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
+    addEmote: (newEmote: Emote) => void;
 }
 
-export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
+export const Toolbar = ({ editor, activeTool, onChangeActiveTool, addEmote }: ToolbarProps) => {
     const [isRemovingBackground, setIsRemovingBackground] = useState(false);
     const [isSavingEmote, setIsSavingEmote] = useState(false);
     const [isDownloadingEmote, setIsDownloadingEmote] = useState(false);
@@ -220,7 +223,14 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
                         onClick={async () => {
                             setIsSavingEmote(true);
                             try {
-                                await editor?.saveEmote();
+                                const savedEmote = await editor?.saveEmote();
+                                if (savedEmote) {
+                                    addEmote(savedEmote);
+                                    toast.success('Emote saved successfully');
+                                }
+                            } catch (error) {
+                                console.error('Failed to save emote:', error);
+                                toast.error('Failed to save emote');
                             } finally {
                                 setIsSavingEmote(false);
                             }

@@ -1,3 +1,4 @@
+import { Emote } from "@prisma/client";
 import { fabric } from "fabric"
 import { ITextOptions } from "fabric/fabric-impl";
 
@@ -208,7 +209,7 @@ export interface Editor {
     disableDrawingMode: () => void;
     downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
-    saveEmote: () => Promise<void>;
+    saveEmote: () => Promise<Emote | undefined>;
     startDrawingMask: () => void; // Add this method
     clearMask: () => void; // Add this method
     

@@ -5,7 +5,7 @@ import { Editor } from "@/app/features/editor/components/editor";
 import { auth } from "@clerk/nextjs/server";
 import { getEmotes } from "../../../../../actions/get-emotes";
 import { redirect } from "next/navigation";
-import { fetchUserEmotes } from "@/actions/fetchUserEmotes.";
+import { fetchUserEmotes } from "@/actions/fetchUserEmotes";
 
 const EditorProjectIdPage = async () => {
   const { userId } = auth();
@@ -17,9 +17,9 @@ const EditorProjectIdPage = async () => {
   const emotes = await fetchUserEmotes(userId);
 
   return (
-    <>
+    <div>
       <Editor userId={userId} emotes={emotes} />
-    </>
+    </div>
   );
 };
 

@@ -5,9 +5,9 @@ export const fetchUserEmotes = async (userId: string) => {
     where: {
       userId: userId,
     },
-    include: {
-      emoteForSale: true,
-    },
+    // include: {
+    //   emoteForSale: true,
+    // },
     orderBy: {
       createdAt: "desc",
     },
