@@ -41,7 +41,7 @@
 //   }
 // }
 
-import { db } from "@/lib/db";
+import { db } from "../lib/db";
 import { Emote } from "@prisma/client";
 
 export const getEmotes = async ({ userId }: { userId: string | null }) => {

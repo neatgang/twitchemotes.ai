@@ -13,6 +13,8 @@ const nextConfig = {
       "images.unsplash.com",
       "fal.media",
       "v2.fal.media",
+      "emotemaker.ai",
+      "your-image-hosting-domain.com",
     ],
     remotePatterns: [
       {
@@ -22,6 +24,20 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "replicate.delivery",
+      },
+      {
+        protocol: "https",
+        hostname: "pprcanvas.s3.amazonaws.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "fal.media",
+      },
+      {
+        protocol: "https",
+        hostname: "v2.fal.media",
       },
     ],
   },
@@ -35,11 +51,6 @@ const nextConfig = {
   //   // Return the updated configuration
   //   return config;
   // },
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb",
-    },
-  },
   transpilePackages: ["convex-helpers"],
 };
 

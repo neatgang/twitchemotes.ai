@@ -14,6 +14,8 @@ export async function GET(req: Request) {
   try {
     const { userId } = auth();
     const user = await currentUser();
+    const { searchParams } = new URL(req.url);
+    const referral = searchParams.get("referral");
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -28,12 +30,13 @@ export async function GET(req: Request) {
       customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
-          price: 'price_1PTXtHIlERZTJMCmVgzahz20', // Small Pack price ID
+          price: 'price_1PTXtHIlERZTJMCmVgzahz20', // Large Pack price ID
           quantity: 1,
         },
       ],
       metadata: {
         userId,
+        referral: referral || null,
       },
     });
 

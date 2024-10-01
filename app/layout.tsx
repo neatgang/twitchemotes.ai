@@ -14,6 +14,7 @@ import Script from 'next/script'
 import { getUser } from '@/actions/get-user'
 import { Providers } from '@/components/providers'
 import { getUserCredits } from '@/actions/get-user-credits'
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -43,16 +44,6 @@ export default async function RootLayout({
 
       <html lang="en" className="h-full">
         <head>
-          <Script async src="//cdn.trackdesk.com/tracking.js" />
-          <Script
-            id="trackdesk-script"
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function(t,d,k){(t[k]=t[k]||[]).push(d);t[d]=t[d]||t[k].f||function(){(t[d].q=t[d].q||[]).push(arguments)}})(window,"trackdesk","TrackdeskObject");
-                trackdesk("emotemaker", "click");
-              `,
-            }}
-          />
         </head>
         <body className={`${inter.className} h-full`}>
             <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
@@ -61,6 +52,21 @@ export default async function RootLayout({
               <ModalProvider />
               <Providers>
               {children}
+              <Analytics />
+              <Script async src="//cdn.trackdesk.com/tracking.js" />
+              <Script
+                id="trackdesk-script"
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    (function(t,d,k){(t[k]=t[k]||[]).push(d);t[d]=t[d]||t[k].f||function(){(t[d].q=t[d].q||[]).push(arguments)}})(window,"trackdesk","TrackdeskObject");
+                    trackdesk("emotemaker", "click");
+                  `,
+                }}
+              />
+              <Script src="https://r.wdfl.co/rw.js" data-rewardful="80664d" />
+              <Script id="rewardful-queue">
+                {`(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}})(window,'rewardful');`}
+              </Script>
               </Providers>
             </TooltipProvider>
         </body>

@@ -16,22 +16,32 @@ import { generation } from "@/app/features/editor/types";
 import { motion } from "framer-motion";
 import { Card, CardTitle, CardDescription, CardHeader, CardContent } from "@/components/ui/card"
 
+// Declare the Rewardful types
+declare global {
+  interface Window {
+    rewardful: (event: string, callback: () => void) => void;
+    Rewardful: {
+      referral: string | null;
+    };
+  }
+}
+
 export default function Landing() {
   const [loading, setLoading] = useState(false);
   const [isPro, setIsPro] = useState(false);
   const { user } = useUser()
   const router = useRouter();
   const proModal = useProModal();
-  
+
   useEffect(() => {
     const fetchIsPro = async () => {
       const proStatus = await checkSubscription();
       setIsPro(proStatus);
     };
-  
+
     fetchIsPro();
   }, []);
-  
+
   const handleStartCreating = () => {
     if (user) {
       router.push('/emoteboard/editor/new');
@@ -40,55 +50,78 @@ export default function Landing() {
     }
   };
 
-  const onSubscribe = async () => {
+  const createCheckoutSession = async (plan: string) => {
     try {
-      setLoading(true);
-      const response = await axios.get("/api/stripe");
-  
-      window.location.href = response.data.url;
+      const referralParam = referral ? `?referral=${referral}` : '';
+      const response = await fetch(`/api/stripe/subscriptions/${plan}${referralParam}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
     } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const onBasicSubscribe = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/stripe/subscriptions/basic")
-      window.location.href = response.data.url;
-    } catch (error) {
-      console.log(error)
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
+      console.error('Error creating checkout session:', error);
     }
   };
 
-  const onStandardSubscribe = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/stripe/subscriptions/standard")
-      window.location.href = response.data.url;
-    } catch (error) {
-      console.log(error)
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const onBasicSubscribe = () => createCheckoutSession('basic');
+  const onStandardSubscribe = () => createCheckoutSession('standard');
+  const onPremiumSubscribe = () => createCheckoutSession('premium');
 
-  const onPremiumSubscribe = async () => {
+  const [referral, setReferral] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkRewardful = () => {
+      if (typeof window !== 'undefined' && window.Rewardful && typeof window.Rewardful === 'object') {
+        setReferral(window.Rewardful.referral);
+      }
+    };
+
+    // Check immediately in case Rewardful is already loaded
+    checkRewardful();
+
+    // Set up an interval to check periodically
+    const intervalId = setInterval(checkRewardful, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const createCreditCheckoutSession = async (pack: string) => {
     try {
-      setLoading(true);
-      const response = await axios.get("/api/stripe/subscriptions/premium")
-      window.location.href = response.data.url;
+      let route = '';
+      switch (pack) {
+        case 'small':
+          route = '/api/stripe/credits/small';
+          break;
+        case 'medium':
+          route = '/api/stripe/credits/medium';
+          break;
+        case 'large':
+          route = '/api/stripe/credits/large';
+          break;
+        default:
+          console.error('Invalid pack size');
+          return;
+      }
+
+      const referralParam = referral ? `?referral=${referral}` : '';
+      const response = await fetch(`${route}${referralParam}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
     } catch (error) {
-      console.log(error)
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
+      console.error('Error creating credit checkout session:', error);
     }
   };
 
@@ -103,7 +136,7 @@ export default function Landing() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             <div className="space-y-6">
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -140,7 +173,7 @@ export default function Landing() {
                 alt="AI-Generated Emotes Collage"
                 className="rounded-xl shadow-2xl"
                 height={600}
-                src="/emoteboard1.png"
+                src="/hero.png"
                 style={{
                   aspectRatio: "800/600",
                   objectFit: "cover",
@@ -148,7 +181,7 @@ export default function Landing() {
                 width={800}
               />
               <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
-                <p className="font-bold text-[#7928CA]">1,000+ Emotes Created!</p>
+                <p className="font-bold text-[#7928CA]">10,000+ Emotes Created!</p>
               </div>
             </div>
           </div>
@@ -177,12 +210,12 @@ export default function Landing() {
               { title: "2. Generate Options", description: "Our AI creates multiple unique emote designs based on your description.", icon: WandIcon },
               { title: "3. Customize & Download", description: "Fine-tune your favorite design and download it ready for use.", icon: CloudLightningIcon },
             ].map((step, index) => (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
-                key={index} 
+                key={index}
                 className="bg-white p-6 rounded-lg shadow-md text-center"
               >
                 <step.icon className="h-12 w-12 text-[#7928CA] mx-auto mb-4" />
@@ -304,6 +337,7 @@ export default function Landing() {
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Simple, Transparent Pricing</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Basic Plan */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -319,6 +353,8 @@ export default function Landing() {
               </ul>
               <Button onClick={onBasicSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Basic</Button>
             </motion.div>
+
+            {/* Standard Plan */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -335,6 +371,8 @@ export default function Landing() {
               </ul>
               <Button onClick={onStandardSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Standard</Button>
             </motion.div>
+
+            {/* Premium Plan */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -352,6 +390,7 @@ export default function Landing() {
             </motion.div>
           </div>
         </div>
+        {referral && <input type="hidden" name="referral" value={referral} />}
       </section>
 
       {/* Add */}
@@ -365,7 +404,7 @@ export default function Landing() {
                 <CardDescription>20 Credits | $2.40 | $0.12 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('small')}>Buy Now</Button>
               </CardContent>
             </Card>
             <Card>
@@ -374,7 +413,7 @@ export default function Landing() {
                 <CardDescription>50 Credits | $5.00 | $0.10 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('medium')}>Buy Now</Button>
               </CardContent>
             </Card>
             <Card>
@@ -383,7 +422,7 @@ export default function Landing() {
                 <CardDescription>100 Credits | $8.00 | $0.08 per credit</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => router.push('/credits')}>Buy Now</Button>
+                <Button className="w-full" onClick={() => createCreditCheckoutSession('large')}>Buy Now</Button>
               </CardContent>
             </Card>
           </div>

@@ -7,6 +7,8 @@ import { SocialLinksCard } from "./_components/SocialLinks";
 import { Footer } from "./_components/Footer";
 import { redirect } from "next/navigation";
 import { GuidesForGamersCTA } from "./_components/GuidesForGamers";
+import { deleteProfile } from "@/actions/delete-profile";
+import { Button } from "@/components/ui/button";
 
 const ProfilePage = async () => {
 
@@ -61,6 +63,11 @@ const ProfilePage = async () => {
     }
   });
 
+  const handleDeleteProfile = async () => {
+    'use server'
+    await deleteProfile();
+    redirect('/');
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-gray-950">
@@ -79,6 +86,11 @@ const ProfilePage = async () => {
         </div>
         <div className="py-4">
         <GuidesForGamersCTA />
+        </div>
+        <div className="py-4">
+          <form action={handleDeleteProfile}>
+            <Button type="submit" variant="destructive">Delete Profile</Button>
+          </form>
         </div>
       </main>
       <Footer />

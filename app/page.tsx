@@ -1,24 +1,19 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useProModal } from "@/hooks/use-pro-modal";
 
-import { Zap } from "lucide-react";
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { checkSubscription } from "../lib/subscription";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 import { auth } from "@clerk/nextjs/server";
 import { useUser } from '@clerk/nextjs'
-import { db } from "@/lib/db";
-import { getUser } from "@/actions/get-user";
-import Landing from "@/components/Landing";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useProModal } from "../hooks/use-pro-modal";
+import { getUser } from "../actions/get-user";
+import Landing from "../components/Landing";
+import Footer from "../components/Footer";
+import { useRouter } from "next/navigation";
+
+
 
 // const demophotos = [
 //   {
@@ -350,10 +345,10 @@ export default function LandingPage() {
 //     </section>
 
 
-<section>
 
+<section>
   <Landing />
   <Footer />
-</section>
+  </section>
   )
 }

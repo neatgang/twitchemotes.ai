@@ -1,4 +1,3 @@
-
 import { useCallback, useState, useMemo } from "react"
 
 import { fabric } from "fabric"
@@ -8,8 +7,9 @@ import { useCanvasEvents } from "./use-canvas-events";
 import { createFilter, downloadFile, isTextType } from "../utils";
 import { ITextOptions } from "fabric/fabric-impl";
 import axios from "axios";
-import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
+
 import toast from "react-hot-toast";
+import { Emote } from "@prisma/client";
 // import '../fabric-extensions';
 
 const buildEditor = ({
@@ -50,82 +50,94 @@ const buildEditor = ({
         downloadFile(dataURL, "png");
     }
 
-    const saveEmote = async () => {
+    const saveEmote = async (): Promise<Emote | undefined> => {
         if (!canvas) {
             toast.error('Canvas is not initialized');
-            return;
+            return undefined;
         }
-
+    
         try {
-            // Create a temporary canvas
+            // Get the workspace dimensions
+            const workspace = getWorkspace() as fabric.Rect;
+            const width = workspace?.width ?? canvas.getWidth();
+            const height = workspace?.height ?? canvas.getHeight();
+            const left = workspace?.left ?? 0;
+            const top = workspace?.top ?? 0;
+    
+            // Create a temporary canvas with the workspace dimensions
             const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvas.width ?? 0;
-            tempCanvas.height = canvas.height ?? 0;
+            tempCanvas.width = width;
+            tempCanvas.height = height;
             const tempContext = tempCanvas.getContext('2d');
-
+    
             if (!tempContext) {
                 throw new Error('Failed to get 2D context');
             }
-
-            // Draw white background
+    
+            // Draw background
             tempContext.fillStyle = 'white';
-            tempContext.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-
-            // Draw each object on the temporary canvas
-            const drawPromises = canvas.getObjects().map((obj) => {
-                return new Promise<void>((resolve) => {
-                    if (obj.type === 'image') {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-                        const originalSrc = (obj as fabric.Image).getSrc();
-                        img.src = `/api/proxy-image?url=${encodeURIComponent(originalSrc)}`;
-                        img.onload = () => {
-                            tempContext.drawImage(
-                                img,
-                                obj.left ?? 0,
-                                obj.top ?? 0,
-                                obj.width ?? 0,
-                                obj.height ?? 0
-                            );
-                            resolve();
-                        };
-                        img.onerror = () => {
-                            console.error(`Failed to load image: ${originalSrc}`);
-                            resolve();
-                        };
-                    } else {
+            tempContext.fillRect(0, 0, width, height);
+    
+            // Function to load an image and draw it on the canvas
+            const drawImageOnCanvas = async (imgObject: fabric.Image) => {
+                return new Promise<void>((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        tempContext.drawImage(
+                            img,
+                            (imgObject.left ?? 0) - left,
+                            (imgObject.top ?? 0) - top,
+                            (imgObject.width ?? 0) * (imgObject.scaleX ?? 1),
+                            (imgObject.height ?? 0) * (imgObject.scaleY ?? 1)
+                        );
                         resolve();
-                    }
+                    };
+                    img.onerror = reject;
+                    // Use the proxy route to fetch the image
+                    const originalSrc = imgObject.getSrc();
+                    img.src = `/api/proxy-image?url=${encodeURIComponent(originalSrc)}`;
                 });
+            };
+    
+            // Draw all objects on the canvas
+            const drawPromises = canvas.getObjects().map(async (obj) => {
+                if (obj.type === 'image') {
+                    await drawImageOnCanvas(obj as fabric.Image);
+                }
+                // Add handling for other object types if needed
             });
-
-            // Wait for all images to load
+    
             await Promise.all(drawPromises);
-
+    
             // Convert the temporary canvas to a data URL
             const dataURL = tempCanvas.toDataURL('image/png');
-
+    
             // Send the dataURL to the server
-            const response = await axios.post('/api/saveemote', {
-                userId: 'user-id', // Replace with actual user ID
-                imageUrl: dataURL
+            const response = await axios.post<Emote>('/api/saveemote', {
+                prompt: "Your emote prompt", // You need to get this from somewhere
+                imageUrl: dataURL,
+                style: "Your emote style", // You need to get this from somewhere
+                model: "Your model" // You need to get this from somewhere
             });
-
+    
             if (response.status !== 200) {
                 throw new Error('Failed to save emote');
             }
-
+    
             toast.success('Emote saved successfully');
+            return response.data;
         } catch (error) {
             console.error('Error saving emote:', error);
             toast.error('Failed to save emote');
+            return undefined;
         }
     };
 
     const getWorkspace = () => {
         return canvas
             .getObjects()
-            .find((object) => object.name === "clip")
+            .find((object) => object.name === "clip") as fabric.Object & { width?: number, height?: number, left?: number, top?: number } | undefined;
     }
     const center = (object: fabric.Object) => {
         const workspace = getWorkspace()

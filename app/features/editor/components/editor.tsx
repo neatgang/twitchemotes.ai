@@ -30,8 +30,9 @@ interface EditorProps {
   emotes: Emote[];
 }
 
-export const Editor = ({ userId, emotes }: EditorProps) => {
+export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select")
+  const [emotes, setEmotes] = useState<Emote[]>(initialEmotes)
 
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
@@ -81,6 +82,10 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
       canvas.dispose();
     }
   }, [init])
+
+  const addEmote = useCallback((newEmote: Emote) => {
+    setEmotes(prevEmotes => [newEmote, ...prevEmotes])
+  }, [])
 
   return (
     <div className="flex flex-col">
@@ -164,6 +169,7 @@ export const Editor = ({ userId, emotes }: EditorProps) => {
             editor={editor}
             activeTool={activeTool}
             onChangeActiveTool={onChangeActiveTool}
+            addEmote={addEmote}
             key={JSON.stringify(
               editor?.canvas.getActiveObject()
             )}

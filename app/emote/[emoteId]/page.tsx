@@ -1,5 +1,3 @@
-"use"
-
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
@@ -27,7 +25,7 @@ export async function generateMetadata(
       id: params.emoteId,
     },
     include: {
-      emote: true, // Include the related Emote to get style and model
+      emote: true,
     },
   });
 
@@ -38,26 +36,65 @@ export async function generateMetadata(
     };
   }
 
+  const prompt = emoteListing.prompt ?? 'Untitled';
+  const style = emoteListing.emote.style ?? 'Unknown';
+  const model = emoteListing.emote.model ?? 'Unknown';
+
+  const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
+  const description = `A ${prompt} ${style} style emote created with ${model}.`;
+  const imageUrl = emoteListing.imageUrl ?? '';
+  const absoluteImageUrl = new URL(imageUrl, 'https://emotemaker.ai').toString();
+
   return {
-    title: `${emoteListing.prompt} ${emoteListing.emote.style} Emote | EmoteMaker.ai`,
-    description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
+    title,
+    description,
+    keywords: [prompt, style, 'emote', 'EmoteMaker.ai'].filter(Boolean),
+    authors: [{ name: 'EmoteMaker.ai' }],
+    creator: 'EmoteMaker.ai',
+    publisher: 'EmoteMaker.ai',
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: {
-      title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
+      title,
+      description,
+      url: `https://emotemaker.ai/emote/${params.emoteId}`,
+      siteName: 'EmoteMaker.ai',
       images: [
         {
-          url: emoteListing.imageUrl,
+          url: absoluteImageUrl,
           width: 1200,
-          height: 630,
-          alt: emoteListing.prompt,
+          height: 1200,
+          alt: prompt,
         },
       ],
+      locale: 'en_US',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: emoteListing.prompt,
-      description: `A ${emoteListing.prompt} ${emoteListing.emote.style} style emote created with ${emoteListing.emote.model}.`,
-      images: [emoteListing.imageUrl],
+      title,
+      description,
+      images: [absoluteImageUrl],
+      creator: '@EmoteMaker_AI',
+      site: '@EmoteMaker_AI',
+    },
+    other: {
+      'og:image': absoluteImageUrl,
+      'og:image:secure_url': absoluteImageUrl,
+      'og:image:width': '1200',
+      'og:image:height': '1200',
+      'og:image:alt': prompt,
+      'og:type': 'website',
+      'og:url': `https://emotemaker.ai/emote/${params.emoteId}`,
     },
   };
 }

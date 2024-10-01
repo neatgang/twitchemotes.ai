@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { FileUpload } from "@/components/FileUpload"
 import Image from "next/image"
 import { Emote } from "@prisma/client"
-import { useState } from "react"
-import { X } from "lucide-react" // Import X icon for remove button
+import { useState, useEffect } from "react"
+import { X, Loader } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
@@ -14,16 +14,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { TrainingStatus } from "../../types/training"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface TrainingImagesProps {
   emotes: Emote[];
   images: string[];
   onFileChange: (url?: string) => void;
   onEmoteSelect: (imageUrl: string) => void;
-  onClearImages: () => void; // New prop for clearing all images
-  onRemoveImage: (index: number) => void; // New prop for removing a single image
+  onClearImages: () => void;
+  onRemoveImage: (index: number) => void;
   trainingResult: any;
   userId?: string;
+  trainingStatus: TrainingStatus;
 }
 
 export default function TrainingImages({ 
@@ -34,10 +37,12 @@ export default function TrainingImages({
   onClearImages, 
   onRemoveImage,
   trainingResult, 
-  userId 
+  userId, 
+  trainingStatus 
 }: TrainingImagesProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const emotesPerPage = 10;
+  const [loading, setLoading] = useState(false);
+  const emotesPerPage = 16;
   const totalPages = Math.ceil(emotes.length / emotesPerPage);
 
   const getCurrentEmotes = () => {
@@ -46,25 +51,43 @@ export default function TrainingImages({
     return emotes.slice(startIndex, endIndex);
   };
 
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, [currentPage]);
+
+  const LoadingSkeleton = () => (
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
+      {[...Array(emotesPerPage)].map((_, index) => (
+        <Skeleton key={index} className="aspect-square w-full" />
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full lg:w-3/4">
       <h2 className="text-xl font-bold mb-4">Your Emotes</h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
-        {getCurrentEmotes().map((emote: Emote) => (
-          <div 
-            key={emote.id} 
-            className="aspect-square relative group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border cursor-pointer"
-            onClick={() => onEmoteSelect(emote.imageUrl!)}
-          >
-            <Image
-              fill
-              src={emote.imageUrl!}
-              alt={emote.id}
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <LoadingSkeleton />
+      ) : (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
+          {getCurrentEmotes().map((emote: Emote) => (
+            <div 
+              key={emote.id} 
+              className="aspect-square relative group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border cursor-pointer"
+              onClick={() => onEmoteSelect(emote.imageUrl!)}
+            >
+              <Image
+                fill
+                src={emote.imageUrl!}
+                alt={emote.id}
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <Pagination className="mt-2">
         <PaginationContent>
           <PaginationItem>
@@ -107,11 +130,35 @@ export default function TrainingImages({
             </div>
           ))}
         </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Image URLs:</h3>
+          <ul className="list-disc pl-5">
+            {images.map((image, index) => (
+              <li key={index}>
+                <a href={image} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                  {image}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       {trainingResult && (
         <div className="mt-4">
           <h3 className="text-lg font-bold mb-4">Training Result</h3>
           <pre>{JSON.stringify(trainingResult, null, 2)}</pre>
+        </div>
+      )}
+      {trainingStatus !== 'IDLE' && (
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Training Status: {trainingStatus}</h3>
+          {trainingStatus === 'IN_PROGRESS' && (
+            <div className="flex items-center">
+              <Loader className="animate-spin mr-2" />
+              <p>Training is in progress. This may take a while...</p>
+            </div>
+          )}
+          {trainingStatus === 'QUEUED' && <p>Training job is queued. Please wait...</p>}
         </div>
       )}
     </div>

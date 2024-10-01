@@ -12,9 +12,11 @@ import { cn } from "@/lib/utils";
 interface ModelSidebarProps {
   onStartTraining: () => void;
   userId?: string;
+  isTraining: boolean;
+  imageCount: number; // Add this prop
 }
 
-export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarProps) {
+export default function ModelSidebar({ onStartTraining, userId, isTraining, imageCount }: ModelSidebarProps) {
   const [newModelName, setNewModelName] = useState('');
   const [subject, setSubject] = useState('');
   const [tags, setTags] = useState(['Style']);
@@ -51,8 +53,8 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
   };
 
   const models = [
-    { name: 'SDXL LoRA', apiRoute: '/api/model/sdxl-lora' },
-    { name: 'SD 1.5 (legacy)', apiRoute: '/api/model/sd-1.5-legacy' },
+    // { name: 'SDXL LoRA', apiRoute: '/api/model/sdxl-lora' },
+    // { name: 'SD 1.5 (legacy)', apiRoute: '/api/model/sd-1.5-legacy' },
     { name: 'Flux', apiRoute: '/api/model/flux' },
   ];
 
@@ -91,6 +93,11 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
   const toggleAdvancedSettings = () => {
     setShowAdvanced(!showAdvanced);
   };
+
+  const [iterMultiplier, setIterMultiplier] = useState(1);
+  const [isStyle, setIsStyle] = useState(false);
+
+  const isTrainingDisabled = isTraining || imageCount < 4;
 
   return (
     <div className={cn(
@@ -263,11 +270,36 @@ export default function ModelSidebar({ onStartTraining, userId }: ModelSidebarPr
               </div>
               <Slider defaultValue={[1]} max={10} step={1} className="mt-2" />
             </div>
+            <div>
+              <div className="flex justify-between">
+                <Label>Iter Multiplier</Label>
+                <span>{iterMultiplier}</span>
+              </div>
+              <Slider 
+                value={[iterMultiplier]} 
+                onValueChange={(value) => setIterMultiplier(value[0])} 
+                min={1} 
+                max={10} 
+                step={1} 
+                className="mt-2" 
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <Label>Is Style</Label>
+              <Switch 
+                checked={isStyle}
+                onCheckedChange={setIsStyle}
+              />
+            </div>
           </div>
         )}
 
-        <Button onClick={onStartTraining} className="bg-blue-500 text-white w-full">
-          Start Training
+        <Button 
+          onClick={onStartTraining} 
+          className="bg-blue-500 text-white w-full"
+          disabled={isTrainingDisabled}
+        >
+          {isTraining ? 'Training in Progress' : (imageCount < 4 ? `Add ${4 - imageCount} more image${4 - imageCount === 1 ? '' : 's'}` : 'Start Training')}
         </Button>
         <Button variant="outline" className="w-full text-black">
           Save As Draft

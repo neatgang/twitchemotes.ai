@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const { userId } = auth();
     const user = await currentUser();
     const { searchParams } = new URL(req.url);
-    const isPro = searchParams.get("isPro") === "true";
+    const referral = searchParams.get("referral");
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -42,33 +42,15 @@ export async function GET(req: Request) {
       customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
-          price: "price_1PHJN1IlERZTJMCmqIRQ1Szy", // Replace with actual price ID for Basic Plan
+          price: process.env.STRIPE_BASIC_PRICE_ID,
           quantity: 1,
         },
       ],
       metadata: {
-        userId: userId
+        userId,
+        referral: referral || null,
       },
-    });
-
-    const userName = user.firstName || '' + user.lastName || ''
-
-    // await db.userApiLimit.upsert({
-    //   where: { userId: userId },
-    //   update: { count: 50 },
-    //   create: { userId: userId, count: 50 },
-    // });
-
-  //   await db.user.update({
-  //     where: { id: userId },
-  //     data: {
-  //         credits: {
-  //             increment: 50 // Increment by 50 credits or based on the specific plan
-  //         },
-  //         name: userName,
-  //         email: user.emailAddresses[0].emailAddress
-  //     }
-  // });
+    })
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {

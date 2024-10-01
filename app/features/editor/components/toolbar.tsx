@@ -2,25 +2,34 @@
 
 import { useState } from "react";
 import { ActiveTool, Editor } from "../types"
-import { Hint } from "@/components/hint";
 
-import { cn } from "@/lib/utils";
-import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, PaintBucket, Save, Scissors, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AlignRight, ArrowDown, ArrowUp, ChevronDown, DownloadCloud, EraserIcon, FrameIcon, PaintBucket, PictureInPicture, PictureInPicture2, Save, Scissors, Trash2 } from "lucide-react";
+
 import { BsBorderWidth } from "react-icons/bs";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
 import { ColorPicker } from "./color-picker";
-import { TbColorFilter } from "react-icons/tb";
+import { TbColorFilter, TbPictureInPictureFilled } from "react-icons/tb";
 import { Wand2 } from 'lucide-react'; // Add this import
+import { Hint } from "../../../../components/hint";
+import { Button } from "../../../../components/ui/button";
+import { cn } from "../../../../lib/utils";
+import { Loader2 } from "lucide-react"; // Add this import
+import { SlPicture } from "react-icons/sl";
+import { Emote } from "@prisma/client";
+import toast from "react-hot-toast";
 
 interface ToolbarProps {
     editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
+    addEmote: (newEmote: Emote) => void;
 }
 
-export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps) => {
+export const Toolbar = ({ editor, activeTool, onChangeActiveTool, addEmote }: ToolbarProps) => {
+    const [isRemovingBackground, setIsRemovingBackground] = useState(false);
+    const [isSavingEmote, setIsSavingEmote] = useState(false);
+    const [isDownloadingEmote, setIsDownloadingEmote] = useState(false);
 
     const fillColor = editor?.getActiveFillColor()
     const strokeColor = editor?.getActiveStrokeColor()   
@@ -164,44 +173,87 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool }: ToolbarProps
               <div className="flex items-center h-full justify-center">
                 <Hint label="Remove Background" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.removeBackground()}
-                        size="icon"
+                        onClick={async () => {
+                            setIsRemovingBackground(true);
+                            try {
+                                await editor?.removeBackground();
+                            } finally {
+                                setIsRemovingBackground(false);
+                            }
+                        }}
+                        size="sm"
                         variant="ghost"
+                        disabled={isRemovingBackground}
                     >
-                        <Scissors className="size-4"/>
+                        {isRemovingBackground ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <EraserIcon className="size-4" />
+                        )}
                     </Button>
                 </Hint>
             </div>
             )}
             <div className="flex items-center h-full justify-center">
-                <Hint label="Save Image" side="bottom" sideOffset={5}>
+                <Hint label="Download Emote" side="bottom" sideOffset={5}>
                     <Button
-                        onClick={() => editor?.downloadImage()}
+                        onClick={async () => {
+                            setIsDownloadingEmote(true);
+                            try {
+                                await editor?.downloadImage();
+                            } finally {
+                                setIsDownloadingEmote(false);
+                            }
+                        }}
                         size="icon"
                         variant="ghost"
+                        disabled={isDownloadingEmote}
                     >
-                        <DownloadCloud className="size-4"/>
-                    </Button>
-                </Hint>
-                </div>
-                <div className="flex items-center h-full justify-center">
-                <Hint label="Save Emote" side="bottom" sideOffset={5}>
-                    <Button
-                        onClick={() => editor?.saveEmote()}
-                        size="icon"
-                        variant="ghost"
-                    >
-                        <Save className="size-4"/>
+                        {isDownloadingEmote ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <DownloadCloud className="size-4" />
+                        )}
                     </Button>
                 </Hint>
             </div>
-            <Button
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Save Emote" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={async () => {
+                            setIsSavingEmote(true);
+                            try {
+                                const savedEmote = await editor?.saveEmote();
+                                if (savedEmote) {
+                                    addEmote(savedEmote);
+                                    toast.success('Emote saved successfully');
+                                }
+                            } catch (error) {
+                                console.error('Failed to save emote:', error);
+                                toast.error('Failed to save emote');
+                            } finally {
+                                setIsSavingEmote(false);
+                            }
+                        }}
+                        size="icon"
+                        variant="ghost"
+                        disabled={isSavingEmote}
+                    >
+                        {isSavingEmote ? (
+                            <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                            <Save className="size-4" />
+                        )}
+                    </Button>
+                </Hint>
+            </div>
+            {/* <Button
                 variant={activeTool === "inpaint" ? "secondary" : "ghost"}
                 size="icon"
                 onClick={() => onChangeActiveTool("inpaint")}
             >
                 <Wand2 className="h-4 w-4" />
-            </Button>
+            </Button> */}
         </div>
     )
 }
