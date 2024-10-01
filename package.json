@@ -57,6 +57,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@tanstack/react-query": "^5.51.21",
     "@types/jszip": "^3.4.1",
+    "@uiw/react-watermark": "^1.0.1",
     "@uploadthing/react": "^5.7.0",
     "@upstash/redis": "^1.34.0",
     "@vercel/analytics": "^1.3.1",
@@ -114,6 +115,7 @@
     "react-resizable-panels": "^2.0.16",
     "react-svg-to-image": "^3.0.0",
     "replicate": "^0.9.3",
+    "sharp": "^0.33.5",
     "sonner": "^1.4.41",
     "stripe": "^12.13.0",
     "tailwind-merge": "^1.14.0",
@@ -145,6 +147,7 @@
     "@types/react-dom": "^18.3.0",
     "@types/uuid": "^9.0.8",
     "prisma": "^5.18.0",
-    "raw-loader": "^4.0.2"
+    "raw-loader": "^4.0.2",
+    "ts-node": "^10.9.2"
   }
 }
