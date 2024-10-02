@@ -11,6 +11,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import Watermark from '@uiw/react-watermark'
+import { AxiosError } from 'axios';
 
 interface ListEmoteProps {
   emote: Emote;
@@ -63,10 +64,18 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
       if (response.data.success) {
         toast.success("Emote listed successfully!");
         router.push('/profile');
+      } else {
+        throw new Error(response.data.error || "Failed to list emote");
       }
     } catch (error) {
       console.error('Failed to list emote:', error);
-      toast.error('Failed to list emote. Please try again.');
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.error || 'Failed to list emote. Please try again.');
+      } else if (error instanceof Error) {
+        toast.error(error.message || 'Failed to list emote. Please try again.');
+      } else {
+        toast.error('An unknown error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

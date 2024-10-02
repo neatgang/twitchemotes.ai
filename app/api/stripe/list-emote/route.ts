@@ -18,29 +18,58 @@ export async function POST(req: Request) {
 
     const emote = await db.emote.findUnique({
       where: { id: emoteId, userId },
+      include: { emoteForSale: true },
     });
 
     if (!emote) {
       return new NextResponse("Emote not found", { status: 404 });
     }
 
-    const stripeProduct = await stripe.products.create({
-      name: `Emote: ${emote.prompt}`,
-      description: `${emote.style} style emote created with ${emote.model}`,
-      images: [emote.imageUrl!],
-    });
+    let stripeProduct;
+    let stripePrice;
 
-    const stripePrice = await stripe.prices.create({
+    if (emote.emoteForSale && emote.emoteForSale.stripeProductId) {
+      // Update existing product and price
+      stripeProduct = await stripe.products.update(emote.emoteForSale.stripeProductId, {
+        name: `Emote: ${emote.prompt}`,
+        description: `${emote.style} style emote created with ${emote.model}`,
+        images: [emote.imageUrl!],
+      });
+    } else {
+      // Create new product
+      stripeProduct = await stripe.products.create({
+        name: `Emote: ${emote.prompt}`,
+        description: `${emote.style} style emote created with ${emote.model}`,
+        images: [emote.imageUrl!],
+      });
+    }
+
+    // Always create a new price
+    stripePrice = await stripe.prices.create({
       product: stripeProduct.id,
       unit_amount: Math.round(price * 100), // Convert to cents
       currency: 'usd',
     });
 
-    const emoteForSale = await db.emoteForSale.create({
-      data: {
+    const emoteForSale = await db.emoteForSale.upsert({
+      where: { emoteId: emote.id },
+      update: {
+        imageUrl: emote.imageUrl!,
+        watermarkedUrl: emote.imageUrl!, // You might want to use the actual watermarked URL here
+        prompt: emote.prompt!,
+        price: price,
+        style: emote.style,
+        model: emote.model,
+        stripeProductId: stripeProduct.id,
+        stripePriceId: stripePrice.id,
+        stripePriceAmount: Math.round(price * 100),
+        stripePriceCurrency: 'usd',
+        status: 'PUBLISHED',
+      },
+      create: {
         emoteId: emote.id,
         imageUrl: emote.imageUrl!,
-        watermarkedUrl: emote.imageUrl!, // You might want to generate a watermarked version
+        watermarkedUrl: emote.imageUrl!, // You might want to use the actual watermarked URL here
         prompt: emote.prompt!,
         price: price,
         style: emote.style,
@@ -57,6 +86,10 @@ export async function POST(req: Request) {
     return new NextResponse(JSON.stringify({ success: true, emoteForSale }));
   } catch (error) {
     console.log("[STRIPE_LIST_EMOTE_ERROR]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    if (error instanceof Error) {
+      return new NextResponse(JSON.stringify({ error: error.message }), { status: 500 });
+    } else {
+      return new NextResponse(JSON.stringify({ error: "An unknown error occurred" }), { status: 500 });
+    }
   }
 }

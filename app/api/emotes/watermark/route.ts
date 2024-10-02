@@ -23,20 +23,20 @@ export async function POST(req: Request) {
 
     // Apply watermark
     const watermarkedBuffer = await sharp(imageBuffer)
-      .resize(256, 256) // Resize to a standard size
+      .resize(1048, 1048) // Resize to a standard size
       .composite([{
         input: Buffer.from(`
           <svg width="1048" height="1048">
             <style>
               .title { 
                 fill: white; 
-                font-size: 24px; 
+                font-size: 128px; 
                 font-weight: bold; 
                 font-family: 'Arial', sans-serif;
                 text-transform: uppercase;
                 letter-spacing: 2px;
                 stroke: black;
-                stroke-width: 2px;
+                stroke-width: 12px;
                 paint-order: stroke fill;
               }
             </style>
