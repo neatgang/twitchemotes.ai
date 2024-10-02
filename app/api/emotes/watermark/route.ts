@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       .resize(256, 256) // Resize to a standard size
       .composite([{
         input: Buffer.from(`
-          <svg width="256" height="256">
+          <svg width="1048" height="1048">
             <style>
               .title { 
                 fill: white; 

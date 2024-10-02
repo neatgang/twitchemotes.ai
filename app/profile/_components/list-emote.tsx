@@ -53,15 +53,14 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     try {
-      const response = await axios.post('/api/emotes/list', {
+      const response = await axios.post('/api/stripe/list-emote', {
         emoteId: emote.id,
         price: parseFloat(price),
-        watermarkedUrl,
       });
-  
-      if (response.status === 200) {
+
+      if (response.data.success) {
         toast.success("Emote listed successfully!");
         router.push('/profile');
       }
