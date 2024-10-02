@@ -1,15 +1,8 @@
-import React from 'react';
-import { auth } from "@clerk/nextjs/server"
+import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import ListEmote from "../../_components/list-emote";
 
-const MarketplacePage = async ({
-  params,
-}: {
-  params: {
-      emoteId: string;
-  };
-}) => {
+const ListEmotePage = async ({ params }: { params: { emoteId: string } }) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -27,15 +20,15 @@ const MarketplacePage = async ({
   });
 
   if (!emote) {
-    return <div>Emote not found or you dont have permission to list it.</div>;
+    return <div>Emote not found</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">List Your Emote</h1>
-      <ListEmote emoteForSale={emote.emoteForSale} emote={emote} />
+      <ListEmote emote={emote} emoteForSale={emote.emoteForSale} />
     </div>
-  )
+  );
 }
 
-export default MarketplacePage
+export default ListEmotePage;

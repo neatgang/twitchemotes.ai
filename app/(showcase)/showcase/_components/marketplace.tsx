@@ -185,16 +185,16 @@ export default function Marketplace({
       {loading ? (
         <LoadingSkeleton />
       ) : (
-        <>
+        <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {initialEmotesForSale.map((emote) => (
+            {initialEmotesForSale.filter(emote => emote.watermarkedUrl).map((emote) => (
               <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
                 <CardContent className="p-4">
                   <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
                     <Image
                       alt={emote.prompt}
                       className="object-cover group-hover:scale-105 transition-transform duration-200"
-                      src={emote.imageUrl}
+                      src={emote.watermarkedUrl || '/placeholder-image.jpg'}
                       width={300}
                       height={300}
                       loading="lazy"
@@ -251,7 +251,7 @@ export default function Marketplace({
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-        </>
+        </div>
       )}
     </main>
   );

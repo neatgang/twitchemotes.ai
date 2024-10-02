@@ -20,7 +20,7 @@ export default function Component() {
 
     const isPro = true 
   return (
-   <>
+   <div>
     <CreditsHero isPro={isPro}/>
       {/* <div className="w-full py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
@@ -190,6 +190,6 @@ export default function Component() {
           </Link>
         </nav>
       </footer>
-    </>
+    </div>
   )
 }

@@ -1,3 +1,5 @@
+
+
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
@@ -42,7 +44,7 @@ export async function generateMetadata(
 
   const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
   const description = `A ${prompt} ${style} style emote created with ${model}.`;
-  const imageUrl = emoteListing.imageUrl ?? '';
+  const imageUrl = emoteListing.watermarkedUrl ?? emoteListing.imageUrl ?? '';
   const absoluteImageUrl = new URL(imageUrl, 'https://emotemaker.ai').toString();
 
   return {
@@ -100,6 +102,18 @@ export async function generateMetadata(
 }
 
 const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
+  // const searchParams = useSearchParams();
+  // const success = searchParams.get('success');
+  // const canceled = searchParams.get('canceled');
+
+  // useEffect(() => {
+  //   if (success) {
+  //     toast.success('Purchase successful! The emote has been added to your library.');
+  //   } else if (canceled) {
+  //     toast.error('Purchase canceled. The emote was not added to your library.');
+  //   }
+  // }, [success, canceled]);
+
   const emoteListing = await db.emoteForSale.findUnique({
     where: {
       id: params.emoteId,
@@ -114,13 +128,13 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
   }
 
   return (
-    <>
+    <div>
       <EmoteProduct 
         emoteListing={emoteListing} 
         emoteStyle={emoteListing.style ?? 'Not specified'}
         emoteModel={emoteListing.emote.model ?? 'Not specified'}
       />
-    </>
+    </div>
   );
 };
 

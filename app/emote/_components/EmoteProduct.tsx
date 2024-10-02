@@ -1,11 +1,11 @@
 "use client"
 
-import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 import { Button } from "@/components/ui/button";
 import { Emote, EmoteForSale } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 interface EmoteProductProps {
   emoteListing: EmoteForSale & { emote: Emote };
@@ -16,22 +16,21 @@ interface EmoteProductProps {
 const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, emoteModel }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleAddToLibrary = async () => {
-    if (!emoteListing) return;
+  const handlePurchase = async () => {
+    if (!emoteListing || emoteListing.price === null) return;
     setIsLoading(true);
     try {
-      const result = await addEmoteToLibrary({
-        prompt: emoteListing.prompt,
-        imageUrl: emoteListing.imageUrl,
-        style: emoteListing.style || 'custom'
-      });
-      if (result.success) {
-        toast.success('Emote added to your library!');
-      } else {
-        throw new Error(result.error);
-      }
+      const response = await axios.get(`/api/stripe/purchase-emote?emoteId=${emoteListing.id}`);
+      window.location.href = response.data.url;
     } catch (error) {
-      toast.error('Failed to add emote to library');
+      console.error('Purchase error:', error);
+      if (axios.isAxiosError(error)) {
+        toast.error(`Failed to initiate purchase: ${error.response?.data?.error || error.message}`);
+      } else if (error instanceof Error) {
+        toast.error(`Failed to initiate purchase: ${error.message}`);
+      } else {
+        toast.error('An unknown error occurred');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -45,10 +44,10 @@ const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, e
             <Image
               alt={`${emoteListing?.prompt} emote`}
               className="w-full rounded-lg object-cover"
-              height={800}
+              height={400}
               loading="eager"
-              src={emoteListing?.imageUrl || ''}
-              width={800}
+              src={emoteListing?.watermarkedUrl || emoteListing?.imageUrl || ''}
+              width={400}
             />
             <figcaption className="sr-only">{emoteListing?.prompt} emote</figcaption>
           </figure>
@@ -56,9 +55,6 @@ const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, e
         <div className="space-y-6">
           <header>
             <h1 className="text-3xl font-bold">{emoteListing?.prompt}</h1>
-            {/* <p className="text-gray-500 dark:text-gray-400 mt-2">
-              A unique {emoteStyle} style emote created with {emoteModel}
-            </p> */}
           </header>
           <dl className="grid grid-cols-2 gap-4">
             <div>
@@ -69,15 +65,21 @@ const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, e
               <dt className="text-sm text-gray-500 dark:text-gray-400">Created with</dt>
               <dd className="font-medium">{emoteModel}</dd>
             </div>
+            <div>
+              <dt className="text-sm text-gray-500 dark:text-gray-400">Price</dt>
+              <dd className="font-medium">
+                ${emoteListing.price !== null ? emoteListing.price.toFixed(2) : 'N/A'}
+              </dd>
+            </div>
           </dl>
           <Button 
-            onClick={handleAddToLibrary} 
+            onClick={handlePurchase} 
             className="mt-2 w-full flex" 
             variant="default"
-            disabled={isLoading || !emoteListing}
-            aria-label={isLoading ? 'Adding to library...' : 'Add to Library'}
+            disabled={isLoading || !emoteListing || emoteListing.price === null}
+            aria-label={isLoading ? 'Processing...' : 'Purchase Emote'}
           >
-            {isLoading ? 'Adding...' : 'Add to Library'}
+            {isLoading ? 'Processing...' : 'Purchase Emote'}
           </Button>
         </div>
       </div>
