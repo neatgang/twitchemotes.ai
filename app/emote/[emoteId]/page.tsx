@@ -42,7 +42,7 @@ export async function generateMetadata(
 
   const title = `${prompt} ${style} Emote | EmoteMaker.ai`;
   const description = `A ${prompt} ${style} style emote created with ${model}.`;
-  const imageUrl = emoteListing.imageUrl ?? '';
+  const imageUrl = emoteListing.watermarkedUrl ?? emoteListing.imageUrl ?? '';
   const absoluteImageUrl = new URL(imageUrl, 'https://emotemaker.ai').toString();
 
   return {
@@ -114,13 +114,13 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
   }
 
   return (
-    <>
+    <div>
       <EmoteProduct 
         emoteListing={emoteListing} 
         emoteStyle={emoteListing.style ?? 'Not specified'}
         emoteModel={emoteListing.emote.model ?? 'Not specified'}
       />
-    </>
+    </div>
   );
 };
 

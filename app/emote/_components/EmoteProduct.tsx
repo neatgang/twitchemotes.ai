@@ -47,7 +47,7 @@ const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, e
               className="w-full rounded-lg object-cover"
               height={800}
               loading="eager"
-              src={emoteListing?.imageUrl || ''}
+              src={emoteListing?.watermarkedUrl || emoteListing?.imageUrl || ''}
               width={800}
             />
             <figcaption className="sr-only">{emoteListing?.prompt} emote</figcaption>

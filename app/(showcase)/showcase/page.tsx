@@ -15,11 +15,15 @@ const MarketplacePage = async ({ searchParams }: { searchParams: { page?: string
   const search = searchParams.search || '';
   const ITEMS_PER_PAGE = 20;
 
-  const { emotesForSale, totalCount } = await getEmotesForSale({
+  const { emotesForSale: allEmotesForSale, totalCount: allTotalCount } = await getEmotesForSale({
     page,
     itemsPerPage: ITEMS_PER_PAGE,
     search
   });
+
+  // Filter out emotes without watermarkedUrl
+  const emotesForSale = allEmotesForSale.filter(emote => emote.watermarkedUrl);
+  const totalCount = emotesForSale.length;
 
   const userEmotes = await db.emote.findMany({
     where: {
