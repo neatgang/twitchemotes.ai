@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 
 interface MarketplaceProps {
-  initialEmotesForSale: EmoteForSale[];
+  initialEmotesForSale: (EmoteForSale & { emote: Emote })[];
   userEmotes: (Emote & { emoteForSale: EmoteForSale | null })[];
   userId: string;
   currentPage: number;
@@ -155,7 +155,7 @@ export default function Marketplace({
                       <div key={emote.id} className="flex flex-col items-center">
                         <div className="relative w-24 h-24 mb-2">
                           <Image
-                            src={emote.imageUrl || '/placeholder-image.jpg'}
+                            src={emote.emoteForSale?.watermarkedUrl || emote.imageUrl || '/placeholder-image.jpg'}
                             alt={emote.prompt || 'Emote image'}
                             layout="fill"
                             objectFit="cover"
@@ -187,23 +187,23 @@ export default function Marketplace({
       ) : (
         <div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {initialEmotesForSale.filter(emote => emote.watermarkedUrl).map((emote) => (
-              <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
+            {initialEmotesForSale.map((emoteForSale) => (
+              <Card key={emoteForSale.id} className="group hover:shadow-lg transition-shadow duration-200">
                 <CardContent className="p-4">
                   <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
                     <Image
-                      alt={emote.prompt}
+                      alt={emoteForSale.prompt}
                       className="object-cover group-hover:scale-105 transition-transform duration-200"
-                      src={emote.watermarkedUrl || '/placeholder-image.jpg'}
+                      src={emoteForSale.watermarkedUrl || emoteForSale.imageUrl || '/placeholder-image.jpg'}
                       width={300}
                       height={300}
                       loading="lazy"
                     />
                   </div>
-                  <h3 className="font-medium text-sm truncate">{emote.prompt}</h3>
+                  <h3 className="font-medium text-sm truncate">{emoteForSale.prompt}</h3>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
-                  <Link href={`/emote/${emote.id}`} passHref className="w-full">
+                  <Link href={`/emote/${emoteForSale.id}`} passHref className="w-full">
                     <Button className="w-full" variant="outline">
                       View Emote
                     </Button>
