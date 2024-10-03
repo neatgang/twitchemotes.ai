@@ -46,7 +46,7 @@ export async function GET(req: Request) {
             currency: "USD",
             product_data: {
               name: "EmoteMaker.ai Standard Plan",
-              description: "Generate unique emotes with a single prompt. For $10/month, receive 150 credits to create custom emotes. Additional credits available at $0.10 each. "
+              description: "Generate unique emotes with a single prompt. For $10/month, receive 150 credits to create custom emotes. "
             },
             unit_amount: 1000,
             recurring: {
