@@ -30,7 +30,7 @@ export async function POST(req: Request) {
             <style>
               .title { 
                 fill: white; 
-                font-size: 128px; 
+                font-size: 100px; 
                 font-weight: bold; 
                 font-family: 'Arial', sans-serif;
                 text-transform: uppercase;
