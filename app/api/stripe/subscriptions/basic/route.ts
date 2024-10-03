@@ -46,6 +46,7 @@ export async function GET(req: Request) {
           quantity: 1,
         },
       ],
+      allow_promotion_codes: true,
       metadata: {
         userId,
         referral: referral || null,
