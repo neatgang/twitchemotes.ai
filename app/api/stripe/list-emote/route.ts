@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   try {
     const { userId } = auth();
     const user = await currentUser();
-    const { emoteId, price } = await req.json();
+    const { emoteId, price, watermarkedUrl } = await req.json();
 
     if (!userId || !user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -33,14 +33,14 @@ export async function POST(req: Request) {
       stripeProduct = await stripe.products.update(emote.emoteForSale.stripeProductId, {
         name: `Emote: ${emote.prompt}`,
         description: `${emote.style} style emote created with ${emote.model}`,
-        images: [emote.imageUrl!],
+        images: [watermarkedUrl], // Use the watermarked URL
       });
     } else {
       // Create new product
       stripeProduct = await stripe.products.create({
         name: `Emote: ${emote.prompt}`,
         description: `${emote.style} style emote created with ${emote.model}`,
-        images: [emote.imageUrl!],
+        images: [watermarkedUrl], // Use the watermarked URL
       });
     }
 
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       where: { emoteId: emote.id },
       update: {
         imageUrl: emote.imageUrl!,
-        watermarkedUrl: emote.imageUrl!, // You might want to use the actual watermarked URL here
+        watermarkedUrl: watermarkedUrl, // Use the watermarked URL
         prompt: emote.prompt!,
         price: price,
         style: emote.style,
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       create: {
         emoteId: emote.id,
         imageUrl: emote.imageUrl!,
-        watermarkedUrl: emote.imageUrl!, // You might want to use the actual watermarked URL here
+        watermarkedUrl: watermarkedUrl, // Use the watermarked URL
         prompt: emote.prompt!,
         price: price,
         style: emote.style,

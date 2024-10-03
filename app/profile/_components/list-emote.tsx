@@ -59,6 +59,7 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
       const response = await axios.post('/api/stripe/list-emote', {
         emoteId: emote.id,
         price: parseFloat(price),
+        watermarkedUrl: watermarkedUrl, // Pass the watermarked URL
       });
 
       if (response.data.success) {
@@ -69,7 +70,7 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
       }
     } catch (error) {
       console.error('Failed to list emote:', error);
-      if (error instanceof AxiosError) {
+      if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.error || 'Failed to list emote. Please try again.');
       } else if (error instanceof Error) {
         toast.error(error.message || 'Failed to list emote. Please try again.');
