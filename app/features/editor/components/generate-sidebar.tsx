@@ -28,6 +28,9 @@ import { SaveAll } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/nextjs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Emote } from "@prisma/client";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const formSchema = z.object({
   prompt: z.string().min(2, { message: "Prompt must be at least 2 characters." }),
@@ -42,14 +45,20 @@ interface EmoteGeneratorSidebarProps {
   activeTool: ActiveTool;
   onChangeActiveTool: (tool: ActiveTool) => void;
   editor: Editor | undefined;
+  emotes: Emote[];
 }
 
-export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }: EmoteGeneratorSidebarProps) => {
+export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, emotes }: EmoteGeneratorSidebarProps) => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [enhancedPrompts, setEnhancedPrompts] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedEmote, setSelectedEmote] = useState<Emote | null>(null);
+  const [imageSource, setImageSource] = useState<"upload" | "emote" | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
   const { userId } = useAuth();
+  const [selectedModel, setSelectedModel] = useState(generation.models[0]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,6 +69,18 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
       model: "DALL-E 3"
     }
   });
+
+  // Add this check
+  const paginatedEmotes = emotes ? emotes.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  ) : [];
+
+  const totalPages = emotes ? Math.ceil(emotes.length / ITEMS_PER_PAGE) : 0;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -76,7 +97,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
         amount: parseInt(data.amount),
         resolution: data.resolution,
         emoteType: data.emoteType,
-        image: uploadedImage,
+        image: uploadedImage || (selectedEmote ? selectedEmote.imageUrl : null),
       });
 
       let imageUrls: string[] = [];
@@ -200,7 +221,14 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select 
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              const newModel = generation.models.find(m => m.name === value);
+                              if (newModel) setSelectedModel(newModel);
+                            }} 
+                            defaultValue={field.value}
+                          >
                             <SelectTrigger className="w-full">
                               <SelectValue placeholder="Select model" />
                             </SelectTrigger>
@@ -280,28 +308,81 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor }
                   />
                 </AccordionContent>
               </AccordionItem>
-              {/* Add this section within your form */}
-              {uploadedImage ? (
-                <div className="flex flex-col items-center">
-                  <Image src={uploadedImage} alt="Uploaded Image" width={200} height={200} className="object-cover rounded-lg" />
-                  <Button onClick={() => setUploadedImage(null)} className="mt-2">Remove Image</Button>
-                </div>
-              ) : (
-                <AccordionItem value="uploadImage">
-                  <AccordionTrigger>Upload Image</AccordionTrigger>
+              {selectedModel.name.toLowerCase().includes("image to image") && (
+                <AccordionItem value="imageSelection">
+                  <AccordionTrigger>Select Image</AccordionTrigger>
                   <AccordionContent>
-                    <div className="flex flex-col items-center">
-                      <FormField
-                        control={form.control}
-                        name="image"
-                        render={() => (
-                          <FormItem>
-                            <FormControl>
-                              <FileUpload onChange={(url) => setUploadedImage(url ?? null)} endpoint="imageUploader" />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
+                    <div className="flex flex-col space-y-4">
+                      <Select onValueChange={(value: "upload" | "emote") => setImageSource(value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose image source" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upload">Upload New Image</SelectItem>
+                          <SelectItem value="emote">Select Existing Emote</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {imageSource === "upload" && (
+                        <FormField
+                          control={form.control}
+                          name="image"
+                          render={() => (
+                            <FormItem>
+                              <FormControl>
+                                <FileUpload onChange={(url) => setUploadedImage(url ?? null)} endpoint="imageUploader" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                      {imageSource === "emote" && (
+                        <div>
+                          <ScrollArea className="h-[200px]">
+                            <div className="grid grid-cols-2 gap-2">
+                              {paginatedEmotes.map((emote) => (
+                                <div
+                                  key={emote.id}
+                                  className={`relative w-full pt-[100%] cursor-pointer border rounded-sm overflow-hidden ${
+                                    selectedEmote?.id === emote.id ? 'ring-2 ring-primary' : ''
+                                  }`}
+                                  onClick={() => setSelectedEmote(emote)}
+                                >
+                                  <Image
+                                    fill
+                                    src={emote.imageUrl!}
+                                    alt={emote.prompt || emote.id}
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                          {totalPages > 0 && (
+                            <div className="mt-2 flex justify-between items-center">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                disabled={currentPage === 1}
+                              >
+                                <ChevronLeft className="h-4 w-4" />
+                              </Button>
+                              <span className="text-sm font-medium">
+                                {currentPage} / {totalPages}
+                              </span>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                                disabled={currentPage === totalPages}
+                              >
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
