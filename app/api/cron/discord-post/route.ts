@@ -21,7 +21,10 @@ async function getRecentEmotes() {
       createdAt: {
         gte: twentyFourHoursAgo
       },
-      // status: 'PUBLISHED' // Keep this filter for Discord posts
+      status: 'PUBLISHED',
+      watermarkedUrl: {
+        not: null
+      }
     },
     include: {
       user: true
@@ -32,7 +35,7 @@ async function getRecentEmotes() {
     take: 15
   });
 
-  console.log(`Found ${emotes.length} recent published emotes`);
+  console.log(`Found ${emotes.length} recent published emotes with watermarks`);
   return emotes;
 }
 
@@ -53,15 +56,15 @@ async function postEmotesToDiscord(emotes: any[]) {
     };
     
     try {
-      // Fetch the image
-      const imageResponse = await fetch(emote.imageUrl);
-      if (!imageResponse.ok) throw new Error('Failed to fetch image');
+      // Use watermarkedUrl instead of imageUrl
+      const imageResponse = await fetch(emote.watermarkedUrl);
+      if (!imageResponse.ok) throw new Error('Failed to fetch watermarked image');
       const imageBuffer = await imageResponse.arrayBuffer();
 
       // Create form data with file
       const formData = new FormData();
       formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
-      formData.append('file', new Blob([imageBuffer]), 'emote.png');
+      formData.append('file', new Blob([imageBuffer]), 'emote_watermarked.png');
 
       const response = await fetch(DISCORD_WEBHOOK_URL, {
         method: 'POST',
@@ -72,12 +75,12 @@ async function postEmotesToDiscord(emotes: any[]) {
         throw new Error(`Discord API responded with status: ${response.status}`);
       }
       
-      console.log(`Posted emote: ${emote.prompt}`);
+      console.log(`Posted watermarked emote: ${emote.prompt}`);
     } catch (error) {
       if (error instanceof Error) {
-        console.error(`Failed to post emote: ${emote.prompt}`, error.message);
+        console.error(`Failed to post watermarked emote: ${emote.prompt}`, error.message);
       } else {
-        console.error(`Failed to post emote: ${emote.prompt}`, 'An unknown error occurred');
+        console.error(`Failed to post watermarked emote: ${emote.prompt}`, 'An unknown error occurred');
       }
     }
   }
@@ -89,12 +92,12 @@ async function cronJob() {
     const recentEmotes = await getRecentEmotes();
     
     if (recentEmotes.length === 0) {
-      console.log('No recent published emotes found to post');
+      console.log('No recent published emotes with watermarks found to post');
       return;
     }
     
     await postEmotesToDiscord(recentEmotes);
-    console.log(`${recentEmotes.length} emotes posted to Discord successfully`);
+    console.log(`${recentEmotes.length} watermarked emotes posted to Discord successfully`);
   } catch (error) {
     console.error('Error in cron job:', error);
   }
