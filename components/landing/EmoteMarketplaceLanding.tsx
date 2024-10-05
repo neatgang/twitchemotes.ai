@@ -30,7 +30,11 @@ export default function EmoteMarketplaceLanding() {
       window.location.href = response.data.url;
     } catch (error) {
       console.error("Error connecting to Stripe:", error);
-      toast.error("Failed to start Stripe onboarding. Please try again.");
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error(`Failed to start Stripe onboarding: ${error.response.data.error}`);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
