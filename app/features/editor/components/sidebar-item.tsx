@@ -11,11 +11,15 @@ interface SidebarItemProps {
 
 export const SidebarItem = ({ icon: Icon, label, isActive, onClick }: SidebarItemProps) => {
     return (
-        <Button variant="ghost" onClick={onClick} className={cn("w-full h-full aspect-video p-3 py-4 flex flex-col rounded-none", isActive && "bg-muted text-primary")}>
-            <Icon className="size-5 stroke-2 strink-0 "/>
-            {/* <span className="mt-2 text-xs">
-                {label}
-            </span> */}
+        <Button 
+            variant="ghost" 
+            onClick={onClick} 
+            className={cn(
+                "w-full h-14 p-0 flex items-center justify-center",
+                isActive && "bg-muted text-primary"
+            )}
+        >
+            <Icon className="h-6 w-6" />
         </Button>
     )
 }

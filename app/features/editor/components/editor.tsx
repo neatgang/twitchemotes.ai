@@ -148,6 +148,7 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
+          emotes={emotes} // Pass emotes as props
         />
         <FilterSidebar 
           editor={editor}
