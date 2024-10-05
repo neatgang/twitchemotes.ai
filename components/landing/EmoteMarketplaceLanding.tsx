@@ -41,7 +41,7 @@ export default function EmoteMarketplaceLanding() {
   };
 
   const handleBrowseMarketplace = () => {
-    router.push('/marketplace/browse');
+    router.push('/marketplace');
   };
 
   return (
@@ -96,7 +96,7 @@ export default function EmoteMarketplaceLanding() {
                 </Button>
               </div>
             </div>
-            <div className="relative">
+            {/* <div className="relative">
               <Image
                 alt="AI-Generated Emotes Collage"
                 className="rounded-xl shadow-2xl"
@@ -111,7 +111,7 @@ export default function EmoteMarketplaceLanding() {
               <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
                 <p className="font-bold text-purple-600">1000+ Emotes Sold!</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
