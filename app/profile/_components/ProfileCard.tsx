@@ -69,14 +69,19 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
         }
     }
 
-    const handleConnectStripe = async () => {
+    const handleStripeAction = async () => {
         setIsLoading(true);
         try {
             const response = await axios.post('/api/stripe/connect');
             window.location.href = response.data.url;
         } catch (error) {
-            console.error("Error connecting to Stripe:", error);
-            toast.error("Failed to start Stripe onboarding. Please try again.");
+            console.error("Error with Stripe action:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                toast.error(`Failed to process Stripe action: ${error.response.data.error}`);
+                console.error("Detailed error:", error.response.data);
+            } else {
+                toast.error("An unexpected error occurred. Please try again.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -146,10 +151,10 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
       <div className="col-span-full">
                             <Button
                                 type="button"
-                                onClick={handleConnectStripe}
-                                disabled={isLoading || !!profile?.stripeConnectAccountId}
+                                onClick={handleStripeAction}
+                                disabled={isLoading}
                             >
-                                {profile?.stripeConnectAccountId ? "Stripe Connected" : "Connect Stripe"}
+                                {profile?.stripeConnectAccountId ? "Manage Stripe Account" : "Connect Stripe"}
                             </Button>
                         </div>
 
