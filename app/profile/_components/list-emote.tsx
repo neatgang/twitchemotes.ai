@@ -84,19 +84,19 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
 
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
-      <header className="mb-8 md:mb-12">
+      {/* <header className="mb-8 md:mb-12">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold md:text-3xl">List an Emote</h1>
             <p className="text-gray-500 dark:text-gray-400">Fill out the form to list your emote on the marketplace.</p>
           </div>
         </div>
-      </header>
+      </header> */}
       <Card>
         <CardContent className="mt-8">
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image</Label>
+              {/* <Label htmlFor="imageUrl">{emote.prompt}</Label> */}
               <div className="flex flex-col items-center justify-center p-6 aspect-square">
                 <Image
                   alt="Emote"
