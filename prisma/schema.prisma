@@ -32,18 +32,19 @@ generator client {
 // }
 
 model Profile {
-  id        String  @id @default(uuid())
-  userId    String  @unique
-  name      String?
-  imageUrl  String? @db.Text
-  email     String? @db.Text
-  bio       String? @db.Text
-  twitch    String? @db.Text
-  youtube   String? @db.Text
-  instagram String? @db.Text
-  twitter   String? @db.Text
-  status    String? @default("active")
-  isPublic  Boolean @default(false) // Add this line if it's not already present
+  id                     String  @id @default(uuid())
+  userId                 String  @unique
+  name                   String?
+  imageUrl               String? @db.Text
+  email                  String? @db.Text
+  bio                    String? @db.Text
+  twitch                 String? @db.Text
+  youtube                String? @db.Text
+  instagram              String? @db.Text
+  twitter                String? @db.Text
+  status                 String? @default("active")
+  isPublic               Boolean @default(false)
+  stripeConnectAccountId String? // Add this line
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

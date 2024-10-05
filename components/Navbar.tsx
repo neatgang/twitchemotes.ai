@@ -190,7 +190,7 @@ export const Navbar = ({
               </NavigationMenuItem> */}
             </NavigationMenuList>
             <Button variant="ghost" className="hidden sm:block">
-              <Link href="/showcase">Showcase</Link>
+              <Link href="/marketplace">Marketplace</Link>
             </Button>
           </NavigationMenu>
         </nav>

@@ -6,6 +6,8 @@ import { stripe } from "@/lib/stripe";
 
 const settingsUrl = absoluteUrl("/profile");
 
+const MINIMUM_PRICE = 100; // $1.00 in cents
+
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
@@ -50,6 +52,11 @@ export async function POST(req: Request) {
       unit_amount: Math.round(price * 100), // Convert to cents
       currency: 'usd',
     });
+
+    const priceInCents = Math.round(price * 100);
+    if (priceInCents < MINIMUM_PRICE) {
+      return new NextResponse(JSON.stringify({ error: `Emote price must be at least $${MINIMUM_PRICE / 100}` }), { status: 400 });
+    }
 
     const emoteForSale = await db.emoteForSale.upsert({
       where: { emoteId: emote.id },

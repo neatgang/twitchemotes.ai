@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Search, ShoppingCart, User, Star, TrendingUp, Zap } from "lucide-react"
+import Image from "next/image"
 
 export default function EmoteMakerMarketplace() {
   return (
@@ -37,7 +38,7 @@ export default function EmoteMakerMarketplace() {
             {[1, 2, 3, 4].map((i) => (
               <Card key={i}>
                 <CardHeader className="p-0">
-                  <img
+                  <Image
                     src={`/placeholder.svg?height=200&width=200&text=Emote ${i}`}
                     alt={`Featured Emote ${i}`}
                     className="w-full h-48 object-cover"
@@ -74,7 +75,7 @@ export default function EmoteMakerMarketplace() {
             <TabsContent value="chibi" className="mt-4">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <img
+                  <Image
                     key={i}
                     src={`/placeholder.svg?height=100&width=100&text=Chibi ${i}`}
                     alt={`Chibi Emote ${i}`}

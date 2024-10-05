@@ -121,6 +121,21 @@ export default function Marketplace({
     }
   };
 
+  const handlePurchase = async (emoteId: string) => {
+    try {
+      const response = await axios.get(`/api/stripe/purchase-emote?emoteId=${emoteId}`);
+      const { url } = response.data;
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error initiating purchase:', error);
+      toast({
+        title: "Error",
+        description: 'Failed to initiate purchase. Please try again.',
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <header className="mb-8 md:mb-12">
@@ -211,6 +226,7 @@ export default function Marketplace({
                       View Emote
                     </Button>
                   </Link>
+                  {/* <Button onClick={() => handlePurchase(emoteForSale.id)}>Purchase</Button> */}
                 </CardFooter>
               </Card>
             ))}

@@ -1,7 +1,3 @@
-
-
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
 import { db } from '@/lib/db';
 import Image from 'next/image';
@@ -10,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import EmoteProduct from '../_components/EmoteProduct';
 import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
-import { toast } from "react-hot-toast";
 import { Metadata, ResolvingMetadata } from 'next';
+import EmoteClientWrapper from '../_components/EmoteClientWrapper';
 
 type Props = {
   params: { emoteId: string }
@@ -102,18 +98,6 @@ export async function generateMetadata(
 }
 
 const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
-  // const searchParams = useSearchParams();
-  // const success = searchParams.get('success');
-  // const canceled = searchParams.get('canceled');
-
-  // useEffect(() => {
-  //   if (success) {
-  //     toast.success('Purchase successful! The emote has been added to your library.');
-  //   } else if (canceled) {
-  //     toast.error('Purchase canceled. The emote was not added to your library.');
-  //   }
-  // }, [success, canceled]);
-
   const emoteListing = await db.emoteForSale.findUnique({
     where: {
       id: params.emoteId,
@@ -128,13 +112,13 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
   }
 
   return (
-    <div>
+    <EmoteClientWrapper emoteId={params.emoteId}>
       <EmoteProduct 
         emoteListing={emoteListing} 
         emoteStyle={emoteListing.style ?? 'Not specified'}
         emoteModel={emoteListing.emote.model ?? 'Not specified'}
       />
-    </div>
+    </EmoteClientWrapper>
   );
 };
 
