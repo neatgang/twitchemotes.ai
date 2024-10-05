@@ -84,14 +84,6 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
 
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
-      {/* <header className="mb-8 md:mb-12">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold md:text-3xl">List an Emote</h1>
-            <p className="text-gray-500 dark:text-gray-400">Fill out the form to list your emote on the marketplace.</p>
-          </div>
-        </div>
-      </header> */}
       <Card>
         <CardContent className="mt-8">
           <form onSubmit={handleSubmit} className="grid gap-4">
@@ -124,12 +116,13 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
               <p>{emote.prompt}</p>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="price">Price</Label>
+              <Label htmlFor="price">Price (minimum $1.00)</Label>
               <Input 
                 id="price" 
                 placeholder="Enter the price" 
                 step="0.01" 
                 type="number"
+                min="1.00"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 required 

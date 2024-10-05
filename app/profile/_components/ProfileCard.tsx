@@ -69,6 +69,19 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
         }
     }
 
+    const handleConnectStripe = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post('/api/stripe/connect');
+            window.location.href = response.data.url;
+        } catch (error) {
+            console.error("Error connecting to Stripe:", error);
+            toast.error("Failed to start Stripe onboarding. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <Card>
                      <CardHeader>
@@ -130,9 +143,19 @@ export const ProfileCard = ({ profile, userId }: ProfileCardProps) => {
     </FormItem>
   )}
   />
-      <Button type="submit" className="flex items-center">
-    Save
- </Button>
+      <div className="col-span-full">
+                            <Button
+                                type="button"
+                                onClick={handleConnectStripe}
+                                disabled={isLoading || !!profile?.stripeConnectAccountId}
+                            >
+                                {profile?.stripeConnectAccountId ? "Stripe Connected" : "Connect Stripe"}
+                            </Button>
+                        </div>
+
+                        <Button type="submit" className="col-span-full">
+                            Save
+                        </Button>
                 </form>
             </Form>
             </CardContent>
