@@ -135,12 +135,15 @@ export default function Marketplace({
             <Input 
               placeholder="Search emotes..." 
               value={searchTerm}
-              onChange={handleSearchChange}
+              onChange={handleSearchChange} 
               className="max-w-xs"
             />
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <Link href="/profile/list">
+              <Button variant="outline" className="w-full">Add Emote</Button>
+            </Link>
+            {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full md:w-auto">Add Emote</Button>
+                <Button variant="outline" className="w-full">Add Emote</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -178,7 +181,7 @@ export default function Marketplace({
                   </div>
                 </ScrollArea>
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
           </div>
         </div>
       </header>
