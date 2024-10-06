@@ -161,7 +161,7 @@ export default function Landing() {
               </ul>
               <div className="flex flex-col gap-4 sm:flex-row">
                 <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100 text-lg" size="lg">
-                  Start Creating for Free
+                  Start Creating
                 </Button>
                 <Button onClick={() => router.push('/showcase')} className="bg-transparent border-2 border-white text-white hover:bg-white/10 text-lg" size="lg">
                   View Emote Gallery
@@ -443,7 +443,7 @@ export default function Landing() {
             whileTap={{ scale: 0.95 }}
           >
             <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100 text-lg" size="lg">
-              Start Creating Your Free Emotes Now
+              Start Creating Your Emotes Now
             </Button>
           </motion.div>
         </div>

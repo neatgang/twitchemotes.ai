@@ -41,17 +41,22 @@ const nextConfig = {
       },
     ],
   },
-  // webpack: (config, { isServer }) => {
-  //   // Add custom rule for handling .excalidrawlib files
-  //   config.module.rules.push({
-  //     test: /\.excalidrawlib$/,
-  //     use: "raw-loader",
-  //   });
-
-  //   // Return the updated configuration
-  //   return config;
-  // },
   transpilePackages: ["convex-helpers"],
+
+  // Add the new headers configuration
+  async headers() {
+    return [
+      {
+        source: "/images/:all*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

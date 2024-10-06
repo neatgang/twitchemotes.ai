@@ -1,12 +1,13 @@
 import { db } from "../lib/db";
 import { Emote } from "@prisma/client";
+import { cache } from 'react'
 
 interface GetEmoteProps {
     //   userId: string;
       emoteId: string;
     };
     
-    export const getEmoteById = async ({
+    export const getEmoteById = cache(async ({
     //   userId,sch
       emoteId,
     }: GetEmoteProps) => {
@@ -88,4 +89,7 @@ interface GetEmoteProps {
       console.log("[GET_EMOTE_BY_ID] Error:", error);
       return null;
     }
-  }
+  });
+
+// Set the revalidation period (e.g., 300 seconds)
+export const revalidate = 300;
