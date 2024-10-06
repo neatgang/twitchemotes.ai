@@ -41,10 +41,11 @@
 //   }
 // }
 
+import { cache } from "react";
 import { db } from "../lib/db";
 import { Emote } from "@prisma/client";
 
-export const getEmotes = async ({ userId }: { userId: string | null }) => {
+export const getEmotes = cache(async ({ userId }: { userId: string | null }) => {
   try {
     const emotes = await db.emote.findMany({
       where: {
@@ -60,4 +61,7 @@ export const getEmotes = async ({ userId }: { userId: string | null }) => {
     console.log("[GET_EMOTES] Error:", error);
     return { emotes: [] }; // Return an empty array in case of error
   }
-};
+});
+
+// Set the revalidation period (e.g., 120 seconds)
+export const revalidate = 120;
