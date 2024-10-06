@@ -33,6 +33,7 @@ interface EditorProps {
 export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select")
   const [emotes, setEmotes] = useState<Emote[]>(initialEmotes)
+  const [currentPrompt, setCurrentPrompt] = useState<string>("")
 
   const onClearSelection = useCallback(() => {
     if (selectionDependentTools.includes(activeTool)) {
@@ -143,12 +144,14 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
           emotes={emotes} // Pass emotes as props
+          setCurrentPrompt={setCurrentPrompt}
         />
         <EmoteGeneratorSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
           emotes={emotes} // Pass emotes as props
+          // setCurrentPrompt={setCurrentPrompt}
         />
         <FilterSidebar 
           editor={editor}
@@ -171,6 +174,7 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
             activeTool={activeTool}
             onChangeActiveTool={onChangeActiveTool}
             addEmote={addEmote}
+            currentPrompt={currentPrompt}
             key={JSON.stringify(
               editor?.canvas.getActiveObject()
             )}

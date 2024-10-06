@@ -24,14 +24,16 @@ interface EmoteSidebarProps {
     onChangeActiveTool: (tool: ActiveTool) => void;
     editor: Editor | undefined;
     emotes: Emote[];
+    setCurrentPrompt: (prompt: string) => void;
 }
 
 const ITEMS_PER_PAGE = 10;
 
-export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes }: EmoteSidebarProps) => {
+export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes, setCurrentPrompt }: EmoteSidebarProps) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [currentPrompt, setCurrentPromptState] = useState<string>("");
 
     const filteredEmotes = emotes.filter(emote => 
         emote.prompt?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -60,6 +62,11 @@ export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes }:
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+    };
+
+    const handleAddToCanvas = (emote: Emote) => {
+        editor?.addEmote(emote.imageUrl!);
+        setCurrentPrompt(emote.prompt || "");
     };
 
     const LoadingSkeleton = () => (
@@ -96,7 +103,7 @@ export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes }:
                                         className="object-cover"
                                     />
                                     <button
-                                        onClick={() => editor?.addEmote(emote.imageUrl!)}
+                                        onClick={() => handleAddToCanvas(emote)}
                                         className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
                                     >
                                         Add to Canvas

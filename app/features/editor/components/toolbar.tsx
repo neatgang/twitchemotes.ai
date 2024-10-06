@@ -18,15 +18,18 @@ import { Loader2 } from "lucide-react"; // Add this import
 import { SlPicture } from "react-icons/sl";
 import { Emote } from "@prisma/client";
 import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
 
 interface ToolbarProps {
     editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
     addEmote: (newEmote: Emote) => void;
+    currentPrompt: string;
 }
 
-export const Toolbar = ({ editor, activeTool, onChangeActiveTool, addEmote }: ToolbarProps) => {
+export const Toolbar = ({ editor, activeTool, onChangeActiveTool, addEmote, currentPrompt }: ToolbarProps) => {
+    const { userId } = useAuth();
     const [isRemovingBackground, setIsRemovingBackground] = useState(false);
     const [isSavingEmote, setIsSavingEmote] = useState(false);
     const [isDownloadingEmote, setIsDownloadingEmote] = useState(false);
@@ -223,21 +226,29 @@ export const Toolbar = ({ editor, activeTool, onChangeActiveTool, addEmote }: To
                         onClick={async () => {
                             setIsSavingEmote(true);
                             try {
-                                const savedEmote = await editor?.saveEmote();
+                                if (!editor) {
+                                    throw new Error('Editor is not initialized');
+                                }
+                                if (!userId) {
+                                    throw new Error('User is not authenticated');
+                                }
+                                const savedEmote = await editor.saveEmote(currentPrompt, userId);
                                 if (savedEmote) {
                                     addEmote(savedEmote);
                                     toast.success('Emote saved successfully');
+                                } else {
+                                    throw new Error('Failed to save emote');
                                 }
                             } catch (error) {
                                 console.error('Failed to save emote:', error);
-                                toast.error('Failed to save emote');
+                                toast.error(`Failed to save emote: ${error instanceof Error ? error.message : 'Unknown error'}`);
                             } finally {
                                 setIsSavingEmote(false);
                             }
                         }}
                         size="icon"
                         variant="ghost"
-                        disabled={isSavingEmote}
+                        disabled={isSavingEmote || !userId}
                     >
                         {isSavingEmote ? (
                             <Loader2 className="size-4 animate-spin" />
