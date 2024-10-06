@@ -209,7 +209,7 @@ export interface Editor {
     disableDrawingMode: () => void;
     downloadImage: () => void;
     // shakeAnimation: (object: fabric.Object) => void;
-    saveEmote: () => Promise<Emote | undefined>;
+    saveEmote: (prompt: string, userId: string) => Promise<Emote | undefined>;
     startDrawingMask: () => void; // Add this method
     clearMask: () => void; // Add this method
     

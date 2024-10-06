@@ -59,6 +59,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
   const ITEMS_PER_PAGE = 6;
   const { userId } = useAuth();
   const [selectedModel, setSelectedModel] = useState(generation.models[0]);
+  const [currentPrompt, setCurrentPrompt] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -111,6 +112,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
       }
 
       setPhotos(imageUrls);
+      setCurrentPrompt(data.prompt); // Store the current prompt
 
       // Automatically save each generated image
       for (const imageUrl of imageUrls) {
@@ -399,7 +401,10 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
               <div className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border">
                 <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
                 <button
-                  onClick={() => editor?.addGeneratedEmote(url)}
+                  onClick={() => {
+                    editor?.addGeneratedEmote(url);
+                    // You can add logic here to save the emote with the current prompt if needed
+                  }}
                   className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition bg-black bg-opacity-50 flex items-center justify-center text-white"
                 >
                   Add to Canvas

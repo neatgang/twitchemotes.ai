@@ -10,6 +10,7 @@ import axios from "axios";
 
 import toast from "react-hot-toast";
 import { Emote } from "@prisma/client";
+import { useAuth } from "@clerk/nextjs";
 // import '../fabric-extensions';
 
 const buildEditor = ({
@@ -50,12 +51,12 @@ const buildEditor = ({
         downloadFile(dataURL, "png");
     }
 
-    const saveEmote = async (): Promise<Emote | undefined> => {
+    const saveEmote = async (prompt: string, userId: string): Promise<Emote | undefined> => {
         if (!canvas) {
-            toast.error('Canvas is not initialized');
+            console.error('Canvas is not initialized');
             return undefined;
         }
-    
+
         try {
             // Get the workspace dimensions
             const workspace = getWorkspace() as fabric.Rect;
@@ -63,21 +64,24 @@ const buildEditor = ({
             const height = workspace?.height ?? canvas.getHeight();
             const left = workspace?.left ?? 0;
             const top = workspace?.top ?? 0;
-    
+
             // Create a temporary canvas with the workspace dimensions
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = width;
             tempCanvas.height = height;
             const tempContext = tempCanvas.getContext('2d');
-    
+
             if (!tempContext) {
                 throw new Error('Failed to get 2D context');
             }
-    
+            if (!userId) {
+                throw new Error('User is not authenticated');
+            }
+
             // Draw background
             tempContext.fillStyle = 'white';
             tempContext.fillRect(0, 0, width, height);
-    
+
             // Function to load an image and draw it on the canvas
             const drawImageOnCanvas = async (imgObject: fabric.Image) => {
                 return new Promise<void>((resolve, reject) => {
@@ -99,7 +103,7 @@ const buildEditor = ({
                     img.src = `/api/proxy-image?url=${encodeURIComponent(originalSrc)}`;
                 });
             };
-    
+
             // Draw all objects on the canvas
             const drawPromises = canvas.getObjects().map(async (obj) => {
                 if (obj.type === 'image') {
@@ -107,30 +111,29 @@ const buildEditor = ({
                 }
                 // Add handling for other object types if needed
             });
-    
+
             await Promise.all(drawPromises);
-    
+
             // Convert the temporary canvas to a data URL
             const dataURL = tempCanvas.toDataURL('image/png');
-    
+
             // Send the dataURL to the server
             const response = await axios.post<Emote>('/api/saveemote', {
-                prompt: "Your emote prompt", // You need to get this from somewhere
+                prompt: prompt,
                 imageUrl: dataURL,
-                style: "Your emote style", // You need to get this from somewhere
-                model: "Your model" // You need to get this from somewhere
+                style: "custom",
+                model: "canvas",
+                userId: userId
             });
-    
-            if (response.status !== 200) {
-                throw new Error('Failed to save emote');
+
+            if (response.data) {
+                return response.data;
+            } else {
+                throw new Error('Emote data not returned from server');
             }
-    
-            toast.success('Emote saved successfully');
-            return response.data;
         } catch (error) {
-            console.error('Error saving emote:', error);
-            toast.error('Failed to save emote');
-            return undefined;
+            console.error('Failed to save emote:', error);
+            throw error;
         }
     };
 
@@ -444,9 +447,7 @@ const buildEditor = ({
 
                 addToCanvas(image)
             },
-                {
-                    crossOrigin: "anonymous"
-                }
+            { crossOrigin: 'anonymous' }
             )
         },
 
@@ -490,8 +491,10 @@ const buildEditor = ({
                     image.scaleToHeight(workspace?.height || 0);
                 }
 
-            addToCanvas(image);
-            });
+                addToCanvas(image);
+            },
+            { crossOrigin: 'anonymous' }
+            );
         },
 
         delete: () => {
