@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 // import { MAX_FREE_COUNTS } from "@/constants";
 import { db } from "./db";
 
-const MAX_FREE_COUNTS = 5;
+const MAX_FREE_COUNTS = 0;
 
 // export const runtime = "edge"
 
@@ -42,6 +42,7 @@ export const checkApiLimit = async () => {
     where: { userId: userId },
   });
 
+  // This condition will always return false now
   if (!userApiLimit || userApiLimit.count < MAX_FREE_COUNTS) {
     return true;
   } else {
