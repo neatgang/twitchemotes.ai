@@ -169,7 +169,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="relative">
-              <Image
+              <img
                 alt="AI-Generated Emotes Collage"
                 className="rounded-xl shadow-2xl"
                 height={600}
