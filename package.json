@@ -113,8 +113,11 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
     "react-konva": "^18.2.10",
+    "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.0.16",
     "react-svg-to-image": "^3.0.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.0",
     "replicate": "^0.9.3",
     "sharp": "^0.33.5",
     "sonner": "^1.4.41",
@@ -137,6 +140,7 @@
     "zustand": "^4.4.6"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@types/fabric": "^5.3.0",
     "@types/file-saver": "^2.0.7",
     "@types/material-colors": "^1.2.3",
