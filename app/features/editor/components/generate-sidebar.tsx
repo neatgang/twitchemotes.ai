@@ -350,11 +350,10 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
                                   }`}
                                   onClick={() => setSelectedEmote(emote)}
                                 >
-                                  <Image
-                                    fill
+                                  <img
                                     src={emote.imageUrl!}
                                     alt={emote.prompt || emote.id}
-                                    className="object-cover"
+                                    className="absolute top-0 left-0 w-full h-full object-cover"
                                   />
                                 </div>
                               ))}
@@ -399,7 +398,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
           {photos && photos.length > 0 && photos.map((url, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border">
-                <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
+                <img src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" />
                 <button
                   onClick={() => {
                     editor?.addGeneratedEmote(url);
