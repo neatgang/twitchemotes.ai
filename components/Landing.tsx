@@ -333,11 +333,11 @@ export default function Landing() {
       </section>
 
       {/* Pricing - New Section */}
-      <section className="bg-white py-16 md:py-24">
+      {/* <section className="bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Simple, Transparent Pricing</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Basic Plan */}
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -354,7 +354,6 @@ export default function Landing() {
               <Button onClick={onBasicSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Basic</Button>
             </motion.div>
 
-            {/* Standard Plan */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -372,7 +371,6 @@ export default function Landing() {
               <Button onClick={onStandardSubscribe} className="w-full bg-[#7928CA] text-white hover:bg-[#6a23b3]">Choose Standard</Button>
             </motion.div>
 
-            {/* Premium Plan */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -391,10 +389,10 @@ export default function Landing() {
           </div>
         </div>
         {referral && <input type="hidden" name="referral" value={referral} />}
-      </section>
+      </section> */}
 
       {/* Add */}
-      <section className="bg-gray-100 py-16 md:py-24">
+      {/* <section className="bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Need More Credits?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -427,7 +425,7 @@ export default function Landing() {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Final CTA - Optimized */}
       <section className="bg-gradient-to-r from-[#7928CA] to-[#FF0080] py-16 md:py-24">
