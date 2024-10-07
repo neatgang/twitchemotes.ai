@@ -226,7 +226,7 @@ export default function Landing() {
           </div>
           <div className="mt-12 text-center">
             <Button onClick={handleStartCreating} className="bg-[#7928CA] text-white hover:bg-[#6a23b3] text-lg">
-              Try It Now - It&apos;s Free!
+              Try It Now!
             </Button>
           </div>
         </div>
@@ -236,7 +236,7 @@ export default function Landing() {
       <section className="bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Powerful Features and Flexible Pricing</h2>
+            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Powerful Features</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Create professional-quality emotes with our advanced tools and choose a plan that fits your needs.
             </p>
@@ -262,7 +262,7 @@ export default function Landing() {
               </motion.div>
             ))}
           </div>
-          <div className="mt-12 text-center">
+          {/* <div className="mt-12 text-center">
             <p className="text-lg text-gray-600 mb-4">
               Explore our pricing options or purchase credits for one-time use.
             </p>
@@ -274,7 +274,7 @@ export default function Landing() {
                 Buy Credits
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
