@@ -163,8 +163,8 @@ export default function Landing() {
                 <Button onClick={handleStartCreating} className="bg-white text-[#7928CA] hover:bg-gray-100 text-lg" size="lg">
                   Start Creating
                 </Button>
-                <Button onClick={() => router.push('/showcase')} className="bg-transparent border-2 border-white text-white hover:bg-white/10 text-lg" size="lg">
-                  View Emote Gallery
+                <Button onClick={() => router.push('/marketplace')} className="bg-transparent border-2 border-white text-white hover:bg-white/10 text-lg" size="lg">
+                  View Emote Marketplace
                 </Button>
               </div>
             </div>
