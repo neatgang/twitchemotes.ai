@@ -1,95 +1,3 @@
-// "use client"
-
-
-// import Link from "next/link";
-// // import { signIn, signOut, useSession } from "next-auth/react";
-// // import { useBuyCredits } from "~/hooks/useBuyCredits";
-// // import { api } from "~/utils/api";
-// // import { Button } from "./Button";
-// // import { PrimaryLink } from "./PrimaryLink";
-
-
-// // import { PrimaryLink } from "./PrimaryLink";
-// import { Button } from "./ui/button";
-// import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-// import { FreeCounter } from "./FreeCounter";
-// import { SubscriptionButton } from "./SubscriptionButton";
-// import { Avatar, AvatarImage } from "./ui/avatar";
-// import { LandingMobileNavbar } from "./LandingMobileNav";
-// import { UserAccountNav } from "./UserAccountNav";
-// import { CreditsDisplay } from "./CreditsDisplay";
-
-// export const Navbar = ({
-//   apiLimitCount = 0,
-//   isPro = false,
-//   credits = 0
-// }: {
-//   apiLimitCount: number;
-//   isPro: boolean;
-//   credits: number;
-// }) => {
-// //   const session = useSession();
-// //   const { buyCredits } = useBuyCredits();
-
-// //   const isLoggedIn = !!session.data;
-
-// //   const credits = api.user.getCredits.useQuery(undefined, {
-// //     enabled: isLoggedIn,
-// //   });
-
-// return (
-//   <header className="dark:bg-gray-900">
-//     <div className="container mx-auto flex h-16 items-center justify-between px-4">
-//       <nav className="flex items-center justify-center">
-//         <LandingMobileNavbar />
-//         {/* <div className="sm:hidden"> */}
-//         <Button variant="link">
-//           <Avatar className="mr-2">
-//             <AvatarImage src="/peepopainter.jpg"/>
-//           </Avatar>
-//           <Link href="/">EmoteMaker.ai</Link>
-//         </Button>
-//         <div className="md:block hidden">
-//         <Button variant="ghost">
-//           <Link href="/emotes">Create Emotes</Link>
-//         </Button>
-//         <Button variant="ghost">
-//           <Link href="/imagetoprompt">Generate Prompts</Link>
-//         </Button>
-//         <Button variant="ghost">
-//           <Link href="/showcase">Showcase</Link>
-//         </Button>
-//         {/* <Button variant="ghost">
-//           <Link href="https://shop.emotemaker.ai">Shop</Link>
-//         </Button> */}
-//         </div>
-//       </nav>
-//       <div className="flex items-center space-x-2">
-//         <SignedIn>
-//         <CreditsDisplay credits={credits} />
-//           {/* <FreeCounter 
-//             apiLimitCount={apiLimitCount} 
-//             isPro={isPro}
-//           /> */}
-//           {/* <UserButton 
-//             afterSignOutUrl="/"
-
-//           /> */}
-//           <UserAccountNav isPro={isPro}/>
-//         </SignedIn>
-//         <SignedOut>
-//           <Button variant="ghost">
-//             <Link href="/sign-in">Login</Link>
-//           </Button>
-//         </SignedOut>
-//       </div>
-//     </div>
-//   </header>
-// );
-// }
-
-// export default Navbar;
-
 "use client"
 
 import Link from "next/link";
@@ -107,6 +15,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Megaphone, HelpCircle, MessageSquare, Lightbulb, DollarSign } from "lucide-react";
 
 const emoteTypes = [
   { name: "Pixel Emotes", link: "/pixels" },
@@ -194,7 +109,60 @@ export const Navbar = ({
             </Button>
           </NavigationMenu>
         </nav>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-black">
+                <Zap className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[300px] p-2">
+              <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+                <Megaphone className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
+                <div className="flex flex-col">
+                  <div className="font-semibold text-sm">What&apos;s new ?</div>
+                  <div className="text-xs text-gray-500 mt-1">Discover our recent additions and updates.</div>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+                <HelpCircle className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
+                <div className="flex flex-col">
+                  <div className="font-semibold text-sm">Knowledge Center</div>
+                  <div className="text-xs text-gray-500 mt-1">Explore our comprehensive Knowledge Center.</div>
+                </div>
+                <Link href="/knowledge-center" className="absolute inset-0">
+                  <span className="sr-only">Go to Knowledge Center</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+                <MessageSquare className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
+                <div className="flex flex-col">
+                  <div className="font-semibold text-sm">Community Hub</div>
+                  <div className="text-xs text-gray-500 mt-1">Join our Discord for networking and support.</div>
+                </div>
+                <Link href="https://discord.com/invite/GSKRnD4hB6" className="absolute inset-0" target="_blank" rel="noopener noreferrer">
+                  <span className="sr-only">Go to Discord community</span>
+                </Link>
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+                <Lightbulb className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
+                <div className="flex flex-col">
+                  <div className="font-semibold text-sm">Feedback & Suggestions</div>
+                  <div className="text-xs text-gray-500 mt-1">Request or upvote upcoming features.</div>
+                </div>
+              </DropdownMenuItem> */}
+              <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+                <DollarSign className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
+                <div className="flex flex-col">
+                  <div className="font-semibold text-sm">Refer a friend</div>
+                  <div className="text-xs text-gray-500 mt-1">Earn 10% on paid referrals.</div>
+                </div>
+                <Link href="https://emotemaker.getrewardful.com" className="absolute inset-0" target="_blank" rel="noopener noreferrer">
+                  <span className="sr-only">Go to referral program</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <SignedIn>
             <CreditsDisplay credits={credits} />
             <UserAccountNav isPro={isPro} />
@@ -214,6 +182,7 @@ export default Navbar;
 
 import * as React from "react";
 import { cn } from "@/lib/utils"; // Ensure you have a utility function to handle classnames
+import { Star, Zap } from "lucide-react";
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,

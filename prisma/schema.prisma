@@ -221,3 +221,18 @@ model OrgSubscription {
 }
 
 // Existing models (User, Profile, Emote, etc.) remain unchanged
+
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  content     String    @db.Text
+  category    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  slug        String    @unique
+  author      String?
+  publishedAt DateTime?
+
+  @@index([category])
+  @@index([slug])
+}
