@@ -15,7 +15,7 @@ interface ArticleContentProps {
     content: string
     category: string
     publishedAt: Date | null
-    author: string
+    author: string | null  // Change this line to allow null
   }
 }
 
@@ -35,10 +35,10 @@ export default function ArticleContent({ article }: ArticleContentProps) {
           <CardTitle className="text-3xl font-bold">{article.title}</CardTitle>
           <div className="flex items-center space-x-2">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${article.author}`} alt={article.author} />
-              <AvatarFallback>{article.author[0]}</AvatarFallback>
+              <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${article.author || 'Anonymous'}`} alt={article.author || 'Anonymous'} />
+              <AvatarFallback>{article.author ? article.author[0] : 'A'}</AvatarFallback>
             </Avatar>
-            <span className="text-sm text-muted-foreground">by {article.author}</span>
+            <span className="text-sm text-muted-foreground">by {article.author || 'Anonymous'}</span>
           </div>
           <p className="text-sm text-muted-foreground">
             Category: {article.category} | Published: {formattedDate}
