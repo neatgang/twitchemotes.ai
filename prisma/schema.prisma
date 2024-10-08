@@ -75,6 +75,7 @@ model User {
   subscriptionType   SubscriptionType? // New field for subscription type
   EmoteForSale       EmoteForSale[]
   boards             Board[] // New relation field for boards
+  isAdmin            Boolean           @default(false) // Add this line
 
   @@index([userSubscriptionId])
 }
