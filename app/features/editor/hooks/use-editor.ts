@@ -438,7 +438,10 @@ const buildEditor = ({
         },
 
         addEmote: (value: string) => {
-            fabric.Image.fromURL(value, (image) => {
+            // Use a proxy route to fetch the image
+            const proxyUrl = `/api/proxy-image?url=${encodeURIComponent(value)}`;
+            
+            fabric.Image.fromURL(proxyUrl, (image) => {
                 const workspace = getWorkspace()
 
                 image.scaleToWidth(workspace?.width || 0)

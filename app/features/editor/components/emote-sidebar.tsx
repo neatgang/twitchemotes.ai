@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Image from "next/image";
 
 interface EmoteSidebarProps {
     activeTool: ActiveTool;
@@ -64,8 +65,9 @@ export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes, s
     };
 
     const handleAddToCanvas = (emote: Emote) => {
-        editor?.addEmote(emote.imageUrl!);
-        setCurrentPrompt(emote.prompt || "");
+        // if (editor && emote.imageUrl) {
+            editor?.addEmote(emote.imageUrl!);
+        // }
     };
 
     const LoadingSkeleton = () => (
