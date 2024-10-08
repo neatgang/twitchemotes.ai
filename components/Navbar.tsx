@@ -117,13 +117,13 @@ export const Navbar = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[300px] p-2">
-              <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
+              {/* <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
                 <Megaphone className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
                 <div className="flex flex-col">
-                  <div className="font-semibold text-sm">What&apos;s new ?</div>
+                  <div className="font-semibold text-sm">What&apos;s new?</div>
                   <div className="text-xs text-gray-500 mt-1">Discover our recent additions and updates.</div>
                 </div>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem className="flex items-start p-3 hover:bg-gray-100 rounded-md cursor-pointer">
                 <HelpCircle className="mr-3 h-5 w-5 text-gray-500 mt-0.5" />
                 <div className="flex flex-col">
