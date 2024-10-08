@@ -7,6 +7,7 @@ import { getEmotes } from "../../../../../actions/get-emotes";
 import { redirect } from "next/navigation";
 import { fetchUserEmotes } from "@/actions/fetchUserEmotes";
 import { checkSubscription } from "@/lib/subscription";
+import { db } from "@/lib/db";
 
 const EditorProjectIdPage = async () => {
   const { userId } = auth();
