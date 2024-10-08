@@ -44,7 +44,7 @@ export default function Landing() {
 
   const handleStartCreating = () => {
     if (user) {
-      router.push('/emoteboard/editor/new');
+      router.push('/dashboard');
     } else {
       router.push('/sign-in');
     }
@@ -169,7 +169,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="relative">
-              <img
+              <Image
                 alt="AI-Generated Emotes Collage"
                 className="rounded-xl shadow-2xl"
                 height={600}
