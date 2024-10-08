@@ -70,9 +70,12 @@ export const PricingHero = ({
           setLoadingStates(prev => ({ ...prev, [plan]: true }));
           const response = await axios.get(`/api/stripe/subscriptions/updated/${interval}/${plan.toLowerCase()}`);
           window.location.href = response.data.url;
-        } catch (error) {
-            console.log(error);
-            toast.error("Something went wrong");
+        } catch (error: unknown) {
+          console.error("Subscription error:", error instanceof Error ? error.message : String(error));
+          if (axios.isAxiosError(error) && error.response) {
+            console.error("Response data:", error.response.data);
+          }
+          toast.error("Something went wrong. Please try again later.");
         } finally {
           setLoadingStates(prev => ({ ...prev, [plan]: false }));
         }

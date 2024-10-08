@@ -64,8 +64,14 @@ export async function GET(req: Request) {
     })
 
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
-  } catch (error) {
-    console.log("[STRIPE_ERROR]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+  } catch (error: unknown) {
+    console.error("[STRIPE_ERROR]", error);
+    return new NextResponse(
+      JSON.stringify({ 
+        error: "Internal Server Error", 
+        details: error instanceof Error ? error.message : String(error)
+      }), 
+      { status: 500 }
+    );
   }
 }
