@@ -45,11 +45,13 @@ const tools = [
 export const Navbar = ({
   apiLimitCount = 0,
   isPro = false,
-  credits = 0
+  credits = 0,
+  hasActiveSubscription = false
 }: {
   apiLimitCount: number;
   isPro: boolean;
   credits: number;
+  hasActiveSubscription: boolean;
 }) => {
   return (
     <header className="dark:bg-gray-900 w-full flex items-center p-4 h-[68px] gap-x-8 border-b z-50 relative">
@@ -164,7 +166,7 @@ export const Navbar = ({
             </DropdownMenuContent>
           </DropdownMenu>
           <SignedIn>
-            <CreditsDisplay credits={credits} />
+            {hasActiveSubscription && <CreditsDisplay credits={credits} />}
             <UserAccountNav isPro={isPro} />
           </SignedIn>
           <SignedOut>

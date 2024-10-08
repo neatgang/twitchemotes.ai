@@ -30,7 +30,7 @@ export default async function RootLayout({
 }) {
   const { userId } = auth()
   const apiLimitCount = await getApiLimitCount()
-  const isPro = await checkSubscription()
+  const isPro = await checkSubscription(userId)
   const credits = await getUserCredits()
 
   if (userId) {
@@ -39,6 +39,8 @@ export default async function RootLayout({
     console.log("User ID is null, user might not be logged in.")
   }
 
+  const hasActiveSubscription = await checkSubscription(userId);
+
   return (
     <ClerkProvider>
 
@@ -46,7 +48,7 @@ export default async function RootLayout({
         <head>
         </head>
         <body className={`${inter.className} h-full`}>
-            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
+            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} hasActiveSubscription={hasActiveSubscription} />
             <ToasterProvider />
             <TooltipProvider>
               <ModalProvider />
