@@ -353,8 +353,9 @@ const buildEditor = ({
             return;
         }
 
-        // Set the background to be transparent
-        tempContext.clearRect(0, 0, width, height);
+        // Draw background
+        tempContext.fillStyle = 'white';
+        tempContext.fillRect(0, 0, width, height);
 
         // Function to load an image and draw it on the canvas
         const drawImageOnCanvas = async (imgObject: fabric.Image) => {

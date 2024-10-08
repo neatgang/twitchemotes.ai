@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getEmotes } from "../../../../../actions/get-emotes";
 import { redirect } from "next/navigation";
 import { fetchUserEmotes } from "@/actions/fetchUserEmotes";
+import { checkSubscription } from "@/lib/subscription";
 
 const EditorProjectIdPage = async () => {
   const { userId } = auth();
@@ -15,6 +16,17 @@ const EditorProjectIdPage = async () => {
   }
 
   const emotes = await fetchUserEmotes(userId);
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { isAdmin: true }
+  })
+
+  const isPro = await checkSubscription()
+
+  if (!isPro && !user?.isAdmin) {
+    redirect('/pricing')
+  }
 
   return (
     <div>
