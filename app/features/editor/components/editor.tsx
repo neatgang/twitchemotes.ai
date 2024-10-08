@@ -139,13 +139,13 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         /> */}
-        {/* <EmoteSidebar 
+        <EmoteSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
           emotes={emotes} // Pass emotes as props
           setCurrentPrompt={setCurrentPrompt}
-        /> */}
+        />
         <EmoteGeneratorSidebar 
           editor={editor}
           activeTool={activeTool}
