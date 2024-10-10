@@ -7,6 +7,10 @@ import { stripe } from "@/lib/stripe";
 
 const settingsUrl = absoluteUrl("/");
 
+// Define the price ID and product ID for the Creator plan
+const CREATOR_PLAN_PRICE_ID = 'price_1Q8GL9IlERZTJMCm1b6Nuebe';
+const CREATOR_PLAN_PRODUCT_ID = 'prod_R0GsGZgGHjzL0r';
+
 export async function GET(req: Request) {
   try {
     const { userId } = auth();
@@ -42,17 +46,7 @@ export async function GET(req: Request) {
       customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
-          price_data: {
-            currency: "USD",
-            product_data: {
-              name: "EmoteMaker.ai Pro Plan",
-              description: "Generate unique emotes with a single prompt. For $15/month, receive 150 credits to create custom emotes."
-            },
-            unit_amount: 1500,
-            recurring: {
-              interval: "month"
-            }
-          },
+          price: CREATOR_PLAN_PRICE_ID,
           quantity: 1,
         },
       ],
