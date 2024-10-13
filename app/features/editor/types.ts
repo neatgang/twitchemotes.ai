@@ -294,9 +294,28 @@ export const generation = {
             ],
         },
         {
-            name: "FLUX.1 [pro]",
+            name: "FLUX 1 [pro]",
             apiRoute: "/api/models/fal/fluxpro",
-            description: "Generate emotes using the Flux-Schnell model.",
+            description: "Generate emotes using the Flux-Pro model.",
+            themes: [
+                {
+                    name: "chibi",
+                    prompt: "Create a chibi style emote of ${subject}.",
+                },
+                {
+                    name: "pixel",
+                    prompt: "Create a pixel art style emote of ${subject}.",
+                },
+                {
+                    name: "realistic",
+                    prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
+        {
+            name: "FLUX 1.1 [pro]",
+            apiRoute: "/api/models/fal/fluxpro11",
+            description: "Generate emotes using the Flux-Pro 1.1 model.",
             themes: [
                 {
                     name: "chibi",
@@ -328,6 +347,25 @@ export const generation = {
                 {
                     name: "realistic",
                     prompt: "Create a realistic style emote of ${subject}.",
+                },
+            ],
+        },
+        {
+            name: "Aura Flow",
+            apiRoute: "/api/models/fal/auraflow",
+            description: "Generate high-quality images using the Aura Flow model.",
+            themes: [
+                {
+                    name: "portrait",
+                    prompt: "Create a detailed portrait of ${subject}.",
+                },
+                {
+                    name: "landscape",
+                    prompt: "Generate a beautiful landscape featuring ${subject}.",
+                },
+                {
+                    name: "abstract",
+                    prompt: "Create an abstract representation of ${subject}.",
                 },
             ],
         },
