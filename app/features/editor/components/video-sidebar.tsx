@@ -17,6 +17,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Emote } from "@prisma/client";
 import * as fal from "@fal-ai/serverless-client";
 import { Slider } from "@/components/ui/slider";
+import axios from "axios"; // Import axios
 
 // Add this type definition at the top of your file
 type FalVideoResponse = {
@@ -89,37 +90,28 @@ export const VideoGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
       let imageUrl: string;
       if (selectedEmote) {
         imageUrl = selectedEmote.imageUrl!;
+        console.log("Selected emote image URL:", imageUrl);
       } else {
         imageUrl = editor!.getActiveImageUrl();
+        console.log("Active editor image URL:", imageUrl);
       }
 
-      const response = await fetch(selectedModel.apiRoute, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          image_url: imageUrl,
-        }),
+      const response = await axios.post(selectedModel.apiRoute, {
+        ...data,
+        image_url: imageUrl,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-
-      if (result.video && result.video.url) {
-        setGeneratedVideoUrl(result.video.url);
+      if (response.data.video && response.data.video.url) {
+        setGeneratedVideoUrl(response.data.video.url);
         toast.success('Video generated successfully!');
       } else {
         throw new Error("Unexpected response format");
       }
     } catch (error) {
       console.error("Error generating video:", error);
-      if (error instanceof Error) {
-        toast.error(`Failed to generate video: ${error.message}`);
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error details:", error.response?.data);
+        toast.error(`Failed to generate video: ${error.response?.data || error.message}`);
       } else {
         toast.error('Failed to generate video. Please try again.');
       }
@@ -225,7 +217,10 @@ export const VideoGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
                   className={`relative w-full pt-[100%] cursor-pointer border rounded-sm overflow-hidden ${
                     selectedEmote?.id === emote.id ? 'ring-2 ring-primary' : ''
                   }`}
-                  onClick={() => setSelectedEmote(emote)}
+                  onClick={() => {
+                    setSelectedEmote(emote);
+                    console.log("Emote selected, image URL:", emote.imageUrl); // Log when an emote is selected
+                  }}
                 >
                   <img
                     src={emote.imageUrl!}

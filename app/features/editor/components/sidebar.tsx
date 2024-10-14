@@ -18,9 +18,9 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
                     {[
                         { icon: LayoutTemplate, label: "My Emotes", tool: "emotes" },
                         { icon: PaintBucket, label: "Generate", tool: "emote-generator" },
-                        { icon: VideoIcon, label: "Generate", tool: "video-generator" },
+                        // { icon: VideoIcon, label: "Generate", tool: "video-generator" },
                         { icon: ImageIcon, label: "Images", tool: "images" },
-                        { icon: WandIcon, label: "Enhance", tool: "enhance" },
+                        // { icon: WandIcon, label: "Enhance", tool: "enhance" },
                         { icon: Type, label: "Text", tool: "text" },
                         { icon: Shapes, label: "Shapes", tool: "shapes" },
                         { icon: Pencil, label: "Draw", tool: "draw" },

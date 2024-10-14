@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button"
 import { CardContent, Card } from "@/components/ui/card"
 import { Emote, EmoteForSale } from "@prisma/client"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import Watermark from '@uiw/react-watermark'
 import { AxiosError } from 'axios';
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface ListEmoteProps {
   emote: Emote;
@@ -23,6 +24,25 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
   const [watermarkedUrl, setWatermarkedUrl] = useState(emoteForSale?.watermarkedUrl || '');
   const [price, setPrice] = useState(emoteForSale?.price?.toString() || '');
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
+  useEffect(() => {
+    // Fetch paginated emotes here
+    const fetchEmotes = async () => {
+      try {
+        const response = await axios.get(`/api/emotes?page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
+        setTotalPages(Math.ceil(response.data.total / ITEMS_PER_PAGE));
+        // Update your emotes state here
+      } catch (error) {
+        console.error('Failed to fetch emotes:', error);
+        toast.error('Failed to load emotes. Please try again.');
+      }
+    };
+
+    fetchEmotes();
+  }, [currentPage]);
 
   const handleWatermark = async () => {
     setIsLoading(true);
@@ -82,6 +102,10 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
       <Card>
@@ -132,6 +156,29 @@ export default function ListEmote({ emote, emoteForSale }: ListEmoteProps) {
               {isLoading ? "Listing..." : "List Emote"}
             </Button>
           </form>
+          
+          {/* Add pagination controls */}
+          <div className="mt-6 flex justify-between items-center">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm font-medium">
+              {currentPage} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </main>

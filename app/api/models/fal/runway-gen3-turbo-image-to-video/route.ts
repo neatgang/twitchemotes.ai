@@ -10,9 +10,19 @@ fal.config({
   credentials: process.env.FAL_KEY,
 });
 
-async function getProxiedImageUrl(originalUrl: string): Promise<string> {
-  const proxyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/proxy-image?url=${encodeURIComponent(originalUrl)}`;
-  return proxyUrl;
+async function uploadImageToFal(imageUrl: string): Promise<string> {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+    const blob = await response.blob();
+    const file = new File([blob], 'image.png', { type: blob.type });
+    return await fal.storage.upload(file);
+  } catch (error) {
+    console.error('Error uploading image to FAL:', error);
+    throw error;
+  }
 }
 
 export async function POST(req: Request) {
@@ -43,12 +53,18 @@ export async function POST(req: Request) {
       return new NextResponse("Insufficient credits", { status: 403 });
     }
 
-    // Use the proxy for the image URL
-    const proxiedImageUrl = await getProxiedImageUrl(image_url);
+    // Upload the image to FAL's storage
+    let falImageUrl;
+    try {
+      falImageUrl = await uploadImageToFal(image_url);
+    } catch (error) {
+      console.error('Error uploading image to FAL:', error);
+      return new NextResponse(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`, { status: 400 });
+    }
 
     const input = {
       prompt,
-      image_url: proxiedImageUrl,
+      image_url: falImageUrl,
       duration: duration || "5",
       ratio: ratio || "16:9",
       seed: seed || undefined,
@@ -56,15 +72,25 @@ export async function POST(req: Request) {
 
     console.log("Sending input to FAL API:", input);
 
-    const result = await fal.subscribe("fal-ai/runway-gen3/turbo/image-to-video", {
-      input,
-      logs: true,
-      onQueueUpdate: (update) => {
-        if (update.status === "IN_PROGRESS" && update.logs) {
-          console.log("FAL API update:", update.logs);
-        }
-      },
-    });
+    let result;
+    try {
+      result = await fal.subscribe("fal-ai/runway-gen3/turbo/image-to-video", {
+        input,
+        logs: true,
+        onQueueUpdate: (update) => {
+          if (update.status === "IN_PROGRESS" && update.logs) {
+            console.log("FAL API update:", update.logs);
+          }
+        },
+      });
+    } catch (error) {
+      console.error('Error calling FAL API:', error);
+      if (error instanceof Error) {
+        return new NextResponse(`FAL API error: ${error.message}`, { status: 500 });
+      } else {
+        return new NextResponse('Unknown error occurred', { status: 500 });
+      }
+    }
 
     console.log("FAL API result:", result);
 
