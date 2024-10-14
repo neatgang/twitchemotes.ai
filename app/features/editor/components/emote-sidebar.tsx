@@ -5,7 +5,6 @@ import { ToolSidebarClose } from "./tool-sidebar-close";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
-import Image from "next/image";
 import { Emote } from "@prisma/client";
 import { ActiveTool, Editor } from "../types";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import Image from "next/image";
 
 interface EmoteSidebarProps {
     activeTool: ActiveTool;
@@ -65,8 +65,9 @@ export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes, s
     };
 
     const handleAddToCanvas = (emote: Emote) => {
-        editor?.addEmote(emote.imageUrl!);
-        setCurrentPrompt(emote.prompt || "");
+        // if (editor && emote.imageUrl) {
+            editor?.addEmote(emote.imageUrl!);
+        // }
     };
 
     const LoadingSkeleton = () => (
@@ -96,11 +97,10 @@ export const EmoteSidebar = ({ activeTool, onChangeActiveTool, editor, emotes, s
                         <div className="grid grid-cols-2 gap-4">
                             {paginatedEmotes.map((emote: Emote) => (
                                 <div key={emote.id} className="relative w-full h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border">
-                                    <Image
-                                        fill
+                                    <img
                                         src={emote.imageUrl!}
                                         alt={emote.prompt || emote.id}
-                                        className="object-cover"
+                                        className="object-cover w-full h-full"
                                     />
                                     <button
                                         onClick={() => handleAddToCanvas(emote)}

@@ -6,12 +6,17 @@ import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 
 const priceIdToCredits: { [priceId: string]: number } = {
-  'price_1PHJN1IlERZTJMCmqIRQ1Szy': 50, // Basic plan
-  'price_1PHJNQIlERZTJMCmwVYr5wol': 150, // Standard plan
-  'price_1PHJOOIlERZTJMCmBCw2uSBY': 300, // Basic plan
-  'price_1PTXsjIlERZTJMCmk9e50tI7': 20, // Small Pack
-  'price_1PTXt2IlERZTJMCmQYmhHVQV': 50, // Medium Pack
-  'price_1PTXtHIlERZTJMCmVgzahz20': 100, // Large Pack
+  // Monthly plans
+  'price_1Q8GL9IlERZTJMCm1b6Nuebe': 150,  // Creator plan (monthly)
+  'price_1Q8GLiIlERZTJMCm1QFpLRh3': 500,  // Pro plan (monthly)
+  'price_1Q8GM2IlERZTJMCmgwEbI5tO': 1250, // Team plan (monthly)
+  
+  // Annual plans
+  'price_1PTXsjIlERZTJMCmk9e50tI7': 1800,  // Creator plan (annually)
+  'price_1PTXt2IlERZTJMCmQYmhHVQV': 6000,  // Pro plan (annually)
+  'price_1PTXtHIlERZTJMCmVgzahz20': 15000, // Team plan (annually)
+
+  // Credits
 };
 
 export async function POST(req: Request) {

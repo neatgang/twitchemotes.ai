@@ -75,6 +75,7 @@ model User {
   subscriptionType   SubscriptionType? // New field for subscription type
   EmoteForSale       EmoteForSale[]
   boards             Board[] // New relation field for boards
+  isAdmin            Boolean           @default(false) // Add this line
 
   @@index([userSubscriptionId])
 }
@@ -221,3 +222,18 @@ model OrgSubscription {
 }
 
 // Existing models (User, Profile, Emote, etc.) remain unchanged
+
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  content     String    @db.Text
+  category    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  slug        String    @unique
+  author      String?
+  publishedAt DateTime?
+
+  @@index([category])
+  @@index([slug])
+}
