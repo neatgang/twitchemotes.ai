@@ -4,6 +4,36 @@ import { ITextOptions } from "fabric/fabric-impl";
 
 import * as material from "material-colors"
 
+// Add these type definitions at the top of the file
+type BaseOption = {
+    name: string;
+    type: string;
+};
+
+export type SelectOption = BaseOption & {
+    type: "select";
+    values: readonly string[];
+    default: string;
+};
+
+export type BooleanOption = BaseOption & {
+    type: "boolean";
+    default: boolean;
+};
+
+export type NumberOption = BaseOption & {
+    type: "number";
+    min: number;
+    max: number;
+    step: number;
+    default: number;
+};
+
+export type StringOption = BaseOption & {
+    type: "string";
+    default: string;
+};
+
 export const fonts = [
     "Arial",
     "Arial Black",
@@ -103,7 +133,8 @@ export type ActiveTool =
     | "images"
     | "shapes"
     | "settings"
-
+    | "enhance"
+    | "video-generator"
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
@@ -168,7 +199,8 @@ export type BuildEditorProps = {
     fontFamily: string;
     setFontFamily: (value: string) => void;
     // shakeAnimation: (object: fabric.Object) => void;
-    
+    enhanceImage: () => Promise<void>;
+
 }
 
 export interface Editor {
@@ -212,6 +244,9 @@ export interface Editor {
     saveEmote: (prompt: string, userId: string) => Promise<Emote | undefined>;
     startDrawingMask: () => void; // Add this method
     clearMask: () => void; // Add this method
+    enhanceImage: () => Promise<void>;
+    generateVideo: () => Promise<void>;
+
     
 }
 
@@ -371,3 +406,258 @@ export const generation = {
         },
     ],
 };
+
+// Update the enhancement models definition to use the correct types
+export const enhancement = {
+    models: [
+        {
+            name: "Aura SR",
+            apiRoute: "/api/models/fal/aurasr",
+            description: "Enhance images using the Aura SR model.",
+            options: [
+                {
+                    name: "upscaling_factor",
+                    type: "select" as const,
+                    values: ["4"],
+                    default: "4"
+                },
+                {
+                    name: "overlapping_tiles",
+                    type: "boolean" as const,
+                    default: true
+                },
+                {
+                    name: "checkpoint",
+                    type: "select" as const,
+                    values: ["v1", "v2"],
+                    default: "v2"
+                }
+            ] as const
+        },
+        {
+            name: "Creative Upscaler",
+            apiRoute: "/api/models/fal/creativeupscaler",
+            description: "Enhance and upscale images with creative options.",
+            options: [
+                {
+                    name: "model_type",
+                    type: "select" as const,
+                    values: ["SD_1_5", "SDXL"],
+                    default: "SD_1_5"
+                },
+                {
+                    name: "scale",
+                    type: "number" as const,
+                    min: 1,
+                    max: 4,
+                    step: 0.1,
+                    default: 2
+                },
+                {
+                    name: "creativity",
+                    type: "number" as const,
+                    min: 0,
+                    max: 1,
+                    step: 0.1,
+                    default: 0.5
+                },
+                {
+                    name: "detail",
+                    type: "number" as const,
+                    min: 0,
+                    max: 2,
+                    step: 0.1,
+                    default: 1
+                },
+                {
+                    name: "shape_preservation",
+                    type: "number" as const,
+                    min: 0,
+                    max: 1,
+                    step: 0.05,
+                    default: 0.25
+                }
+            ] as const
+        },
+        {
+            name: "Clarity Upscaler",
+            apiRoute: "/api/models/fal/clarityupscaler",
+            description: "Enhance images with the Clarity Upscaler model.",
+            options: [
+                {
+                    name: "upscale_factor",
+                    type: "number" as const,
+                    min: 1,
+                    max: 4,
+                    step: 0.1,
+                    default: 2
+                },
+                {
+                    name: "creativity",
+                    type: "number" as const,
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    default: 0.35
+                },
+                {
+                    name: "resemblance",
+                    type: "number" as const,
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    default: 0.6
+                },
+                {
+                    name: "guidance_scale",
+                    type: "number" as const,
+                    min: 1,
+                    max: 20,
+                    step: 0.1,
+                    default: 4
+                },
+                {
+                    name: "num_inference_steps",
+                    type: "number" as const,
+                    min: 1,
+                    max: 50,
+                    step: 1,
+                    default: 18
+                },
+                {
+                    name: "prompt",
+                    type: "string" as const,
+                    default: "masterpiece, best quality, highres"
+                },
+                {
+                    name: "negative_prompt",
+                    type: "string" as const,
+                    default: "(worst quality, low quality, normal quality:2)"
+                }
+            ] as const
+        },
+        {
+            name: "CCSR",
+            apiRoute: "/api/models/fal/ccsr",
+            description: "Enhance images using the Consistent Color Super-Resolution model.",
+            options: [
+                {
+                    name: "scale",
+                    type: "number" as const,
+                    min: 1,
+                    max: 4,
+                    step: 0.1,
+                    default: 2
+                },
+                {
+                    name: "tile_diffusion",
+                    type: "select" as const,
+                    values: ["none", "mix", "gaussian"],
+                    default: "none"
+                },
+                {
+                    name: "tile_diffusion_size",
+                    type: "number" as const,
+                    min: 256,
+                    max: 2048,
+                    step: 128,
+                    default: 1024
+                },
+                {
+                    name: "tile_diffusion_stride",
+                    type: "number" as const,
+                    min: 128,
+                    max: 1024,
+                    step: 64,
+                    default: 512
+                },
+                {
+                    name: "tile_vae",
+                    type: "boolean" as const,
+                    default: false
+                },
+                {
+                    name: "steps",
+                    type: "number" as const,
+                    min: 1,
+                    max: 100,
+                    step: 1,
+                    default: 50
+                },
+                {
+                    name: "color_fix_type",
+                    type: "select" as const,
+                    values: ["none", "wavelet", "adain"],
+                    default: "adain"
+                },
+                {
+                    name: "seed",
+                    type: "number" as const,
+                    min: 0,
+                    max: 2147483647,
+                    step: 1,
+                    default: -1
+                }
+            ] as const
+        }
+    ] as const,
+};
+
+// Define the EnhancementModel type
+type EnhancementModel = typeof enhancement.models[number];
+
+// Define the ModelOption type
+type ModelOption = EnhancementModel['options'][number];
+
+// Export these types
+export type { EnhancementModel, ModelOption };
+
+// Add this near the enhancement models definition
+export const videoGeneration = {
+    models: [
+        {
+            name: "Runway Gen3 Turbo",
+            apiRoute: "/api/models/fal/runway-gen3-turbo-image-to-video",
+            description: "Generate videos from images using Runway Gen3 Turbo model.",
+            options: [
+                {
+                    name: "prompt",
+                    type: "string" as const,
+                    default: ""
+                },
+                // {
+                //     name: "image_url",
+                //     type: "string" as const,
+                //     default: ""
+                // },
+                {
+                    name: "duration",
+                    type: "select" as const,
+                    values: ["5", "10"],
+                    default: "5"
+                },
+                {
+                    name: "ratio",
+                    type: "select" as const,
+                    values: ["16:9", "9:16"],
+                    default: "16:9"
+                },
+                {
+                    name: "seed",
+                    type: "number" as const,
+                    min: 0,
+                    max: 2147483647,
+                    step: 1,
+                    default: -1
+                }
+            ] as const
+        }
+    ] as const,
+};
+
+// Add these type definitions
+type VideoGenerationModel = typeof videoGeneration.models[number];
+type VideoModelOption = VideoGenerationModel['options'][number];
+
+// Export these types
+export type { VideoGenerationModel, VideoModelOption };

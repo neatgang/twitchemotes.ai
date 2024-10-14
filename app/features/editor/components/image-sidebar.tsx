@@ -57,11 +57,10 @@ export const ImageSidebar = ({ activeTool, onChangeActiveTool, editor }: ImageSi
                                 className="relative w-full h-[100px] group hover:opacity-75 transition bg-muted rounded-sm overflw-hidden border"
                                 onClick={() => editor?.addImage(image.urls.regular)}
                             >
-                                <Image 
-                                    fill
+                                <img 
                                     src={image.urls.small} 
                                     alt={image.alt_description || ""} 
-                                    className="object-cover"
+                                    className="object-cover w-full h-full"
                                 />
                                 <Link 
                                     href={image.links.html}

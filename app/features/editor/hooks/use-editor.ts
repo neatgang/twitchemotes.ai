@@ -26,6 +26,7 @@ const buildEditor = ({
     setStrokeDashArray,
     fontFamily,
     setFontFamily,
+    enhanceImage,
 }: BuildEditorProps): Editor => {
 
     const generateSaveOptions = () => {
@@ -403,6 +404,14 @@ const buildEditor = ({
         } catch (error) {
             console.error('Error creating image:', error);
         }
+    };
+
+    const generateVideo = async () => {
+        // Implement the video generation logic here
+        // This is just a placeholder implementation
+        console.log("Generating video...");
+        // You might want to call an API to generate a video from the current canvas state
+        // Then update the UI to show the generated video
     };
 
     return {
@@ -794,6 +803,8 @@ const buildEditor = ({
         },
 
         selectedObjects,
+        enhanceImage,
+        generateVideo,
     }
 }
 
@@ -818,6 +829,13 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         clearSelectionCallback
     })
 
+    const enhanceImage = async () => {
+        // Implement the image enhancement logic here
+        console.log("Enhancing image...");
+        // You might want to call an API or use a library to enhance the image
+        // Then update the canvas with the enhanced image
+    };
+
     const editor = useMemo(() => {
         if (canvas) {
             return buildEditor({
@@ -833,6 +851,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
                 setStrokeDashArray,
                 fontFamily,
                 setFontFamily,
+                enhanceImage, // Add this line
             });
         }
 
@@ -845,6 +864,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         selectedObjects,
         strokeDashArray,
         fontFamily,
+        enhanceImage, // Add this to the dependency array
     ]);
 
     const init = useCallback(({

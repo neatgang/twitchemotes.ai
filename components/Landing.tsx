@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import Image from "next/image"
-import { CloudLightningIcon, ComputerIcon, SparkleIcon, TimerIcon, TwitchIcon, WandIcon, CreditCardIcon, DollarSignIcon } from "lucide-react"
+import { CloudLightningIcon, ComputerIcon, SparkleIcon, TimerIcon, TwitchIcon, WandIcon, CreditCardIcon, DollarSignIcon, PaletteIcon, ScissorsIcon, PencilIcon, DownloadIcon, RefreshCwIcon, CheckIcon, SettingsIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useProModal } from "@/hooks/use-pro-modal"
@@ -200,55 +200,112 @@ export default function Landing() {
         </div>
       </section> */}
 
-      {/* How It Works */}
+      {/* How It Works - Updated and Redesigned */}
       <section className="bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Create Emotes in 3 Easy Steps</h2>
+          <h2 className="text-4xl font-extrabold tracking-tight text-center mb-12">Create Emotes with Advanced AI</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "1. Describe Your Idea", description: "Tell our AI what kind of emote you want to create.", icon: SparkleIcon },
-              { title: "2. Generate Options", description: "Our AI creates multiple unique emote designs based on your description.", icon: WandIcon },
-              { title: "3. Customize & Download", description: "Fine-tune your favorite design and download it ready for use.", icon: CloudLightningIcon },
+              {
+                icon: SparkleIcon,
+                title: "1. Describe Your Idea",
+                description: "Tell our AI what kind of emote you want to create.",
+                details: [
+                  "Use descriptive language",
+                  "Specify style (e.g., chibi, pixel art)",
+                  "Include emotions or actions",
+                  "Mention color preferences"
+                ]
+              },
+              {
+                icon: WandIcon,
+                title: "2. Choose Your AI Model",
+                description: "Select from our range of specialized AI models.",
+                models: generation.models.map(model => model.name),
+              },
+              {
+                icon: CloudLightningIcon,
+                title: "3. Customize & Download",
+                description: "Fine-tune your favorite design and download it ready for use.",
+                features: [
+                  "Adjust colors and effects",
+                  "Add text or additional elements",
+                  "Resize for platform requirements",
+                  "Download in various formats (PNG, GIF)"
+                ]
+              },
             ].map((step, index) => (
               <motion.div
+                key={index}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md text-center"
+                className="bg-white p-6 rounded-lg shadow-md text-center flex flex-col h-full"
               >
                 <step.icon className="h-12 w-12 text-[#7928CA] mx-auto mb-4" />
                 <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <p className="text-gray-600 mb-4">{step.description}</p>
+                {step.details && (
+                  <ul className="text-sm text-gray-500 space-y-1 mb-4 text-left">
+                    {step.details.map((detail, detailIndex) => (
+                      <li key={detailIndex} className="flex items-center">
+                        <CheckIcon className="h-4 w-4 mr-2 text-green-500" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {step.models && (
+                  <div className="mt-auto">
+                    <h4 className="font-semibold mb-2">Available Models:</h4>
+                    <ul className="text-sm text-gray-500 space-y-1">
+                      {step.models.map((model, modelIndex) => (
+                        <li key={modelIndex} className="bg-gray-100 rounded px-2 py-1">
+                          {model}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {step.features && (
+                  <ul className="text-sm text-gray-500 space-y-1 mt-auto text-left">
+                    {step.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center">
+                        <SettingsIcon className="h-4 w-4 mr-2 text-blue-500" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </motion.div>
             ))}
           </div>
           <div className="mt-12 text-center">
             <Button onClick={handleStartCreating} className="bg-[#7928CA] text-white hover:bg-[#6a23b3] text-lg">
-              Try It Now!
+              Start Creating Now
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Pricing and Features */}
+      {/* Features Section - Updated to highlight AI capabilities */}
       <section className="bg-white py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Powerful Features</h2>
+            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Advanced AI Features</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Create professional-quality emotes with our advanced tools and choose a plan that fits your needs.
+              Leverage cutting-edge AI models to create professional-quality emotes for any platform.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: "AI-Powered Generation", description: "Create unique emotes from text descriptions with enhanced prompts.", icon: SparkleIcon },
-              { title: "One-Click Background Removal", description: "Instantly remove backgrounds for transparent emotes.", icon: WandIcon },
-              { title: "Custom Editing Tools", description: "Fine-tune your emotes with our easy-to-use editor.", icon: ComputerIcon },
-              { title: "Multiple Style Options", description: "Choose from pixel art, kawaii, 3D, and more styles.", icon: CloudLightningIcon },
-              { title: "Twitch & Discord Ready", description: "Download emotes in the perfect format for your platform.", icon: TwitchIcon },
-              { title: "Flexible Pricing", description: "Choose from monthly plans or buy credits as you need them.", icon: TimerIcon },
+              { title: "Multiple AI Models", description: "Choose from DALL-E 3, FLUX, and Aura Flow for diverse emote styles.", icon: SparkleIcon },
+              { title: "Style Variety", description: "Create emotes in chibi, pixel art, realistic, and more styles.", icon: PaletteIcon },
+              { title: "One-Click Background Removal", description: "Instantly remove backgrounds for transparent emotes.", icon: ScissorsIcon },
+              { title: "Custom Editing Tools", description: "Fine-tune your emotes with our easy-to-use editor.", icon: PencilIcon },
+              { title: "Platform Ready", description: "Download emotes optimized for Twitch, Discord, and more.", icon: DownloadIcon },
+              { title: "Continuous Updates", description: "We're constantly adding new AI models and features.", icon: RefreshCwIcon },
             ].map((feature, index) => (
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -262,19 +319,6 @@ export default function Landing() {
               </motion.div>
             ))}
           </div>
-          {/* <div className="mt-12 text-center">
-            <p className="text-lg text-gray-600 mb-4">
-              Explore our pricing options or purchase credits for one-time use.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Button onClick={() => router.push('/pricing')} className="bg-[#7928CA] text-white hover:bg-[#6a23b3]">
-                View Pricing Plans
-              </Button>
-              <Button onClick={() => router.push('/credits')} variant="outline" className="border-[#7928CA] text-[#7928CA] hover:bg-[#7928CA] hover:text-white">
-                Buy Credits
-              </Button>
-            </div>
-          </div> */}
         </div>
       </section>
 
@@ -329,6 +373,52 @@ export default function Landing() {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Pricing and Features */}
+      <section className="bg-white py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-extrabold tracking-tight mb-4">Powerful Features</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Create professional-quality emotes with our advanced tools and choose a plan that fits your needs.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { title: "AI-Powered Generation", description: "Create unique emotes from text descriptions with enhanced prompts.", icon: SparkleIcon },
+              { title: "One-Click Background Removal", description: "Instantly remove backgrounds for transparent emotes.", icon: WandIcon },
+              { title: "Custom Editing Tools", description: "Fine-tune your emotes with our easy-to-use editor.", icon: ComputerIcon },
+              { title: "Multiple Style Options", description: "Choose from pixel art, kawaii, 3D, and more styles.", icon: CloudLightningIcon },
+              { title: "Twitch & Discord Ready", description: "Download emotes in the perfect format for your platform.", icon: TwitchIcon },
+              { title: "Flexible Pricing", description: "Choose from monthly plans or buy credits as you need them.", icon: TimerIcon },
+            ].map((feature, index) => (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                key={index}
+                className="bg-gray-100 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+              >
+                <feature.icon className="h-8 w-8 text-[#7928CA] mb-3" />
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+          {/* <div className="mt-12 text-center">
+            <p className="text-lg text-gray-600 mb-4">
+              Explore our pricing options or purchase credits for one-time use.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Button onClick={() => router.push('/pricing')} className="bg-[#7928CA] text-white hover:bg-[#6a23b3]">
+                View Pricing Plans
+              </Button>
+              <Button onClick={() => router.push('/credits')} variant="outline" className="border-[#7928CA] text-[#7928CA] hover:bg-[#7928CA] hover:text-white">
+                Buy Credits
+              </Button>
+            </div>
+          </div> */}
         </div>
       </section>
 
