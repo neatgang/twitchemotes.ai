@@ -91,9 +91,10 @@ model Emote {
   createdAt         DateTime?     @default(now())
   emoteForSale      EmoteForSale?
 
-  users  UserEmote[]
-  User   User?       @relation(fields: [userId], references: [id])
-  userId String?
+  users             UserEmote[]
+  User              User?       @relation(fields: [userId], references: [id])
+  userId            String?
+  postedToInstagram Boolean     @default(false)
 
   @@index([userId])
   @@index([originalCreatorId])

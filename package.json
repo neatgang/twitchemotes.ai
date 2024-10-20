@@ -84,6 +84,7 @@
     "hono": "^4.5.3",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
+    "instagram-web-api": "^2.2.2",
     "jimp": "^0.22.12",
     "jsdom": "^24.1.0",
     "jspdf": "^2.5.1",

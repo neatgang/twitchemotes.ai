@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
 import Showcase from "./_components/showcase";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -8,6 +10,12 @@ export default async function ShowcasePage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  const { userId } = auth();
+  
+  if (!userId) {
+    redirect('/sign-in');
+  }
+
   const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
   const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
   const style = typeof searchParams.style === 'string' ? searchParams.style : undefined;
