@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 
 interface EmoteProductProps {
   emoteListing: EmoteForSale & { emote: Emote };
@@ -15,25 +17,46 @@ interface EmoteProductProps {
 
 const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, emoteModel }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
-  const handlePurchase = async () => {
-    if (!emoteListing || emoteListing.price === null) return;
+  const isForSale = emoteListing.price !== null;
+
+  const handleAction = async () => {
     setIsLoading(true);
-    try {
-      const response = await axios.get(`/api/stripe/purchase-emote?emoteId=${emoteListing.id}`);
-      window.location.href = response.data.url;
-    } catch (error) {
-      console.error('Purchase error:', error);
-      if (axios.isAxiosError(error)) {
-        toast.error(`Failed to initiate purchase: ${error.response?.data?.error || error.message}`);
-      } else if (error instanceof Error) {
-        toast.error(`Failed to initiate purchase: ${error.message}`);
-      } else {
-        toast.error('An unknown error occurred');
+    if (isForSale) {
+      try {
+        const response = await axios.get(`/api/stripe/purchase-emote?emoteId=${emoteListing.id}`);
+        window.location.href = response.data.url;
+      } catch (error) {
+        console.error('Purchase error:', error);
+        if (axios.isAxiosError(error)) {
+          toast.error(`Failed to initiate purchase: ${error.response?.data?.error || error.message}`);
+        } else if (error instanceof Error) {
+          toast.error(`Failed to initiate purchase: ${error.message}`);
+        } else {
+          toast.error('An unknown error occurred');
+        }
       }
-    } finally {
-      setIsLoading(false);
+    } else {
+      try {
+        const result = await addEmoteToLibrary({
+          prompt: emoteListing.emote.prompt || '',
+          imageUrl: emoteListing.emote.imageUrl || '',
+          style: emoteListing.emote.style || '',
+        });
+        
+        if (result.success) {
+          toast.success('Emote added to your library');
+          router.push('/profile'); // Or wherever you want to redirect after adding
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        console.error('Add to library error:', error);
+        toast.error('Failed to add emote to your library');
+      }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -65,21 +88,23 @@ const EmoteProduct: React.FC<EmoteProductProps> = ({ emoteListing, emoteStyle, e
               <dt className="text-sm text-gray-500 dark:text-gray-400">Created with</dt>
               <dd className="font-medium">{emoteModel}</dd>
             </div>
-            <div>
-              <dt className="text-sm text-gray-500 dark:text-gray-400">Price</dt>
-              <dd className="font-medium">
-                ${emoteListing.price !== null ? emoteListing.price.toFixed(2) : 'N/A'}
-              </dd>
-            </div>
+            {isForSale && (
+              <div>
+                <dt className="text-sm text-gray-500 dark:text-gray-400">Price</dt>
+                <dd className="font-medium">
+                  ${emoteListing.price !== null ? emoteListing.price.toFixed(2) : 'N/A'}
+                </dd>
+              </div>
+            )}
           </dl>
           <Button 
-            onClick={handlePurchase} 
+            onClick={handleAction} 
             className="mt-2 w-full flex" 
             variant="default"
-            disabled={isLoading || !emoteListing || emoteListing.price === null}
-            aria-label={isLoading ? 'Processing...' : 'Purchase Emote'}
+            disabled={isLoading}
+            aria-label={isLoading ? 'Processing...' : (isForSale ? 'Purchase Emote' : 'Add Emote')}
           >
-            {isLoading ? 'Processing...' : 'Purchase Emote'}
+            {isLoading ? 'Processing...' : (isForSale ? 'Purchase Emote' : 'Add Emote')}
           </Button>
         </div>
       </div>

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     const finalPrompt = generateThemedEmotePrompt(prompt, emoteType); // Use emoteType to generate the final prompt
 
-    const result = await fal.subscribe("fal-ai/flux-pro", {
+    const result = await fal.subscribe("fal-ai/flux-pro/new", {
       input: {
         prompt: finalPrompt, // Use the finalPrompt with emoteType
         image_size: image_size || "square_hd",

@@ -1,4 +1,4 @@
-import { EmoteForSale, EmoteStatus, EmoteType } from '@prisma/client';
+import { EmoteForSale, Emote } from '@prisma/client';
 import { db } from '@/lib/db';
 import Image from 'next/image';
 import { getEmoteById } from '@/actions/get-emote-by-id';
@@ -8,6 +8,7 @@ import EmoteProduct from '../_components/EmoteProduct';
 import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 import { Metadata, ResolvingMetadata } from 'next';
 import EmoteClientWrapper from '../_components/EmoteClientWrapper';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { emoteId: string }
@@ -98,25 +99,60 @@ export async function generateMetadata(
 }
 
 const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
-  const emoteListing = await db.emoteForSale.findUnique({
-    where: {
-      id: params.emoteId,
-    },
-    include: {
-      emote: true,
-    },
+  let emote: (Emote & { emoteForSale: EmoteForSale | null }) | null = null;
+  let emoteListing: (EmoteForSale & { emote: Emote }) | null = null;
+
+  // First, try to find the Emote
+  emote = await db.emote.findUnique({
+    where: { id: params.emoteId },
+    include: { emoteForSale: true },
   });
 
-  if (!emoteListing) {
-    return <div>No emote found</div>;
+  // If not found, try to find the EmoteForSale
+  if (!emote) {
+    emoteListing = await db.emoteForSale.findUnique({
+      where: { id: params.emoteId },
+      include: { emote: true },
+    });
+
+    if (emoteListing) {
+      emote = { ...emoteListing.emote, emoteForSale: emoteListing };
+    }
   }
+
+  if (!emote) {
+    notFound();
+  }
+
+  const finalEmoteListing: EmoteForSale & { emote: Emote } = emote.emoteForSale
+    ? { ...emote.emoteForSale, emote }
+    : {
+        id: '',
+        emoteId: emote.id,
+        imageUrl: emote.imageUrl || '',
+        watermarkedUrl: null,
+        prompt: emote.prompt || '',
+        price: null,
+        style: emote.style,
+        model: emote.model,
+        createdAt: emote.createdAt || new Date(),
+        updatedAt: emote.createdAt || new Date(),
+        status: 'DRAFT',
+        type: 'FREE',
+        userId: emote.userId,
+        stripeProductId: null,
+        stripePriceId: null,
+        stripePriceAmount: null,
+        stripePriceCurrency: null,
+        emote,
+      };
 
   return (
     <EmoteClientWrapper emoteId={params.emoteId}>
       <EmoteProduct 
-        emoteListing={emoteListing} 
-        emoteStyle={emoteListing.style ?? 'Not specified'}
-        emoteModel={emoteListing.emote.model ?? 'Not specified'}
+        emoteListing={finalEmoteListing}
+        emoteStyle={emote.style ?? 'Not specified'}
+        emoteModel={emote.model ?? 'Not specified'}
       />
     </EmoteClientWrapper>
   );

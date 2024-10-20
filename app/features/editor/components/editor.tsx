@@ -24,6 +24,8 @@ import { EmoteGeneratorSidebar } from "./generate-sidebar"
 import { FilterSidebar } from "./filter-sidebar"
 import { DrawSidebar } from "./draw-sidebar"
 import { InpaintSidebar } from "./inpaint-sidebar" // Add this import
+import { EnhanceSidebar } from "./enhance-sidebar"
+import { VideoGeneratorSidebar } from "./video-sidebar"
 
 interface EditorProps {
   userId: string;
@@ -134,7 +136,12 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
-        <ImageSidebar 
+        {/* <ImageSidebar 
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        /> */}
+        <EnhanceSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
@@ -144,6 +151,13 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
           emotes={emotes} // Pass emotes as props
+          setCurrentPrompt={setCurrentPrompt}
+        />
+        <VideoGeneratorSidebar 
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+          emotes={emotes}
           setCurrentPrompt={setCurrentPrompt}
         />
         <EmoteGeneratorSidebar 

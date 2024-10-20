@@ -50,7 +50,8 @@ interface EmoteGeneratorSidebarProps {
 
 export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, emotes }: EmoteGeneratorSidebarProps) => {
   const [photos, setPhotos] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhancedPrompts, setEnhancedPrompts] = useState<string[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedEmote, setSelectedEmote] = useState<Emote | null>(null);
@@ -84,7 +85,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
   };
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
+    setIsGenerating(true);
     try {
       console.log("Submitting with emoteType:", data.emoteType);
 
@@ -124,7 +125,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
       console.error("Error generating images:", error);
       toast.error('Failed to generate or save emotes. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsGenerating(false);
     }
   };
 
@@ -146,7 +147,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
 
   const enhancePrompt = async () => {
     const currentPrompt = form.getValues("prompt");
-    setIsLoading(true);
+    setIsEnhancing(true);
     try {
       const response = await axios.post('/api/models/enhance-prompt', { prompt: currentPrompt });
       console.log('API Response:', response.data);
@@ -163,7 +164,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
       toast.error('Failed to enhance prompt. Please try again.');
       setEnhancedPrompts([currentPrompt]);
     } finally {
-      setIsLoading(false);
+      setIsEnhancing(false);
     }
   };
 
@@ -190,8 +191,12 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
                 </FormItem>
               )}
             />
-            <Button onClick={enhancePrompt} disabled={isLoading} className="w-full">
-              {isLoading ? <Loader className="animate-spin" /> : "Enhance Prompt (1 Credit)"}
+            <Button 
+              onClick={enhancePrompt} 
+              disabled={isEnhancing || isGenerating} 
+              className="w-full"
+            >
+              {isEnhancing ? <Loader className="animate-spin" /> : "Enhance Prompt (1 Credit)"}
             </Button>
             {enhancedPrompts.length > 0 && (
               <div className="mt-2">
@@ -350,11 +355,10 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
                                   }`}
                                   onClick={() => setSelectedEmote(emote)}
                                 >
-                                  <Image
-                                    fill
+                                  <img
                                     src={emote.imageUrl!}
                                     alt={emote.prompt || emote.id}
-                                    className="object-cover"
+                                    className="absolute top-0 left-0 w-full h-full object-cover"
                                   />
                                 </div>
                               ))}
@@ -390,8 +394,12 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
                 </AccordionItem>
               )}
             </Accordion>
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? <Loader className="animate-spin" /> : "Generate Emote (1 Credit)"}
+            <Button 
+              type="submit" 
+              disabled={isGenerating || isEnhancing} 
+              className="w-full"
+            >
+              {isGenerating ? <Loader className="animate-spin" /> : "Generate Emote (1 Credit)"}
             </Button>
           </form>
         </Form>
@@ -399,7 +407,7 @@ export const EmoteGeneratorSidebar = ({ activeTool, onChangeActiveTool, editor, 
           {photos && photos.length > 0 && photos.map((url, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="relative w-[125px] h-[125px] group hover:opacity-75 transition bg-muted rounded-sm overflow-hidden border">
-                <Image src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" fill />
+                <img src={url} alt={`Generated emote ${index}`} className="object-cover w-full h-full" />
                 <button
                   onClick={() => {
                     editor?.addGeneratedEmote(url);

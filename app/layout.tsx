@@ -19,8 +19,61 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'EmoteMaker.ai',
-  description: 'Turn your prompt into an emote, perfect for Twitch Streamers, Discord Moderators, and others.',
+  title: 'EmoteMaker.ai - Create Custom Emotes for Twitch and Discord',
+  description: 'Turn your ideas into stunning emotes with AI. Perfect for Twitch Streamers, Discord Moderators, and content creators. Create, customize, and download high-quality emotes instantly.',
+  keywords: ['emote maker', 'Twitch emotes', 'Discord emotes', 'AI emote generator', 'custom emotes', 'streamer tools'],
+  authors: [{ name: 'EmoteMaker.ai Team' }],
+  creator: 'EmoteMaker.ai',
+  publisher: 'EmoteMaker.ai',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: 'EmoteMaker.ai - AI-Powered Custom Emote Creator',
+    description: 'Create unique, eye-catching emotes for your Twitch and Discord channels using advanced AI technology.',
+    url: 'https://emotemaker.ai',
+    siteName: 'EmoteMaker.ai',
+    images: [
+      {
+        url: 'https://emotemaker.ai/og-image.png', // Replace with your actual OG image URL
+        width: 1200,
+        height: 630,
+        alt: 'EmoteMaker.ai - Custom Emote Creator',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EmoteMaker.ai - Create Custom Emotes with AI',
+    description: 'Design unique emotes for Twitch and Discord using AI. Stand out with personalized, high-quality emotes.',
+    images: ['https://emotemaker.ai/twitter-image.png'], // Replace with your actual Twitter card image URL
+    creator: '@EmoteMakerAI', // Replace with your actual Twitter handle
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
+  category: 'Technology',
 }
 
 export default async function RootLayout({
@@ -30,7 +83,7 @@ export default async function RootLayout({
 }) {
   const { userId } = auth()
   const apiLimitCount = await getApiLimitCount()
-  const isPro = await checkSubscription()
+  const isPro = await checkSubscription(userId)
   const credits = await getUserCredits()
 
   if (userId) {
@@ -39,6 +92,8 @@ export default async function RootLayout({
     console.log("User ID is null, user might not be logged in.")
   }
 
+  const hasActiveSubscription = await checkSubscription(userId);
+
   return (
     <ClerkProvider>
 
@@ -46,7 +101,7 @@ export default async function RootLayout({
         <head>
         </head>
         <body className={`${inter.className} h-full`}>
-            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} />
+            <Navbar isPro={isPro} apiLimitCount={apiLimitCount} credits={credits} hasActiveSubscription={hasActiveSubscription} />
             <ToasterProvider />
             <TooltipProvider>
               <ModalProvider />

@@ -75,22 +75,29 @@ model User {
   subscriptionType   SubscriptionType? // New field for subscription type
   EmoteForSale       EmoteForSale[]
   boards             Board[] // New relation field for boards
+  isAdmin            Boolean           @default(false) // Add this line
+  emotes             UserEmote[]
 
   @@index([userSubscriptionId])
 }
 
 model Emote {
-  id           String        @id @default(cuid())
-  prompt       String?
-  style        String? // This will store the emote type
-  model        String? // This will store the selected model
-  imageUrl     String?       @db.Text
-  user         User?         @relation(fields: [userId], references: [id])
-  userId       String?
-  createdAt    DateTime?     @default(now())
-  emoteForSale EmoteForSale?
+  id                String        @id @default(cuid())
+  prompt            String?
+  style             String?
+  model             String?
+  imageUrl          String?       @db.Text
+  originalCreatorId String?
+  createdAt         DateTime?     @default(now())
+  emoteForSale      EmoteForSale?
+
+  users             UserEmote[]
+  User              User?       @relation(fields: [userId], references: [id])
+  userId            String?
+  postedToInstagram Boolean     @default(false)
 
   @@index([userId])
+  @@index([originalCreatorId])
 }
 
 enum EmoteStatus {
@@ -213,7 +220,7 @@ model OrgSubscription {
   id                     String   @id @default(cuid())
   orgId                  String   @unique
   stripeCustomerId       String
-  stripeSubscriptionId   String   @unique
+  stripeSubscriptionId   String
   stripePriceId          String
   stripeCurrentPeriodEnd DateTime
 
@@ -221,3 +228,33 @@ model OrgSubscription {
 }
 
 // Existing models (User, Profile, Emote, etc.) remain unchanged
+
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  content     String    @db.Text
+  category    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  slug        String    @unique
+  author      String?
+  publishedAt DateTime?
+
+  @@index([category])
+  @@index([slug])
+}
+
+// Add a new model for the many-to-many relation
+model UserEmote {
+  id        String   @id @default(cuid())
+  userId    String
+  emoteId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  emote Emote @relation(fields: [emoteId], references: [id])
+
+  @@unique([userId, emoteId])
+  @@index([userId])
+  @@index([emoteId])
+}

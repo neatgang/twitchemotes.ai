@@ -19,29 +19,6 @@ export async function POST(req: Request) {
             return new NextResponse("Image data and Emote ID are required", { status: 400 });
         }
 
-        const s3 = new AWS.S3({
-            credentials: {
-                accessKeyId: env.ACCESS_KEY_ID,
-                secretAccessKey: env.SECRET_ACCESS_KEY,
-            },
-            region: "us-east-1",
-        });
-
-        const BUCKET_NAME = "pprcanvas";
-        const imageId = uuidv4();
-
-        await s3
-            .putObject({
-                Bucket: BUCKET_NAME,
-                Key: imageId,
-                Body: Buffer.from(imageBase64, 'base64'),
-                ContentEncoding: 'base64',
-                ContentType: 'image/png',
-            })
-            .promise();
-
-        const watermarkedUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${imageId}`;
-
         // Fetch the original Emote to get required fields
         const originalEmote = await db.emote.findUnique({
             where: { id: emoteId },
@@ -55,21 +32,62 @@ export async function POST(req: Request) {
             return new NextResponse("Emote is missing required fields", { status: 400 });
         }
 
-        // Update the EmoteForSale record with the watermarked URL
-        const updatedEmote = await db.emoteForSale.upsert({
-            where: { emoteId },
-            update: { watermarkedUrl },
-            create: {
-                watermarkedUrl,
-                imageUrl: originalEmote.imageUrl,
-                prompt: originalEmote.prompt,
-                emote: { connect: { id: emoteId } },
-                price: 0, // Set a default price
-                style: originalEmote.style ?? "",
-                model: originalEmote.model ?? "",
-                user: { connect: { id: userId } },
+        const s3 = new AWS.S3({
+            credentials: {
+                accessKeyId: env.ACCESS_KEY_ID,
+                secretAccessKey: env.SECRET_ACCESS_KEY,
             },
+            region: "us-east-1",
         });
+
+        const BUCKET_NAME = "pprcanvas";
+        const imageId = uuidv4();
+
+        try {
+            await s3
+                .putObject({
+                    Bucket: BUCKET_NAME,
+                    Key: imageId,
+                    Body: Buffer.from(imageBase64, 'base64'),
+                    ContentEncoding: 'base64',
+                    ContentType: 'image/png',
+                })
+                .promise();
+        } catch (s3Error) {
+            console.error('[S3_UPLOAD_ERROR]', s3Error);
+            return new NextResponse("Failed to upload watermarked image to S3", { status: 500 });
+        }
+
+        const watermarkedUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${imageId}`;
+
+        // Check if an EmoteForSale record already exists
+        const existingEmoteForSale = await db.emoteForSale.findUnique({
+            where: { emoteId },
+        });
+
+        let updatedEmote;
+
+        if (existingEmoteForSale) {
+            // If it exists, update the watermarkedUrl
+            updatedEmote = await db.emoteForSale.update({
+                where: { emoteId },
+                data: { watermarkedUrl },
+            });
+        } else {
+            // If it doesn't exist, create a new EmoteForSale record
+            updatedEmote = await db.emoteForSale.create({
+                data: {
+                    watermarkedUrl,
+                    imageUrl: originalEmote.imageUrl,
+                    prompt: originalEmote.prompt,
+                    emote: { connect: { id: emoteId } },
+                    price: 0, // Set a default price
+                    style: originalEmote.style ?? "",
+                    model: originalEmote.model ?? "",
+                    user: { connect: { id: userId } },
+                },
+            });
+        }
 
         return NextResponse.json({ watermarkedUrl: updatedEmote.watermarkedUrl });
     } catch (error: unknown) {
