@@ -136,11 +136,11 @@ export const Editor = ({ userId, emotes: initialEmotes }: EditorProps) => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
-        <ImageSidebar 
+        {/* <ImageSidebar 
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
-        />
+        /> */}
         <EnhanceSidebar 
           editor={editor}
           activeTool={activeTool}
