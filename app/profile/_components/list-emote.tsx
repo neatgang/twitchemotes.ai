@@ -10,8 +10,6 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
-import Watermark from '@uiw/react-watermark'
-import { AxiosError } from 'axios';
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface ListEmoteProps {
@@ -102,99 +100,107 @@ export default function ListEmote({ emotes, totalPages, currentPage, onPageChang
   };
 
   return (
-    <main className="w-full max-w-6xl mx-auto px-4 py-8 md:px-6 md:py-12">
-      <Card>
-        <CardContent className="mt-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-            {emotes.map((emote) => (
-              <div 
-                key={emote.id} 
-                className={`relative cursor-pointer ${selectedEmote?.id === emote.id ? 'ring-2 ring-primary' : ''}`}
-                onClick={() => setSelectedEmote(emote)}
-              >
-                <Image
-                  src={emote.imageUrl || "/placeholder.png"}
-                  alt={emote.prompt || "Emote"}
-                  width={100}
-                  height={100}
-                  className="w-full h-auto"
-                />
-              </div>
-            ))}
-          </div>
-
-          {selectedEmote && (
-            <form onSubmit={handleSubmit} className="grid gap-4">
-              <div className="grid gap-2">
-                <div className="flex flex-col items-center justify-center p-6 aspect-square">
+    <div className="w-full max-w-7xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-8">
+        <Card className="md:col-span-2">
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Select an Emote</h2>
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4 max-h-[calc(100vh-300px)] overflow-y-auto p-2">
+              {emotes.map((emote) => (
+                <div 
+                  key={emote.id} 
+                  className={`relative cursor-pointer rounded-lg overflow-hidden transition-all duration-200 ${selectedEmote?.id === emote.id ? 'ring-2 ring-primary scale-105' : 'hover:scale-105'}`}
+                  onClick={() => setSelectedEmote(emote)}
+                >
                   <Image
-                    alt="Selected Emote"
-                    className="w-full h-full object-contain"
-                    height={128}
-                    src={watermarkedUrl || selectedEmote.imageUrl || "/placeholder.png"}
-                    style={{
-                      aspectRatio: "128/128",
-                      objectFit: "cover",
-                    }}
-                    width={128}
+                    src={emote.imageUrl || "/placeholder.png"}
+                    alt={emote.prompt || "Emote"}
+                    width={100}
+                    height={100}
+                    className="w-full h-auto object-cover aspect-square"
                   />
                 </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="watermarkedUrl">Watermark</Label>
-                <div className="flex items-center space-x-2">
-                  <Button type="button" onClick={handleWatermark} disabled={isLoading || !!watermarkedUrl}>
+              ))}
+            </div>
+            <div className="flex justify-between items-center mt-6">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" /> Previous
+              </Button>
+              <span className="text-sm font-medium">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Next <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-4">List Your Emote</h2>
+            {selectedEmote ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    alt="Selected Emote"
+                    className="w-32 h-32 object-contain rounded-lg"
+                    src={watermarkedUrl || selectedEmote.imageUrl || "/placeholder.png"}
+                    width={128}
+                    height={128}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="watermark">Watermark</Label>
+                  <Button 
+                    type="button" 
+                    onClick={handleWatermark} 
+                    disabled={isLoading || !!watermarkedUrl}
+                    className="w-full mt-1"
+                  >
                     {watermarkedUrl ? "Watermark Added" : "Add Watermark"}
                   </Button>
                 </div>
+                <div>
+                  <Label htmlFor="prompt">Prompt</Label>
+                  <p className="mt-1 text-sm">{selectedEmote.prompt}</p>
+                </div>
+                <div>
+                  <Label htmlFor="price">Price (minimum $1.00)</Label>
+                  <Input 
+                    id="price" 
+                    placeholder="Enter the price" 
+                    type="number"
+                    min="1.00"
+                    step="0.01"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required 
+                    className="mt-1"
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading || !watermarkedUrl}>
+                  {isLoading ? "Listing..." : "List Emote"}
+                </Button>
+              </form>
+            ) : (
+              <div className="text-center text-gray-500">
+                Select an emote to list it for sale
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="prompt">Prompt</Label>
-                <p>{selectedEmote.prompt}</p>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="price">Price (minimum $1.00)</Label>
-                <Input 
-                  id="price" 
-                  placeholder="Enter the price" 
-                  step="0.01" 
-                  type="number"
-                  min="1.00"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  required 
-                />
-              </div>
-              <Button type="submit" disabled={isLoading || !watermarkedUrl}>
-                {isLoading ? "Listing..." : "List Emote"}
-              </Button>
-            </form>
-          )}
-          
-          {/* Pagination controls */}
-          <div className="mt-6 flex justify-between items-center">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="text-sm font-medium">
-              {currentPage} / {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </main>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   )
 }
