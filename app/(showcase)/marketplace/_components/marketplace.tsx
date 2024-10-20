@@ -221,7 +221,7 @@ export default function Marketplace({
                   <h3 className="font-medium text-sm truncate">{emoteForSale.prompt}</h3>
                 </CardContent>
                 <CardFooter className="p-4 pt-0">
-                  <Link href={`/emote/${emoteForSale.id}`} passHref className="w-full">
+                  <Link href={`/emote/${emoteForSale.emoteId}`} passHref className="w-full">
                     <Button className="w-full" variant="outline">
                       View Emote
                     </Button>

@@ -8,6 +8,7 @@ import EmoteProduct from '../_components/EmoteProduct';
 import { addEmoteToLibrary } from "@/actions/addEmoteToLibrary";
 import { Metadata, ResolvingMetadata } from 'next';
 import EmoteClientWrapper from '../_components/EmoteClientWrapper';
+import { notFound } from 'next/navigation';
 
 type Props = {
   params: { emoteId: string }
@@ -98,20 +99,32 @@ export async function generateMetadata(
 }
 
 const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
-  const emote = await db.emote.findUnique({
-    where: {
-      id: params.emoteId,
-    },
-    include: {
-      emoteForSale: true,
-    },
+  let emote: (Emote & { emoteForSale: EmoteForSale | null }) | null = null;
+  let emoteListing: (EmoteForSale & { emote: Emote }) | null = null;
+
+  // First, try to find the Emote
+  emote = await db.emote.findUnique({
+    where: { id: params.emoteId },
+    include: { emoteForSale: true },
   });
 
+  // If not found, try to find the EmoteForSale
   if (!emote) {
-    return <div>No emote found</div>;
+    emoteListing = await db.emoteForSale.findUnique({
+      where: { id: params.emoteId },
+      include: { emote: true },
+    });
+
+    if (emoteListing) {
+      emote = { ...emoteListing.emote, emoteForSale: emoteListing };
+    }
   }
 
-  const emoteListing: EmoteForSale & { emote: Emote } = emote.emoteForSale
+  if (!emote) {
+    notFound();
+  }
+
+  const finalEmoteListing: EmoteForSale & { emote: Emote } = emote.emoteForSale
     ? { ...emote.emoteForSale, emote }
     : {
         id: '',
@@ -137,7 +150,7 @@ const EmoteIdPage = async ({ params }: { params: { emoteId: string } }) => {
   return (
     <EmoteClientWrapper emoteId={params.emoteId}>
       <EmoteProduct 
-        emoteListing={emoteListing}
+        emoteListing={finalEmoteListing}
         emoteStyle={emote.style ?? 'Not specified'}
         emoteModel={emote.model ?? 'Not specified'}
       />

@@ -15,9 +15,9 @@ const routes = [
     href: '/emoteboard/editor/1',
   },
   {
-    label: 'Marketplace',
+    label: 'Showcase',
     icon: StoreIcon,
-    href: '/marketplace',
+    href: '/showcase',
   },
 ];
 
