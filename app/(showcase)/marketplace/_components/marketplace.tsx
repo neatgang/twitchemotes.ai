@@ -141,9 +141,9 @@ export default function Marketplace({
       <header className="mb-8 md:mb-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold md:text-3xl">Emote Showcase</h1>
+            <h1 className="text-2xl font-bold md:text-3xl">Emote Marketplace</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              Browse unique emotes created by other users.
+              Browse and purchase unique emotes created by other users.
             </p>
           </div>
           <div className="flex gap-4 w-full md:w-auto">

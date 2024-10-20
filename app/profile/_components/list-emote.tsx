@@ -46,11 +46,21 @@ export default function ListEmote({ emotes, totalPages, currentPage, onPageChang
         emoteId: selectedEmote.id,
       });
 
-      setWatermarkedUrl(uploadResponse.data.watermarkedUrl);
-      toast.success('Watermark added and uploaded successfully!');
+      if (uploadResponse.data.watermarkedUrl) {
+        setWatermarkedUrl(uploadResponse.data.watermarkedUrl);
+        toast.success('Watermark added and uploaded successfully!');
+      } else {
+        throw new Error('Failed to get watermarked URL');
+      }
     } catch (error) {
       console.error('Failed to add watermark:', error);
-      toast.error('Failed to add watermark. Please try again.');
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || 'Failed to add watermark. Please try again.');
+      } else if (error instanceof Error) {
+        toast.error(error.message || 'Failed to add watermark. Please try again.');
+      } else {
+        toast.error('An unknown error occurred while adding watermark. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
