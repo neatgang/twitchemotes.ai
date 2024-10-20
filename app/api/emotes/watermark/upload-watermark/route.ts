@@ -60,12 +60,23 @@ export async function POST(req: Request) {
 
         const watermarkedUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${imageId}`;
 
-        // Update the EmoteForSale record with the watermarked URL
-        try {
-            const updatedEmote = await db.emoteForSale.upsert({
+        // Check if an EmoteForSale record already exists
+        const existingEmoteForSale = await db.emoteForSale.findUnique({
+            where: { emoteId },
+        });
+
+        let updatedEmote;
+
+        if (existingEmoteForSale) {
+            // If it exists, update the watermarkedUrl
+            updatedEmote = await db.emoteForSale.update({
                 where: { emoteId },
-                update: { watermarkedUrl },
-                create: {
+                data: { watermarkedUrl },
+            });
+        } else {
+            // If it doesn't exist, create a new EmoteForSale record
+            updatedEmote = await db.emoteForSale.create({
+                data: {
                     watermarkedUrl,
                     imageUrl: originalEmote.imageUrl,
                     prompt: originalEmote.prompt,
@@ -76,12 +87,9 @@ export async function POST(req: Request) {
                     user: { connect: { id: userId } },
                 },
             });
-
-            return NextResponse.json({ watermarkedUrl: updatedEmote.watermarkedUrl });
-        } catch (dbError) {
-            console.error('[DB_UPDATE_ERROR]', dbError);
-            return new NextResponse("Failed to update emote with watermarked URL", { status: 500 });
         }
+
+        return NextResponse.json({ watermarkedUrl: updatedEmote.watermarkedUrl });
     } catch (error: unknown) {
         console.error('[UPLOAD_WATERMARK_ERROR]', error);
         

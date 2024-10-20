@@ -46,6 +46,8 @@ export default function ListEmote({ emotes, totalPages, currentPage, onPageChang
         emoteId: selectedEmote.id,
       });
 
+      console.log('Upload response:', uploadResponse.data); // Add this line for debugging
+
       if (uploadResponse.data.watermarkedUrl) {
         setWatermarkedUrl(uploadResponse.data.watermarkedUrl);
         toast.success('Watermark added and uploaded successfully!');
@@ -55,6 +57,7 @@ export default function ListEmote({ emotes, totalPages, currentPage, onPageChang
     } catch (error) {
       console.error('Failed to add watermark:', error);
       if (axios.isAxiosError(error)) {
+        console.error('Axios error response:', error.response?.data); // Add this line for debugging
         toast.error(error.response?.data?.error || 'Failed to add watermark. Please try again.');
       } else if (error instanceof Error) {
         toast.error(error.message || 'Failed to add watermark. Please try again.');
