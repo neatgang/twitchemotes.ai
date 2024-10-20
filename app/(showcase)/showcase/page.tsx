@@ -10,15 +10,16 @@ export default async function ShowcasePage({
 }) {
   const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
   const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+  const style = typeof searchParams.style === 'string' ? searchParams.style : undefined;
+  const model = typeof searchParams.model === 'string' ? searchParams.model : undefined;
 
-  const where = search
-    ? {
-        OR: [
-          { prompt: { contains: search } },
-          { style: { contains: search } },
-        ],
-      }
-    : {};
+  const where = {
+    AND: [
+      search ? { prompt: { contains: search } } : {},
+      style ? { style: { equals: style } } : {},
+      model ? { model: { equals: model } } : {},
+    ]
+  };
 
   const totalCount = await db.emote.count({ where });
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
@@ -30,6 +31,19 @@ export default async function ShowcasePage({
     orderBy: { createdAt: 'desc' },
   });
 
+  // Fetch unique styles and models
+  const styles = await db.emote.findMany({
+    select: { style: true },
+    distinct: ['style'],
+    where: { style: { not: null } },
+  });
+
+  const models = await db.emote.findMany({
+    select: { model: true },
+    distinct: ['model'],
+    where: { model: { not: null } },
+  });
+
   return (
     <Showcase
       initialEmotes={emotes}
@@ -37,6 +51,8 @@ export default async function ShowcasePage({
       totalPages={totalPages}
       totalCount={totalCount}
       itemsPerPage={ITEMS_PER_PAGE}
+      styles={styles.map(s => s.style!).filter(Boolean)}
+      models={models.map(m => m.model!).filter(Boolean)}
     />
   );
 }

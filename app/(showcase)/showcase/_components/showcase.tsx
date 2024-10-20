@@ -20,6 +20,13 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination"
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface ShowcaseProps {
   initialEmotes: Emote[];
@@ -27,6 +34,8 @@ interface ShowcaseProps {
   totalPages: number;
   totalCount: number;
   itemsPerPage: number;
+  styles: string[];
+  models: string[];
 }
 
 export default function Showcase({ 
@@ -34,27 +43,50 @@ export default function Showcase({
   currentPage, 
   totalPages, 
   totalCount,
-  itemsPerPage
+  itemsPerPage,
+  styles,
+  models
 }: ShowcaseProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 1000); // Fallback timer
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, [initialEmotes]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
-    router.push(`/showcase?page=1&search=${encodeURIComponent(newSearchTerm)}`);
+    updateURL(newSearchTerm, selectedStyle, selectedModel, 1);
+  };
+
+  const handleStyleChange = (value: string) => {
+    setSelectedStyle(value === "all" ? "" : value);
+    updateURL(searchTerm, value === "all" ? "" : value, selectedModel, 1);
+  };
+
+  const handleModelChange = (value: string) => {
+    setSelectedModel(value === "all" ? "" : value);
+    updateURL(searchTerm, selectedStyle, value === "all" ? "" : value, 1);
+  };
+
+  const updateURL = (search: string, style: string, model: string, page: number) => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (style) params.append('style', style);
+    if (model) params.append('model', model);
+    params.append('page', page.toString());
+    router.push(`/showcase?${params.toString()}`);
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/showcase?page=${page}&search=${encodeURIComponent(searchTerm)}`);
+    updateURL(searchTerm, selectedStyle, selectedModel, page);
   };
 
   const LoadingSkeleton = () => (
@@ -84,13 +116,35 @@ export default function Showcase({
               Browse all emotes created by our users.
             </p>
           </div>
-          <div className="flex gap-4 w-full md:w-auto">
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
             <Input 
               placeholder="Search emotes..." 
               value={searchTerm}
               onChange={handleSearchChange} 
               className="max-w-xs"
             />
+            <Select onValueChange={handleStyleChange} value={selectedStyle || "all"}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Style" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Styles</SelectItem>
+                {styles.map((style) => (
+                  <SelectItem key={style} value={style}>{style}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select onValueChange={handleModelChange} value={selectedModel || "all"}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Models</SelectItem>
+                {models.map((model) => (
+                  <SelectItem key={model} value={model}>{model}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </header>
@@ -103,7 +157,7 @@ export default function Showcase({
               <Card key={emote.id} className="group hover:shadow-lg transition-shadow duration-200">
                 <CardContent className="p-4">
                   <div className="aspect-square relative overflow-hidden rounded-lg mb-4">
-                    <Image
+                    <img
                       alt={emote.prompt || "Emote"}
                       className="object-cover group-hover:scale-105 transition-transform duration-200"
                       src={emote.imageUrl || '/placeholder-image.jpg'}
